@@ -11,7 +11,7 @@ tRadioDriver *Radio = NULL;
 #define BUFFER_SIZE     30                          
 uint16_t BufferSize = BUFFER_SIZE;            
 uint8_t  Buffer[BUFFER_SIZE];                
-uint8_t EnableMaster = false;
+uint8_t EnableMaster = true;
 
 uint8_t MY_TEST_Msg[] = "hello";        //测试数据
 
@@ -31,10 +31,11 @@ void lora_init()
  * @param None  
  * @return 0 
  */
-int master()
+void master(void *args)
 {
+    acoral_print("this is master\r\n");
     memcpy(Buffer,MY_TEST_Msg,sizeof(MY_TEST_Msg));                 //将测试数据拷贝到Buffer中
-    Radio->SetTxPacket( Buffer, sizeof(Buffer) );                   //主机中先进行一次发送，Radio->Process()调度后回进入RF_TX_DONE状态
+    
 
     switch( Radio->Process() )
     {
@@ -52,7 +53,7 @@ int master()
             break;
     }
 	
-	return 0;
+	
 }
 
 /**
@@ -60,9 +61,9 @@ int master()
  * @param None  
  * @return 0 
  */
-int slave()
+void slave(void *args)
 {
-    Radio->StartRx();               //从机进入接收状态，当前lora设置为连续接收模式，若要更改为单一接收或其他模式需要更改sx1276LoRa.c中的LoRaSettings相关设置                       
+                           
     switch( Radio->Process( ))
     {
         case RF_RX_DONE:        

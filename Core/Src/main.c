@@ -95,7 +95,7 @@ int main(void)
   MX_SPI2_Init();
   /* USER CODE BEGIN 2 */
 
-  //acoral_start();
+  acoral_start();
   /* USER CODE END 2 */
 
   /* Infinite loop */

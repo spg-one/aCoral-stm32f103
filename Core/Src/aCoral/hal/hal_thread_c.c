@@ -28,7 +28,7 @@ void hal_stack_init(unsigned int **stk,void (*route)(),void (*exit)(),void *args
 	ctx--;
 	ctx=(hal_ctx_t *)((unsigned int *)ctx+1);
 	ctx->r0=(unsigned int)args;
-	ctx->r1=1;
+	ctx->r1=0;
 	ctx->r2=2;
 	ctx->r3=3;
 	ctx->r4=4;
@@ -43,5 +43,6 @@ void hal_stack_init(unsigned int **stk,void (*route)(),void (*exit)(),void *args
 	ctx->lr=(unsigned int)exit;
 	ctx->pc=(unsigned int)route;
 	ctx->cpsr=0x01000000; //SPG
+	ctx->primask=0;
     *stk=(unsigned int *)ctx;
 }

@@ -19,8 +19,10 @@
 #include "autocfg.h"
 #include "core.h"
 #include "thread.h"
+#include "stm32f1xx_hal.h"
 
-#define TIME_TO_TICKS(time) (time)*CFG_TICKS_PER_SEC/1000 ///<计算time对应的ticks数量
+
+#define TIME_TO_TICKS(time) (time)*(1000U / uwTickFreq)
 extern acoral_list_t time_delay_queue;
 extern acoral_list_t timeout_queue;
 

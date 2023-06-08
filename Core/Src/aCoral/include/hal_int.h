@@ -80,7 +80,9 @@ void hal_intr_exit_bridge_comm();
 #define HAL_ENTER_CRITICAL()  HAL_INTR_DISABLE()
 #define HAL_EXIT_CRITICAL()  HAL_INTR_ENABLE()
 #define HAL_INTR_ATTACH(vecotr,isr) //TODO 该写什么？
-#define HAL_SCHED_BRIDGE() hal_sched_bridge_comm()
-#define HAL_INTR_EXIT_BRIDGE() hal_intr_exit_bridge_comm()
+//#define HAL_SCHED_BRIDGE() hal_sched_bridge_comm()
+#define HAL_SCHED_BRIDGE() HAL_SCHED_BRIDGE()
+//#define HAL_INTR_EXIT_BRIDGE() hal_intr_exit_bridge_comm()
+#define HAL_INTR_EXIT_BRIDGE() HAL_SCHED_BRIDGE()
 
 #endif

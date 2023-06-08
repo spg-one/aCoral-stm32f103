@@ -172,6 +172,7 @@ void PendSV_Handler(void)
   /* USER CODE BEGIN PendSV_IRQn 0 */
 
   /* USER CODE END PendSV_IRQn 0 */
+  PENDSV_CALL();
   /* USER CODE BEGIN PendSV_IRQn 1 */
 
   /* USER CODE END PendSV_IRQn 1 */
@@ -188,7 +189,8 @@ void SysTick_Handler(void)
   HAL_IncTick();
   /* USER CODE BEGIN SysTick_IRQn 1 */
   acoral_ticks_entry();
-
+  acoral_intr_exit(); /*注意，周期任务执行一次suspend后会等待systick中断来进行调度，但是仅仅只设置了acoral_need_sched*/
+                      /*故需要进入acoral_intr_exit（）中断退出函数进行线程调度，如果需要在其他中断后进行调度也需要加入此函数*/
   /* USER CODE END SysTick_IRQn 1 */
 }
 

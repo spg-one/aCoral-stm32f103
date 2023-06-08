@@ -43,7 +43,8 @@ int period_policy_thread_init(acoral_thread_t *thread,void (*route)(void *args),
 		// }
 		// }
 		thread->prio=prio;
-		private_data=(period_private_data_t *)acoral_malloc2(sizeof(period_private_data_t));
+		//不用acoral_malloc2
+		private_data=(period_private_data_t *)acoral_malloc(sizeof(period_private_data_t));
 		if(private_data==NULL){
 			acoral_print("No level2 mem space for private_data:%s\n",thread->name);
 			acoral_enter_critical();
@@ -72,7 +73,7 @@ int period_policy_thread_init(acoral_thread_t *thread,void (*route)(void *args),
 }
 
 void period_policy_thread_release(acoral_thread_t *thread){
-	acoral_free2(thread->private_data);	
+	acoral_free(thread->private_data);	
 }
 
 void acoral_periodqueue_add(acoral_thread_t *new){
@@ -122,10 +123,12 @@ void period_delay_deal(){
 		tmp=tmp1;
 		if(thread->state&ACORAL_THREAD_STATE_SUSPEND){
 			thread->stack=(unsigned int *)((char *)thread->stack_buttom+thread->stack_size-4);
-			HAL_STACK_INIT(thread->stack,private_data->route,period_thread_exit,private_data->args);
+			HAL_STACK_INIT(&thread->stack,private_data->route,period_thread_exit,private_data->args);
 			acoral_rdy_thread(thread);
+			
 		}
 		period_thread_delay(thread,private_data->time);
+	
 	}
 }
 

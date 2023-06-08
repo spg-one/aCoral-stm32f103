@@ -25,8 +25,8 @@ extern tRadioDriver *Radio;                 // lora操作指针，所有的函�
 extern uint8_t EnableMaster;                // 主机、从机标识符，true表示主机，false为从机
 
 void lora_init();                           //Radio初始化
-int master();                               //主机服务函数
-int slave();                                //从机服务函数    
+void master(void *args);                               //主机服务函数
+void slave(void *args);                                //从机服务函数    
 
 
 #endif

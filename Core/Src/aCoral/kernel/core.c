@@ -42,6 +42,8 @@ int daemon_id, idle_id, init_id;
 
 void idle(void *args)
 {
+	//__ASM volatile ("MSR primask, %0" : : "r" (0) : "memory");
+	
 	for (;;)
 	{
 	}
@@ -81,7 +83,7 @@ void daem(void *args)
 
 void init(void *args)
 {
-	acoral_print("in init spg\n");
+	acoral_print("in init spg\r\n");
 	acoral_comm_policy_data_t data;
 	acoral_ticks_init();
 	/*ticks中断初始化函数*/
@@ -97,19 +99,19 @@ void init(void *args)
 			;
 			/*应用级相关服务初始化,应用级不要使用延时函数，没有效果的*/
 #ifdef CFG_SHELL
-	acoral_shell_init();
+	//acoral_shell_init();
 #endif
 	user_main();//SPG先不要？
-	acoral_print("init done\n");
+	acoral_print("init done\r\n");
 }
 
 void acoral_start()
 {
-	acoral_print("in acoral_start\n");
-	acoral_print("before module init\n");
+	acoral_print("in acoral_start\r\n");
+	acoral_print("before module init\r\n");
 	/*内核模块初始化*/
 	acoral_module_init();
-	acoral_print("after module init\n");
+	acoral_print("after module init\r\n");
 	/*主cpu开始函数*/
 	acoral_core_cpu_start();
 }
@@ -145,8 +147,9 @@ void acoral_start_os()
 {
 	acoral_sched_init();
 	acoral_select_thread();
-	acoral_set_running_thread(acoral_ready_thread); // SPG空指针
-	HAL_SWITCH_TO(&acoral_cur_thread->stack);
+	// acoral_set_running_thread(acoral_ready_thread); // SPG空指针
+	acoral_cur_thread = acoral_ready_thread;
+	HAL_START_OS(&acoral_cur_thread->stack);
 }
 
 void acoral_module_init()

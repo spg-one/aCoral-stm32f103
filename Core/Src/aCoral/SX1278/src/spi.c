@@ -2,7 +2,7 @@
 #include "spi.h"
 #include "main.h"
 
-extern SPI_HandleTypeDef hspi2;
+
 uint8_t SpiInOut( uint8_t outData )
 {
 

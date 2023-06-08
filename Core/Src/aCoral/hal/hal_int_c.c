@@ -19,6 +19,11 @@
 ///中断嵌套数
 unsigned int intr_nesting;
 
+// void (*intr_c_entry)(signed int);
+// void hal_intr_set_entry(void (*isr)(signed int)){
+// 	intr_c_entry=isr;
+// }
+
 void hal_intr_unmask(int vector)
 {
 	// TODO riscv-加上
@@ -52,7 +57,7 @@ void hal_intr_nesting_inc_comm()
 
 void hal_sched_bridge_comm()
 {
-	HAL_ENTER_CRITICAL(); //SPG这里关了中断，线程切换后，新的线程不就默认是关中断的状态了么
+	HAL_ENTER_CRITICAL(); //SPG这里关了中断，线程切换后，新的线程默认是开启中断的状态了
 	acoral_real_sched();
 	HAL_EXIT_CRITICAL();
 }

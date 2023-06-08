@@ -72,18 +72,18 @@ typedef struct{//SPG加注释
 	unsigned char prio;
 	unsigned char policy;
 	acoral_list_t ready;	///<用于挂载到全局就绪队列
-	acoral_list_t timeout;
-	acoral_list_t waiting;
-	acoral_list_t global_list;
-	acoral_evt_t* evt;
-	unsigned int *stack;
-	unsigned int *stack_buttom;
-	unsigned int stack_size;
-	int delay;
-	char *name;
-	int console_id; ///<deprecated
-	void*	private_data;
-	void*	data;
+	acoral_list_t timeout;	///<用于挂载到超时阻塞队列
+	acoral_list_t waiting;	///<用于挂载到延时队列
+	acoral_list_t global_list;	///<用于挂载到全局线程列表
+	acoral_evt_t* evt;		///<用于指向线程占用的事件（信号量、互斥量等），方便线程退出时释放事件
+	unsigned int *stack;	///<指示线程的堆栈，线程被抢占切换时会保存cpu堆栈寄存器sp的值
+	unsigned int *stack_buttom;	///<栈底
+	unsigned int stack_size;	///<堆栈大小
+	int delay;				///<指定线程延时时间，单位是Ticks，调用acoral_delay_self时会把时间参数转换成Ticks后赋值给delay
+	char *name;				///<线程名字
+	int console_id;			///<线程控制台ID号
+	void*	private_data;	///<长久备用数据指针
+	void*	data;			///<临时备用数据指针
 }acoral_thread_t;
 
 void acoral_release_thread(acoral_res_t *thread);

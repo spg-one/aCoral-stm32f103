@@ -684,6 +684,11 @@ void acoral_pool_ctrl_init(acoral_pool_ctrl_t *pool_ctrl)
 	}
 }
 
+/**
+ * @brief 资源池初始化（数组acoral_pools的一些初始化）
+ * @param {NONE}  
+ * @return {NONE} 
+ */
 void acoral_res_sys_init()
 {
 	acoral_pool_t *pool;
@@ -691,8 +696,8 @@ void acoral_res_sys_init()
 	pool = &acoral_pools[0];
 	for (i = 0; i < (ACORAL_MAX_POOLS - 1); i++)
 	{
-		pool->base_adr = (void *)&acoral_pools[i + 1];
-		pool->id = i;
+		pool->base_adr = (void *)&acoral_pools[i + 1];	///<初始化时所有pool为空闲，故成员base_adr指向下一个pool
+		pool->id = i;									///<绑定id
 		pool++;
 	}
 	pool->base_adr = (void *)0;
