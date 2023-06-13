@@ -15,6 +15,10 @@
         "thread.h": "c",
         "int.h": "c",
         "hal_thread.h": "c",
-        "hal_int.h": "c"
+        "hal_int.h": "c",
+        "fifo.h": "c",
+        "hal.h": "c",
+        "lib.h": "c",
+        "main.h": "c"
     }
 }

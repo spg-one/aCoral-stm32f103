@@ -19,7 +19,7 @@ void user_main(void)
 	data = acoral_malloc(sizeof(acoral_period_policy_data_t));
 	data->prio = 5;
 	data->prio_type = ACORAL_HARD_PRIO;
-	data->time = 1;
+	data->time = 10;
 
 	lora_init();
 	if(EnableMaster == true)	//当前为主机

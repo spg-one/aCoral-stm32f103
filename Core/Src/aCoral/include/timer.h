@@ -22,7 +22,7 @@
 #include "stm32f1xx_hal.h"
 
 
-#define TIME_TO_TICKS(time) (time)*(1000U / uwTickFreq)
+#define TIME_TO_TICKS(time) (time)//>acoral中acoral_ticks_init()设置了systick每1ms产生一次中断，所以这里直接返回time（周期线程周期以毫秒单位）
 extern acoral_list_t time_delay_queue;
 extern acoral_list_t timeout_queue;
 
