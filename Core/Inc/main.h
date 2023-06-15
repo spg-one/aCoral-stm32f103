@@ -29,12 +29,7 @@ extern "C" {
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f1xx_hal.h"
 
-#define LORA_NSS_Pin GPIO_PIN_12
-#define LORA_NSS_GPIO_Port GPIOB
-#define LORA_RESET_Pin GPIO_PIN_7
-#define LORA_RESET_GPIO_Port GPIOB
-#define DIO0_Pin GPIO_PIN_8
-#define DIO0_GPIO_Port GPIOB
+
 
 extern SPI_HandleTypeDef hspi2;
 

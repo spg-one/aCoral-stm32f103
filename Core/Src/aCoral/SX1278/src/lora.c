@@ -22,6 +22,13 @@ uint8_t MY_TEST_Msg[] = "hello";        //测试数据
  */
 void lora_init()
 {
+    GPIO_InitTypeDef GPIO_InitStruct = {0};
+    GPIO_InitStruct.Pin = GPIO_PIN_9;
+    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_SET);
     Radio = RadioDriverInit( );	//Radio初始化，主要是针对sx1232、sx1272、sx1276不同芯片进行驱动选择，sx1278和sx1276使用相同驱动，在paltform.h中进行选择设置
     Radio->Init( );				//sx1278的真正初始化，根据用户在radio.h中设置的LORA变量选择进行lora初始化还是fsk初始化
 }
@@ -36,7 +43,7 @@ void master(void *args)
     acoral_print("this is master\r\n");
     memcpy(Buffer,MY_TEST_Msg,sizeof(MY_TEST_Msg));                 //将测试数据拷贝到Buffer中
     
-
+     
     switch( Radio->Process() )
     {
         case RF_RX_TIMEOUT:                                         //Radio->Process( )返回接收超时后继续发送测试数据， Radio->Process()返回类型在radio.h的tRFProcessReturnCodes枚举中定义
@@ -63,7 +70,8 @@ void master(void *args)
  */
 void slave(void *args)
 {
-                           
+    acoral_print("this is slave\r\n");
+    Radio->StartRx();                        
     switch( Radio->Process( ))
     {
         case RF_RX_DONE:        

@@ -1,0 +1,23 @@
+PA9     ------> USART1_TX
+PA10    ------> USART1_RX
+PB12    ------> SPI2_NSS
+PB13    ------> SPI2_SCK
+PB14    ------> SPI2_MISO
+PB15    ------> SPI2_MOSI
+PB9     ------> LORA_RESET
+PA4     ------> DHT_GPIO_PIN
+PB8     ------> LED0
+PD2     ------> LED1
+PA0     ------> LightSensor
+PC6
+PC7
+PC8
+PC9
+PB0
+PB1
+PB2
+PB3
+PB4
+PB5
+PB6
+PB7     ------> OLED

@@ -34,7 +34,7 @@
  * SX1276 RESET I/O definitions
  */
 #define RESET_IOPORT                                GPIOB
-#define RESET_PIN                                   GPIO_PIN_7
+#define RESET_PIN                                   GPIO_PIN_9
 
 /*!
  * SX1276 SPI NSS I/O definitions
@@ -45,8 +45,8 @@
 /*!
  * SX1276 DIO pins  I/O definitions
  */
-#define DIO0_IOPORT                                 GPIOB
-#define DIO0_PIN                                    GPIO_PIN_8
+#define DIO0_IOPORT                                 GPIOD
+#define DIO0_PIN                                    GPIO_PIN_12
 
 #define DIO1_IOPORT                                 GPIOB
 #define DIO1_PIN                                    GPIO_PIN_1
