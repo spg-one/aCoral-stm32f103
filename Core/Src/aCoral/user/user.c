@@ -16,21 +16,21 @@ void dummy(void *args){
 void user_main(void)
 {
 
-	OLED_Init();
-	LED_Init();
-	LightSensor_Init();
+	// OLED_Init();
+	// LED_Init();
+	// LightSensor_Init();
 
-	acoral_period_policy_data_t* data;
-	data = acoral_malloc(sizeof(acoral_period_policy_data_t));
-	data->prio = 5;
-	data->prio_type = ACORAL_HARD_PRIO;
-	data->time = 2000;
+	// acoral_period_policy_data_t* data;
+	// data = acoral_malloc(sizeof(acoral_period_policy_data_t));
+	// data->prio = 5;
+	// data->prio_type = ACORAL_HARD_PRIO;
+	// data->time = 2000;
 
-	acoral_create_thread(get_temp_humi_thread,512,NULL,"tmp_humi_thread",NULL,ACORAL_SCHED_POLICY_PERIOD,data); //温湿度线程+OLED显示
+	// acoral_create_thread(get_temp_humi_thread,512,NULL,"tmp_humi_thread",NULL,ACORAL_SCHED_POLICY_PERIOD,data); //温湿度线程+OLED显示
 
-	data->prio = 5;
-	data->time = 500;
-	acoral_create_thread(LightSensor_thread,512,NULL,"light_sensor_thread",NULL,ACORAL_SCHED_POLICY_PERIOD,data);//光敏线程
+	// data->prio = 5;
+	// data->time = 500;
+	// acoral_create_thread(LightSensor_thread,512,NULL,"light_sensor_thread",NULL,ACORAL_SCHED_POLICY_PERIOD,data);//光敏线程
 	// acoral_period_policy_data_t* data;
 	// data = acoral_malloc(sizeof(acoral_period_policy_data_t));
 	// data->prio = 5;
@@ -60,6 +60,12 @@ void user_main(void)
 	// 	acoral_create_thread(slave,512,NULL,"test",NULL,ACORAL_SCHED_POLICY_PERIOD,data);
 	// }
 
+	acoral_period_policy_data_t* data;
+	data = acoral_malloc(sizeof(acoral_period_policy_data_t));
+	data->prio = 5;
+	data->prio_type = ACORAL_HARD_PRIO;
+	data->time = 1000;
+	acoral_create_thread(run_4g,512,NULL,"master",NULL,ACORAL_SCHED_POLICY_PERIOD,data);
 
 	
 }

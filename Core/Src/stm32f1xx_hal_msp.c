@@ -192,6 +192,30 @@ void HAL_UART_MspInit(UART_HandleTypeDef* huart)
 
   /* USER CODE END USART1_MspInit 1 */
   }
+  else if (huart->Instance == UART5)                 /* 如果是ATK-IDM750C UART */
+    {
+        __HAL_RCC_GPIOC_CLK_ENABLE();                             /* 使能UART TX引脚时钟 */
+        __HAL_RCC_GPIOD_CLK_ENABLE();                              /* 使能UART RX引脚时钟 */
+        __HAL_RCC_UART5_CLK_ENABLE();                                      /* 使能UART时钟 */
+        
+        GPIO_InitStruct.Pin    = GPIO_PIN_12;                              /* UART TX引脚 */
+        GPIO_InitStruct.Mode   = GPIO_MODE_AF_PP;                          /* 复用推挽输出 */
+        GPIO_InitStruct.Pull   = GPIO_NOPULL;                              /* 无上下拉 */
+        GPIO_InitStruct.Speed  = GPIO_SPEED_FREQ_HIGH;                     /* 高速 */
+        HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);                            /* 初始化UART TX引脚 */
+        
+        GPIO_InitStruct.Pin    = GPIO_PIN_2;                               /* UART RX引脚 */
+        GPIO_InitStruct.Mode   = GPIO_MODE_INPUT;                          /* 输入 */
+        GPIO_InitStruct.Pull   = GPIO_NOPULL;                              /* 无上下拉 */
+        GPIO_InitStruct.Speed  = GPIO_SPEED_FREQ_HIGH;                     /* 高速 */
+        HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);                            /* 初始化UART RX引脚 */
+        
+        HAL_NVIC_SetPriority(UART5_IRQn, 1, 1);                  /* 抢占优先级0，子优先级0 */
+        HAL_NVIC_EnableIRQ(UART5_IRQn);                          /* 使能UART中断通道 */
+        
+        __HAL_UART_ENABLE_IT(huart, UART_IT_RXNE);                          /* 使能UART接收中断 */
+        __HAL_UART_ENABLE_IT(huart, UART_IT_IDLE);                          /* 使能UART总线空闲中断 */
+    }
 
 }
 

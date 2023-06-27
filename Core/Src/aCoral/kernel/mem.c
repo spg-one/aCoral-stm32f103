@@ -27,8 +27,11 @@
 extern int heap_start; ///< 堆内存起始地址，定义于链接脚本
 extern int heap_end;	///< 堆内存结束地址，定义于链接脚本
 
+
 void acoral_mem_sys_init()
-{
+{	
+	// volatile unsigned int a =  buddy_sub((unsigned int)&_sdata,(unsigned int)&_edata);//188
+	// volatile unsigned int b =  buddy_sub((unsigned int)&_sbss,(unsigned int)&_ebss);//3636		
 	acoral_mem_init((unsigned int)&heap_start, (unsigned int)&heap_end); // 伙伴系统初始化
 #ifdef CFG_MEM2
 	acoral_mem_init2(); // 任意大小内存分配系统初始化
@@ -65,6 +68,7 @@ void buddy_scan()
 	acoral_print("Free Mem Block Number:%d\r\n", acoral_mem_ctrl->free_num);
 	acoral_print("\r\n");
 }
+
 
 unsigned int buddy_init(unsigned int start_adr, unsigned int end_adr)
 {

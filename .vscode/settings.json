@@ -19,6 +19,8 @@
         "fifo.h": "c",
         "hal.h": "c",
         "lib.h": "c",
-        "main.h": "c"
+        "main.h": "c",
+        "stdarg.h": "c",
+        "atk_idm750c.h": "c"
     }
 }
