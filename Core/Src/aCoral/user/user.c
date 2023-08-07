@@ -20,7 +20,7 @@ void user_main(void)
 	// LED_Init();
 	// LightSensor_Init();
 
-	// acoral_period_policy_data_t* data;
+	acoral_period_policy_data_t* data;
 	// data = acoral_malloc(sizeof(acoral_period_policy_data_t));
 	// data->prio = 5;
 	// data->prio_type = ACORAL_HARD_PRIO;
