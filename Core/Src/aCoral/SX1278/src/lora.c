@@ -11,7 +11,7 @@ tRadioDriver *Radio = NULL;
 #define BUFFER_SIZE     30                          
 uint16_t BufferSize = BUFFER_SIZE;            
 uint8_t  Buffer[BUFFER_SIZE];                
-uint8_t EnableMaster = true;
+uint8_t EnableMaster = false;
 
 uint8_t MY_TEST_Msg[] = "hello";        //测试数据
 
@@ -40,7 +40,7 @@ void lora_init()
  */
 void master(void *args)
 {
-    acoral_print("this is master\r\n");
+    // acoral_print("this is master\r\n");
     memcpy(Buffer,MY_TEST_Msg,sizeof(MY_TEST_Msg));                 //将测试数据拷贝到Buffer中
     
      
@@ -70,13 +70,15 @@ void master(void *args)
  */
 void slave(void *args)
 {
-    acoral_print("this is slave\r\n");
-    Radio->StartRx();                        
+    // acoral_print("this is slave\r\n");
+                       
     switch( Radio->Process( ))
     {
-        case RF_RX_DONE:        
+        case RF_RX_DONE:
+              
             Radio->GetRxPacket( Buffer, ( uint16_t* )&BufferSize ); //接收完成后将数据拷贝到Buffer中        
             acoral_print(Buffer);
+            acoral_print("\r\n");
             memset(Buffer,0,sizeof(Buffer));                        //完成对接收数据的操作后清空Buffer缓冲区
             break;
         case RF_TX_DONE:
