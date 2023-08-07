@@ -6,7 +6,7 @@
 */
 void LightSensor_Init(void)
 {
-     GPIO_InitTypeDef GPIO_Initure;
+    GPIO_InitTypeDef GPIO_Initure;
     
     __HAL_RCC_GPIOA_CLK_ENABLE();           //开启GPIOA时钟
     GPIO_Initure.Pin=GPIO_PIN_0;            //PA0

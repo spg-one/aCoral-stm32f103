@@ -962,7 +962,7 @@ uint8_t atk_idm750c_link3(atk_idm750c_link3mode_t link3, char *link3_domainname,
  * @brief       ATK-IDM750C 第四路连接参数
  * @param       TCP:TCP 模式
  *              UDP:UDP 模式
- *              ip： 服务器地址（IP 地址和域名都支持） ,最大限制 100 个字节
+ *              ip： 服务器地址（IP 地址和域名都支持） ,最大限制 100 个字节 
  *              port：服务器端口号，大小范围 0-65535
  *              第四路连接默认参数： AT+LINK1="TCP","cloud.alientek.com","59666"
  * @retval      ATK_IDM750C_EOK  : 第四路连接参数配置成功

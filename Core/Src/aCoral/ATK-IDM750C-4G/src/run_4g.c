@@ -96,15 +96,16 @@ void run_4g(void)
     
     while (1)
     {
-
+        //获取发送数据
         buf = atk_idm750c_uart_rx_get_frame();
         if (buf != NULL)
         {
             acoral_print("%s", buf);
+            //清空接收缓冲区
             atk_idm750c_uart_rx_restart();
         }
         
-
+        //延时10ms
         HAL_Delay(10);
     }
 }

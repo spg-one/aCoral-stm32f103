@@ -11,7 +11,7 @@
 #define __DHT11_H
 #include "stm32f1xx_hal.h" 
 #include "acoral.h"
-#include "led.h"
+
 
 #define DHT_GPIO_PORT	GPIOA
 #define DHT_GPIO_PIN	GPIO_PIN_11

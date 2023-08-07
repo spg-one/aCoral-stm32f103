@@ -114,40 +114,13 @@ void for_delay_us(uint32_t us)
  */
 void get_temp_humi_thread()
 {
-	// if(DHT_Get_Temp_Humi_Data(DHT_Buffer))
-	// 	{
-	// 		acoral_print("Temp:%d.%d    ",DHT_Buffer[2],DHT_Buffer[3]);
-	// 		acoral_print("Humi:%d.%d\r\n",DHT_Buffer[0],DHT_Buffer[1]);
-	// 	}
-  //   else{
-  //     acoral_print("-------\r\n");
-  //   }
-  if(DHT_Get_Temp_Humi_Data(DHT_Buffer))
-  {
-            uint8_t t;
-            t = '.';
-            j++;
-
-            OLED_ShowString(0,30,"Temp:",12);  
- 	          OLED_ShowString(64,30,"Humi:",12);  
+	if(DHT_Get_Temp_Humi_Data(DHT_Buffer))
+		{
+			acoral_print("Temp:%d.%d    ",DHT_Buffer[2],DHT_Buffer[3]);
+			acoral_print("Humi:%d.%d\r\n",DHT_Buffer[0],DHT_Buffer[1]);
+		}
+    else{
+      acoral_print("-------\r\n");
+    }
   
-	          OLED_Refresh_Gram();		//更新显示到OLED 
-
-            OLED_ShowNum(27,30,DHT_Buffer[2],3,12);//显示ASCII字符的码值
-            OLED_ShowChar(44,30,t,12,1);
-            OLED_ShowNum(46,30,DHT_Buffer[3],2,12);//显示ASCII字符的码值
-            
-            
-            OLED_ShowNum(91,30,DHT_Buffer[0],3,12);//显示ASCII字符的码值
-            OLED_ShowChar(108,30,t,12,1);
-            OLED_ShowNum(110,30,DHT_Buffer[1],2,12);//显示ASCII字符的码值
-            OLED_Refresh_Gram();
-
-            if(j%2 == 0)
-            {
-                HAL_GPIO_WritePin(GPIOD, GPIO_PIN_2, GPIO_PIN_SET);
-            }else{
-                HAL_GPIO_WritePin(GPIOD, GPIO_PIN_2, GPIO_PIN_RESET);
-            }
-  }
 }
