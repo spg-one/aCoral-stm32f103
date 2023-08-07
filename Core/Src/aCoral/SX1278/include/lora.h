@@ -23,6 +23,7 @@ extern uint16_t BufferSize;
 extern uint8_t  Buffer[BUFFER_SIZE];        // lora消息接收发送用户数据缓冲区Buffer
 extern tRadioDriver *Radio;                 // lora操作指针，所有的函数调用和消息接发都通过此变量操作，tRadioDriver类型定义在头文件radio.h中定义
 extern uint8_t EnableMaster;                // 主机、从机标识符，true表示主机，false为从机
+extern uint8_t MY_TEST_Msg[];
 
 void lora_init();                           //Radio初始化
 void master(void *args);                               //主机服务函数

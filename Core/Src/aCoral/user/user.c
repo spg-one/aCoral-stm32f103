@@ -42,7 +42,7 @@ void user_main(void)
 	
 	if(EnableMaster == true)	//当前为主机
 	{
-		
+		memcpy(Buffer,MY_TEST_Msg,6);
 		Radio->SetTxPacket( Buffer, sizeof(Buffer) );                   //主机中先进行一次发送，Radio->Process()调度后回进入RF_TX_DONE状态
 		acoral_create_thread(master,512,NULL,"master",NULL,ACORAL_SCHED_POLICY_PERIOD,data);
 	}

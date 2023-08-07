@@ -11,7 +11,7 @@ tRadioDriver *Radio = NULL;
 #define BUFFER_SIZE     30                          
 uint16_t BufferSize = BUFFER_SIZE;            
 uint8_t  Buffer[BUFFER_SIZE];                
-uint8_t EnableMaster = false;
+uint8_t EnableMaster = true;
 
 uint8_t MY_TEST_Msg[] = "hello";        //测试数据
 
