@@ -21,6 +21,10 @@
         "lib.h": "c",
         "main.h": "c",
         "stdarg.h": "c",
-        "atk_idm750c.h": "c"
+        "atk_idm750c.h": "c",
+        "hcsr04.h": "c",
+        "run_4g.h": "c",
+        "string.h": "c",
+        "dht11.h": "c"
     }
 }

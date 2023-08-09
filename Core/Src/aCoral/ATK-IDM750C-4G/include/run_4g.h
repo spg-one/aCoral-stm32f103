@@ -5,6 +5,8 @@
 #include "string.h"
 #include "atk_idm750c.h"
 
-void run_4g(void);
+void init_4g(void);
+void tx_4g(void);
+void rx_4g(void);
 
 #endif

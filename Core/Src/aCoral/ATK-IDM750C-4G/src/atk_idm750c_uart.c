@@ -146,6 +146,8 @@ void ATK_IDM750C_UART_IRQHandler(void)
     if (__HAL_UART_GET_FLAG(&g_uart_handle, UART_FLAG_IDLE) != RESET)       /* UART总线空闲中断 */
     {
         g_uart_rx_frame.sta.finsh = 1;                                      /* 标记帧接收完成 */
+
+        
         
         __HAL_UART_CLEAR_IDLEFLAG(&g_uart_handle);                          /* 清除UART总线空闲中断 */
     }

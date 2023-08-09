@@ -18,7 +18,7 @@
 #include "sx1276LoRa.h"
 #include "sx1276LoRaMisc.h"
 
-#define BUFFER_SIZE     30                  // lora消息接收发送用户数据缓冲区Buffer大小
+#define BUFFER_SIZE     6                  // lora消息接收发送用户数据缓冲区Buffer大小
 extern uint16_t BufferSize;   
 extern uint8_t  Buffer[BUFFER_SIZE];        // lora消息接收发送用户数据缓冲区Buffer
 extern tRadioDriver *Radio;                 // lora操作指针，所有的函数调用和消息接发都通过此变量操作，tRadioDriver类型定义在头文件radio.h中定义

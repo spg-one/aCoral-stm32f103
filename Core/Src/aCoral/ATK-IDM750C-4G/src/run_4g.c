@@ -1,5 +1,6 @@
 #include "string.h"
 #include "run_4g.h"
+#include "user.h"
  
 #define DEMO_DTU_TEST_DATA                      "ALIENTEK ATK-IDM750C TEST"
 #define DEMO_DTU_NETDATA_RX_BUF                 (1024)
@@ -11,14 +12,14 @@
 
 
 /**
- * @brief       启动4g模块
+ * @brief       初始化4g模块
  * @param       无
  * @retval      无
  */
-void run_4g(void)
+void init_4g(void)
 {
     uint8_t ret;
-    uint8_t *buf;
+  
 
     
     /* 初始化ATK-IDM750C */
@@ -89,14 +90,41 @@ void run_4g(void)
             HAL_Delay(200);
         }
     }
-    atk_idm750c_uart_rx_restart();
-    
-    atk_idm750c_uart_printf("%s\r\n", DEMO_DTU_TEST_DATA);
-
-    
-    while (1)
+    else
     {
-        //获取发送数据
+        acoral_print("4g init done\r\n");
+    }
+    
+}
+
+/**
+* @author: 王若宇
+* @brief: 4g接发数据
+* @version: 1.0
+* @date: 2023-08-09
+*/
+
+void tx_4g(void)
+{
+    if(data_ready)
+    {   
+        Buffer[5] = data_ready;
+        atk_idm750c_uart_printf("Distance: %d cm\r\nTemp:%d.%d    Humi:%d.%d\r\nsignificant bit:%d", Buffer[0],Buffer[3],Buffer[4],Buffer[1],Buffer[2],Buffer[5]);
+        acoral_print("Distance: %d cm\r\nTemp:%d.%d    Humi:%d.%d\r\nsignificant bit:%d", Buffer[0],Buffer[3],Buffer[4],Buffer[1],Buffer[2],Buffer[5]);
+        data_ready = 0;
+    }
+    
+}
+
+/**
+* @author: 王若宇
+* @brief: 4g接发数据
+* @version: 1.0
+* @date: 2023-08-09
+*/
+void rx_4g(void)
+{
+    uint8_t *buf;
         buf = atk_idm750c_uart_rx_get_frame();
         if (buf != NULL)
         {
@@ -104,8 +132,4 @@ void run_4g(void)
             //清空接收缓冲区
             atk_idm750c_uart_rx_restart();
         }
-        
-        //延时10ms
-        HAL_Delay(10);
-    }
 }

@@ -7,9 +7,7 @@
 */
 #include"lora.h"
 
-tRadioDriver *Radio = NULL;
-#define BUFFER_SIZE     30                          
-uint16_t BufferSize = BUFFER_SIZE;            
+tRadioDriver *Radio = NULL;                                    
 uint8_t  Buffer[BUFFER_SIZE];                
 uint8_t EnableMaster = true;
 
@@ -40,27 +38,25 @@ void lora_init()
  */
 void master(void *args)
 {
-    // acoral_print("this is master\r\n");
-    memcpy(Buffer,MY_TEST_Msg,sizeof(MY_TEST_Msg));                 //将测试数据拷贝到Buffer中
-    
-     
-    switch( Radio->Process() )
+    if(data_ready)
     {
-        case RF_RX_TIMEOUT:                                         //Radio->Process( )返回接收超时后继续发送测试数据， Radio->Process()返回类型在radio.h的tRFProcessReturnCodes枚举中定义
-            Radio->SetTxPacket( Buffer, sizeof(Buffer) );
-            break;
-        case RF_RX_DONE:
-            Radio->GetRxPacket( Buffer, ( uint16_t* )&BufferSize ); //接收完成后将接收到的数据拷贝至Buffer中
-            acoral_print(Buffer);
-            break;
-        case RF_TX_DONE:
-            Radio->SetTxPacket( Buffer, sizeof(Buffer) );           //发送完成后继续发送
-            break;
-        default:
-            break;
+        // Buffer[5] = data_ready;
+        // Radio->SetTxPacket( Buffer, sizeof(Buffer) ); 
+        // Radio->Process();
+        // Radio->Process();
+        // Radio->Process();
+        // acoral_print("Distance: %d cm\r\nTemp:%d.%d    Humi:%d.%d\r\nsignificant bit:%d", Buffer[0],Buffer[3],Buffer[4],Buffer[1],Buffer[2],Buffer[5]);
+        // acoral_print("\r\n");
+        // data_ready = 0;
     }
-	
-	
+     else
+    {
+        Radio->StartRx();
+        Radio->Process();
+        Radio->Process();
+        Radio->Process();    
+    }
+
 }
 
 /**
@@ -70,24 +66,23 @@ void master(void *args)
  */
 void slave(void *args)
 {
-    // acoral_print("this is slave\r\n");
-                       
-    switch( Radio->Process( ))
+    if(data_ready)
     {
-        case RF_RX_DONE:
-              
-            Radio->GetRxPacket( Buffer, ( uint16_t* )&BufferSize ); //接收完成后将数据拷贝到Buffer中        
-            acoral_print(Buffer);
-            acoral_print("\r\n");
-            memset(Buffer,0,sizeof(Buffer));                        //完成对接收数据的操作后清空Buffer缓冲区
-            break;
-        case RF_TX_DONE:
-            Radio->StartRx( );                                      //发送完成后进入接收，但当前没有设置从机的发送
-            break;
-        default:
-            break;
+        Buffer[5] = data_ready;
+        Radio->SetTxPacket( Buffer, sizeof(Buffer) ); 
+        Radio->Process();
+        Radio->Process();
+        Radio->Process();
+        acoral_print("Distance: %d cm\r\nTemp:%d.%d    Humi:%d.%d\r\nsignificant bit:%d", Buffer[0],Buffer[3],Buffer[4],Buffer[1],Buffer[2],Buffer[5]);
+        acoral_print("\r\n");
+        data_ready = 0;
     }
-	
-	return 0;
+    else
+    {
+        Radio->StartRx();
+        Radio->Process();
+        Radio->Process();
+        Radio->Process();    
+    }
 }
 

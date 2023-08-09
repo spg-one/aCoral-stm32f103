@@ -7,6 +7,33 @@
  * @FilePath: \aCoral-stm32f103-master\Core\Src\aCoral\DHT11\src\dht11.c
  */
 #include "dht11.h"
+extern void get_distance_thread();
+// TIM7 CLock Params
+extern TIM_HandleTypeDef htim7;
+uint8_t TIM7_WaitSignal = 0;
+
+
+void tim7_delay_us(uint16_t delay){
+	if(TIM7_WaitSignal) {
+		return;
+	}
+	TIM7_WaitSignal = 0;
+	htim7.Instance -> CNT = 0x00;
+  htim7.Init.Period = (uint32_t)delay;
+	htim7.Instance -> ARR = htim7.Init.Period - 1;
+	HAL_TIM_Base_Start_IT(&htim7);
+	while(!TIM7_WaitSignal);
+	HAL_TIM_Base_Stop_IT(&htim7);
+	TIM7_WaitSignal = 0;
+}
+
+void TIM7_PeriodElapsedCallback() {
+	if(!TIM7_WaitSignal) {
+		TIM7_WaitSignal = 1;
+	}
+}
+
+
 
 /**
   * @brief  DHT11_GPIO初始化函数
@@ -46,7 +73,7 @@ uint8_t DHT_Start(void)
     HAL_GPIO_WritePin(DHT_GPIO_PORT,DHT_GPIO_PIN,GPIO_PIN_SET);
     
     DHT_GPIO_Init(GPIO_MODE_INPUT);
-    for_delay_us(20);
+    tim7_delay_us(20);
     
     if(!HAL_GPIO_ReadPin(DHT_GPIO_PORT, DHT_GPIO_PIN))
     {
@@ -70,7 +97,7 @@ uint8_t DHT_Get_Byte_Data(void)
 	{
 		temp <<= 1;
 		while(!HAL_GPIO_ReadPin(DHT_GPIO_PORT,DHT_GPIO_PIN));
-		for_delay_us(28);
+		tim7_delay_us(28);
 		HAL_GPIO_ReadPin(DHT_GPIO_PORT,DHT_GPIO_PIN) ? (temp |= 0x01) : (temp &= ~0x01);
 		while(HAL_GPIO_ReadPin(DHT_GPIO_PORT,DHT_GPIO_PIN));
 	}
@@ -114,10 +141,16 @@ void for_delay_us(uint32_t us)
  */
 void get_temp_humi_thread()
 {
+  get_distance_thread();
 	if(DHT_Get_Temp_Humi_Data(DHT_Buffer))
 		{
-			acoral_print("Temp:%d.%d    ",DHT_Buffer[2],DHT_Buffer[3]);
-			acoral_print("Humi:%d.%d\r\n",DHT_Buffer[0],DHT_Buffer[1]);
+			// acoral_print("Temp:%d.%d    ",DHT_Buffer[2],DHT_Buffer[3]);
+			// acoral_print("Humi:%d.%d\r\n",DHT_Buffer[0],DHT_Buffer[1]);
+      Buffer[1] = DHT_Buffer[0];
+      Buffer[2] = DHT_Buffer[1];
+      Buffer[3] = DHT_Buffer[2];
+      Buffer[4] = DHT_Buffer[3];
+      data_ready|=(1<<1);
 		}
     else{
       acoral_print("-------\r\n");

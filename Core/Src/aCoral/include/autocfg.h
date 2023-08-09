@@ -26,7 +26,7 @@
 #define CFG_THRD_PERIOD 1
 #define CFG_HARD_RT_PRIO_NUM (0) ///<硬实时任务的专属优先级个数
 #define CFG_MAX_THREAD (40) ///<///最多40个线程
-#define CFG_MIN_STACK_SIZE (1024) ///<线程最小拥有1024字节的栈
+#define CFG_MIN_STACK_SIZE (512) ///<线程最小拥有1024字节的栈
 #define CFG_EVT_SEM 1
 #define CFG_MSG 1
 #define CFG_TICKS_PER_SEC (100) ///<acoral每秒的ticks数//SPG暂时没用

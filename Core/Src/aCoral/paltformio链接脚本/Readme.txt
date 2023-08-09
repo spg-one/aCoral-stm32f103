@@ -1,0 +1,2 @@
+使用本文件中的STM32F103RCTX_FLASH.ld替换.platformio\packages\tool-ldscripts-ststm32\stm32f1目录下的同名文件，
+.platformio文件在计算机用户文件夹里。

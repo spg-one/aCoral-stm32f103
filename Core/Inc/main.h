@@ -29,10 +29,13 @@ extern "C" {
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f1xx_hal.h"
 
-
+#define USE_BARE_BOARD
 
 extern SPI_HandleTypeDef hspi2;
+extern TIM_HandleTypeDef htim7;
+extern TIM_HandleTypeDef htim3;
 
+extern TIM_HandleTypeDef htim6;
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
