@@ -7,11 +7,14 @@
 */
 #include"lora.h"
 
-tRadioDriver *Radio = NULL;                                    
-uint8_t  Buffer[BUFFER_SIZE];                
-uint8_t EnableMaster = true;
 
-uint8_t MY_TEST_Msg[] = "hello";        //测试数据
+tRadioDriver *Radio = NULL;                                    
+uint8_t  Buffer[BUFFER_SIZE] = {0};                
+uint8_t EnableMaster = true;
+uint8_t master_data = 0; 
+
+
+
 
 /**
  * @brief Radio初始化
@@ -31,58 +34,153 @@ void lora_init()
     Radio->Init( );				//sx1278的真正初始化，根据用户在radio.h中设置的LORA变量选择进行lora初始化还是fsk初始化
 }
 
+
+#if defined( MASTER )
+    uint8_t master_device_id = 0x00;//高2位表示设备类型，00表示中心站，01表示终端，后6位表示设备地址
+    uint8_t child_device[] = 
+    {
+        0x40,
+        0x41,
+        0x42,
+        0x43,
+        0x44,
+        0x45,
+        0x46,
+        0x47,
+        0x48,
+        0x49,
+        0x4A,
+        0x4B,
+        0x4C,
+        0x4D,
+        0x4E,
+        0x4F,
+        0x50,
+        0x51,
+        0x52,
+        0x53,
+    };
+    uint8_t slave_Data[8] = {0};
+   
+
 /**
- * @brief 主机服务函数master，用户可根据需求更改接发逻辑
+ * @brief 中心站发送服务函数master_tx，用户可根据需求更改接发逻辑
  * @param None  
  * @return 0 
  */
-void master(void *args)
-{
-    if(data_ready)
-    {
-        // Buffer[5] = data_ready;
-        // Radio->SetTxPacket( Buffer, sizeof(Buffer) ); 
-        // Radio->Process();
-        // Radio->Process();
-        // Radio->Process();
-        // acoral_print("Distance: %d cm\r\nTemp:%d.%d    Humi:%d.%d\r\nsignificant bit:%d", Buffer[0],Buffer[3],Buffer[4],Buffer[1],Buffer[2],Buffer[5]);
-        // acoral_print("\r\n");
-        // data_ready = 0;
+void master_tx(void *args)
+{  
+    if(data_4g)
+    {      
+        Radio->SetTxPacket(buf_4g, 6); //buf_4g[0]终端设备id，buf_4g[1]中心站节点id，buf_4g[2]数据项设置位(bit 每项数据一个bit位控制),buf_4g[3~5]三个传感器采集周期
+        while((Radio->Process()) != RF_TX_DONE);
+        memset(buf_4g,0,6);
+        data_4g = 0;
     }
-     else
-    {
-        Radio->StartRx();
-        Radio->Process();
-        Radio->Process();
-        Radio->Process();    
-    }
+    
 
 }
 
 /**
- * @brief 从机服务函数slave，用户可根据需求更改接发逻辑
+ * @brief 中心站发送服务函数master_rx，用户可根据需求更改接发逻辑
  * @param None  
  * @return 0 
  */
-void slave(void *args)
+void master_rx(void *args)
+{
+    uint8_t timeout = 30;
+    Radio->StartRx();
+    while(((Radio->Process()) != RF_RX_DONE)&&(timeout>0))
+    {
+        timeout--;
+        HAL_Delay(100);
+    }
+    if(rx_done)
+    {
+        uint16_t Size = 8;
+        Radio->GetRxPacket(slave_Data,( uint16_t* )&Size);
+        if(slave_Data[0] == master_device_id)
+        {
+            master_data = 1;           
+        }
+        rx_done = 0;
+
+    } 
+  
+    
+
+
+}
+#endif
+
+#if defined(SLAVE)
+    uint8_t master_id = 0x00;//终端所属中心站id
+    uint8_t slave_device_id = 0x40;//高2位表示设备类型，00表示中心站，01表示终端，后6位表示设备地址
+    uint8_t rx_cmd[6];//中心站命令接收缓冲区
+
+/**
+ * @brief 终端发送服务函数slave_tx，用户可根据需求更改接发逻辑
+ * @param None  
+ * @return 0 
+ */
+void slave_tx(void *args)
 {
     if(data_ready)
-    {
-        Buffer[5] = data_ready;
+    {   
+        uint8_t timeout = 100;
+        
+        Buffer[0] = master_id;//中心站id
+        Buffer[1] = slave_device_id;//终端设备id
+        Buffer[7] = data_ready;//传感器数据有效位
+
         Radio->SetTxPacket( Buffer, sizeof(Buffer) ); 
-        Radio->Process();
-        Radio->Process();
-        Radio->Process();
-        acoral_print("Distance: %d cm\r\nTemp:%d.%d    Humi:%d.%d\r\nsignificant bit:%d", Buffer[0],Buffer[3],Buffer[4],Buffer[1],Buffer[2],Buffer[5]);
-        acoral_print("\r\n");
-        data_ready = 0;
+        while((Radio->Process() != RF_TX_DONE)&&(timeout>0))
+        {
+            timeout--;
+            HAL_Delay(1);
+        }
+        if(tx_done)
+        {
+            acoral_print("master_id:%d slave_device_id:%d \r\nDistance: %d cm\r\nTemp:%d.%d    Humi:%d.%d\r\nsignificant bit:%d", Buffer[0],Buffer[1],Buffer[2],Buffer[5],Buffer[6],Buffer[3],Buffer[4],Buffer[7]);
+            acoral_print("\r\n\r\n\r\n");
+            memset(Buffer,0,sizeof(Buffer));
+            tx_done = 0;
+            data_ready = 0;
+            return;
+        }
     }
     else
     {
-        Radio->StartRx();
-        Radio->Process();
-        Radio->Process();
-        Radio->Process();    
+        return;
     }
+    
 }
 
+/**
+ * @brief 终端接收服务函数slave_rx，用户可根据需求更改接发逻辑
+ * @param None  
+ * @return 0 
+ */
+void slave_rx(void *args)
+{  
+    uint8_t timeout = 30;
+    Radio->StartRx();
+
+    while(((Radio->Process()) != RF_RX_DONE)&&(timeout>0))
+    {
+        timeout--;
+        HAL_Delay(100);
+    }
+    if(rx_done)
+        {
+            Radio->GetRxPacket( rx_cmd, sizeof(rx_cmd) );
+            if((rx_cmd[0] == slave_device_id)&&(rx_cmd[1] == master_id))
+            {
+                acoral_print("command:%d,%d,%d,%d\r\n",rx_cmd[0],rx_cmd[1],rx_cmd[2],rx_cmd[3]);
+            }
+      
+        rx_done = 0;
+        memset(rx_cmd,0,sizeof(rx_cmd));
+        }
+}
+#endif

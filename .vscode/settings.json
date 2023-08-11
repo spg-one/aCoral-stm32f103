@@ -25,6 +25,10 @@
         "hcsr04.h": "c",
         "run_4g.h": "c",
         "string.h": "c",
-        "dht11.h": "c"
+        "dht11.h": "c",
+        "sx1276loramisc.h": "c",
+        "sx1276lora.h": "c",
+        "spi.h": "c",
+        "cmd.h": "c"
     }
 }

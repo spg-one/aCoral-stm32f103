@@ -93,7 +93,7 @@ HAL_CONTEXT_SWITCH:
 	bx      lr
 	
 PENDSV_CALL:
-    mrs r1,primask
+    mrs r8,primask
     CPSID   I
     push    {r0,lr}			
     mrs     r0,psp
@@ -104,7 +104,7 @@ PENDSV_CALL:
     mrs     r0,psp
     ldmfd   r0!,{r1,r4-r11}
     msr     psp,r0
-    msr  primask,r1
+    msr  primask,r8
     bx      lr
 
 

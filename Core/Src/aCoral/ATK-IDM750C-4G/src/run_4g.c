@@ -9,8 +9,8 @@
 #define DEMO_DTU_TCP_YUANZI_DEVICE_NUMEBER      "08454275304740178768"
 #define DEMO_DTU_TCP_YUANZI_DEVICE_PASSWORD     "12345678"
 
-
-
+uint8_t *buf_4g = 0;
+uint8_t data_4g = 0; 
 /**
  * @brief       初始化4g模块
  * @param       无
@@ -106,12 +106,11 @@ void init_4g(void)
 
 void tx_4g(void)
 {
-    if(data_ready)
+    if(master_data)
     {   
-        Buffer[5] = data_ready;
-        atk_idm750c_uart_printf("Distance: %d cm\r\nTemp:%d.%d    Humi:%d.%d\r\nsignificant bit:%d", Buffer[0],Buffer[3],Buffer[4],Buffer[1],Buffer[2],Buffer[5]);
-        acoral_print("Distance: %d cm\r\nTemp:%d.%d    Humi:%d.%d\r\nsignificant bit:%d", Buffer[0],Buffer[3],Buffer[4],Buffer[1],Buffer[2],Buffer[5]);
-        data_ready = 0;
+        atk_idm750c_uart_printf("Master id: %d Slave id: %d \r\nDistance: %d cm\r\nTemp:%d.%d    Humi:%d.%d\r\nsignificant bit:%d",slave_Data[0], slave_Data[1], slave_Data[2],slave_Data[5],slave_Data[6],slave_Data[3],slave_Data[4],slave_Data[7]);
+        memset(slave_Data,0,8);
+        master_data = 0;
     }
     
 }
@@ -124,11 +123,10 @@ void tx_4g(void)
 */
 void rx_4g(void)
 {
-    uint8_t *buf;
-        buf = atk_idm750c_uart_rx_get_frame();
-        if (buf != NULL)
+        buf_4g = atk_idm750c_uart_rx_get_frame();
+        if (buf_4g != NULL)
         {
-            acoral_print("%s", buf);
+            data_4g = 1;
             //清空接收缓冲区
             atk_idm750c_uart_rx_restart();
         }

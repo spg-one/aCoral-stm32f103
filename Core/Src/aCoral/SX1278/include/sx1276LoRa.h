@@ -850,6 +850,9 @@ typedef struct sSX1276LR
 
 extern tSX1276LR* SX1276LR;
 
+extern uint8_t tx_done;
+extern uint8_t rx_done;
+
 /*!
  * \brief Initializes the SX1276
  */

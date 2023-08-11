@@ -26,12 +26,15 @@
 
 extern int heap_start; ///< 堆内存起始地址，定义于链接脚本
 extern int heap_end;	///< 堆内存结束地址，定义于链接脚本
+extern int Msp_stack;
+extern int Psp_stack;
 
 
 void acoral_mem_sys_init()
 {	
 	// volatile unsigned int a =  buddy_sub((unsigned int)&_sdata,(unsigned int)&_edata);//188
-	// volatile unsigned int b =  buddy_sub((unsigned int)&_sbss,(unsigned int)&_ebss);//3636		
+	// volatile unsigned int b =  buddy_sub((unsigned int)&_sbss,(unsigned int)&_ebss);//3636
+	int a = (unsigned int)&Msp_stack + (unsigned int)&Psp_stack;	
 	acoral_mem_init((unsigned int)&heap_start, (unsigned int)&heap_end); // 伙伴系统初始化
 #ifdef CFG_MEM2
 	acoral_mem_init2(); // 任意大小内存分配系统初始化

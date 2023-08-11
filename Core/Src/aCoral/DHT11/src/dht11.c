@@ -146,10 +146,10 @@ void get_temp_humi_thread()
 		{
 			// acoral_print("Temp:%d.%d    ",DHT_Buffer[2],DHT_Buffer[3]);
 			// acoral_print("Humi:%d.%d\r\n",DHT_Buffer[0],DHT_Buffer[1]);
-      Buffer[1] = DHT_Buffer[0];
-      Buffer[2] = DHT_Buffer[1];
-      Buffer[3] = DHT_Buffer[2];
-      Buffer[4] = DHT_Buffer[3];
+      Buffer[3] = DHT_Buffer[0];
+      Buffer[4] = DHT_Buffer[1];
+      Buffer[5] = DHT_Buffer[2];
+      Buffer[6] = DHT_Buffer[3];
       data_ready|=(1<<1);
 		}
     else{

@@ -126,6 +126,8 @@ tLoRaSettings LoRaSettings =
  * SX1276 LoRa registers variable
  */
 tSX1276LR* SX1276LR;
+uint8_t tx_done = 0;
+uint8_t rx_done = 0;
 
 /*!
  * Local RF buffer for communication support
@@ -541,6 +543,7 @@ uint32_t SX1276LoRaProcess( void )
             RFLRState = RFLR_STATE_RX_RUNNING;
         }
         result = RF_RX_DONE;
+        rx_done = 1;
         break;
     case RFLR_STATE_RX_TIMEOUT:
         RFLRState = RFLR_STATE_RX_INIT;
@@ -612,7 +615,6 @@ uint32_t SX1276LoRaProcess( void )
         {
             // Clear Irq
             SX1276Write( REG_LR_IRQFLAGS, RFLR_IRQFLAGS_TXDONE  );
-            acoral_print("tx done\r\n");
             RFLRState = RFLR_STATE_TX_DONE;   
         }
         if( DIO2 == 1 ) // FHSS Changed Channel
@@ -632,6 +634,7 @@ uint32_t SX1276LoRaProcess( void )
 
         RFLRState = RFLR_STATE_IDLE;
         result = RF_TX_DONE;
+        tx_done = 1;
         break;
     case RFLR_STATE_CAD_INIT:    
         SX1276LoRaSetOpMode( RFLR_OPMODE_STANDBY );

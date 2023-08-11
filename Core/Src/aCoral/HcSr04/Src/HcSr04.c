@@ -220,7 +220,7 @@ void get_distance_thread()
     HcSr04_DistanceTypeDef data;
     if(HcSr04_GetDistance(&data) == HAL_OK) {
         // acoral_print("Distance: %d cm\r\n", (int)data.Distance);
-        Buffer[0] = (int)data.Distance;
+        Buffer[2] = (int)data.Distance;
         data_ready|=1;
     } else {
         acoral_print("Disctance Measure Failure -----");

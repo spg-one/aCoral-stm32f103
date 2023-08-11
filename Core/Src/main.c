@@ -106,7 +106,9 @@ int main(void)
   MX_TIM6_Init();
   MX_TIM3_Init();
   MX_TIM7_Init();
+  #if defined(MASTER)  
   init_4g();
+  #endif
   HcSr04_Init();
   lora_init();
   // LightSensor_Init();
