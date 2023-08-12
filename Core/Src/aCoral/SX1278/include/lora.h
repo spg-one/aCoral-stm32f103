@@ -24,14 +24,14 @@
 // #define MASTER
 #define SLAVE
 
-#define BUFFER_SIZE     8                  // lora消息接收发送用户数据缓冲区Buffer大小
+#define BUFFER_SIZE     30                  // lora消息接收发送用户数据缓冲区Buffer大小
 extern uint16_t BufferSize;   
 extern uint8_t  Buffer[BUFFER_SIZE];        // lora消息接收发送用户数据缓冲区Buffer
 extern tRadioDriver *Radio;                 // lora操作指针，所有的函数调用和消息接发都通过此变量操作，tRadioDriver类型定义在头文件radio.h中定义
 extern uint8_t EnableMaster;                // 主机、从机标识符，true表示主机，false为从机
 extern uint8_t rx_cmd[6];
-extern uint8_t master_data;
-extern uint8_t slave_Data[8]; 
+extern uint8_t slave_Data[30];
+extern uint8_t master_data; 
 
 
 
@@ -40,5 +40,10 @@ void master_tx(void *args);                               //中心站发送服�
 void master_rx(void *args);                               //中心站接收服务函数
 void slave_tx(void *args);                                //终端发送服务函数    
 void slave_rx(void *args);                                //终端接收服务函数    
+uint8_t get_master_data();
+void test();
+uint8_t get_master_id();
+uint8_t get_slave_device_id();
+
 
 #endif

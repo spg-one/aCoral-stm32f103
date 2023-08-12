@@ -25,6 +25,6 @@ uint8_t DHT_Get_Byte_Data(void);
 uint8_t DHT_Get_Temp_Humi_Data(uint8_t buffer[]);
 void for_delay_us(uint32_t us);
 void get_temp_humi_thread();
-
+uint8_t get_newest_temp(void);
 
 #endif

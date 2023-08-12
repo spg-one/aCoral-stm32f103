@@ -8,7 +8,7 @@
 #include"lora.h"
 
 
-tRadioDriver *Radio = NULL;                                    
+tRadioDriver *Radio;                                    
 uint8_t  Buffer[BUFFER_SIZE] = {0};                
 uint8_t EnableMaster = true;
 uint8_t master_data = 0; 
@@ -60,7 +60,7 @@ void lora_init()
         0x52,
         0x53,
     };
-    uint8_t slave_Data[8] = {0};
+    uint8_t slave_Data[30] = {0};
    
 
 /**
@@ -74,6 +74,7 @@ void master_tx(void *args)
     {      
         Radio->SetTxPacket(buf_4g, 6); //buf_4g[0]终端设备id，buf_4g[1]中心站节点id，buf_4g[2]数据项设置位(bit 每项数据一个bit位控制),buf_4g[3~5]三个传感器采集周期
         while((Radio->Process()) != RF_TX_DONE);
+        acoral_print(buf_4g);
         memset(buf_4g,0,6);
         data_4g = 0;
     }
@@ -97,7 +98,7 @@ void master_rx(void *args)
     }
     if(rx_done)
     {
-        uint16_t Size = 8;
+        uint16_t Size = 30;
         Radio->GetRxPacket(slave_Data,( uint16_t* )&Size);
         if(slave_Data[0] == master_device_id)
         {
@@ -111,6 +112,25 @@ void master_rx(void *args)
 
 
 }
+
+
+uint8_t get_master_data()
+{
+    return master_data;
+}
+
+void test()
+{
+    acoral_print("test\r\n");
+}
+
+uint8_t get_master_id()
+{
+    return master_device_id;
+}
+
+
+
 #endif
 
 #if defined(SLAVE)
@@ -131,7 +151,7 @@ void slave_tx(void *args)
         
         Buffer[0] = master_id;//中心站id
         Buffer[1] = slave_device_id;//终端设备id
-        Buffer[7] = data_ready;//传感器数据有效位
+        Buffer[2] = data_ready;//传感器数据有效位
 
         Radio->SetTxPacket( Buffer, sizeof(Buffer) ); 
         while((Radio->Process() != RF_TX_DONE)&&(timeout>0))
@@ -141,9 +161,13 @@ void slave_tx(void *args)
         }
         if(tx_done)
         {
-            acoral_print("master_id:%d slave_device_id:%d \r\nDistance: %d cm\r\nTemp:%d.%d    Humi:%d.%d\r\nsignificant bit:%d", Buffer[0],Buffer[1],Buffer[2],Buffer[5],Buffer[6],Buffer[3],Buffer[4],Buffer[7]);
-            acoral_print("\r\n\r\n\r\n");
-            memset(Buffer,0,sizeof(Buffer));
+            acoral_print("master_id:%d slave_device_id:%d \r\nsignificant bit:%d\r\nTemp:%d.%d    Humi:%d.%d\r\n", Buffer[0],Buffer[1],Buffer[2],Buffer[5],Buffer[6],Buffer[3],Buffer[4]);
+            acoral_print("Distance: %d cm\r\n", (int)(*((float *)(&Buffer[7]))));
+            acoral_print("Acceleration X-Axis: %d mg\r\n", (int)(*((float *)(&Buffer[11]))));
+            acoral_print("Acceleration Y-Axis: %d mg\r\n", (int)(*((float *)(&Buffer[15]))));
+            acoral_print("Acceleration Z-Axis: %d mg\r\n", (int)(*((float *)(&Buffer[19]))));
+            acoral_print("\r\n");
+            // memset(Buffer,0,sizeof(Buffer));
             tx_done = 0;
             data_ready = 0;
             return;
@@ -173,14 +197,22 @@ void slave_rx(void *args)
     }
     if(rx_done)
         {
+            acoral_enter_critical();
             Radio->GetRxPacket( rx_cmd, sizeof(rx_cmd) );
             if((rx_cmd[0] == slave_device_id)&&(rx_cmd[1] == master_id))
             {
                 acoral_print("command:%d,%d,%d,%d\r\n",rx_cmd[0],rx_cmd[1],rx_cmd[2],rx_cmd[3]);
             }
       
-        rx_done = 0;
-        memset(rx_cmd,0,sizeof(rx_cmd));
+            rx_done = 0;
+            memset(rx_cmd,0,sizeof(rx_cmd));
+            acoral_exit_critical();
         }
+}
+
+
+void test()
+{
+    acoral_print("test\r\n");
 }
 #endif

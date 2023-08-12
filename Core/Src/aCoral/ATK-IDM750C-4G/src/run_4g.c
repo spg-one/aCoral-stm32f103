@@ -1,6 +1,6 @@
 #include "string.h"
 #include "run_4g.h"
-#include "user.h"
+#include "lora.h"
  
 #define DEMO_DTU_TEST_DATA                      "ALIENTEK ATK-IDM750C TEST"
 #define DEMO_DTU_NETDATA_RX_BUF                 (1024)
@@ -108,10 +108,31 @@ void tx_4g(void)
 {
     if(master_data)
     {   
-        atk_idm750c_uart_printf("Master id: %d Slave id: %d \r\nDistance: %d cm\r\nTemp:%d.%d    Humi:%d.%d\r\nsignificant bit:%d",slave_Data[0], slave_Data[1], slave_Data[2],slave_Data[5],slave_Data[6],slave_Data[3],slave_Data[4],slave_Data[7]);
+        // atk_idm750c_uart_printf("Master id: %d Slave id: %d \r\nDistance: %d cm\r\nTemp:%d.%d    Humi:%d.%d\r\nsignificant bit:%d",slave_Data[0], slave_Data[1], slave_Data[2],slave_Data[5],slave_Data[6],slave_Data[3],slave_Data[4],slave_Data[7]);
+        atk_idm750c_uart_printf("master_id:%d slave_device_id:%d \r\nsignificant bit:%d\r\nTemp:%d.%d    Humi:%d.%d\r\n", slave_Data[0],slave_Data[1],slave_Data[2],slave_Data[5],slave_Data[6],slave_Data[3],slave_Data[4]);
+        atk_idm750c_uart_printf("Distance: %d cm\r\n", (int)(*((float *)(&slave_Data[7]))));
+        atk_idm750c_uart_printf("Acceleration X-Axis: %d mg\r\n", (int)(*((float *)(&slave_Data[11]))));
+        atk_idm750c_uart_printf("Acceleration Y-Axis: %d mg\r\n", (int)(*((float *)(&slave_Data[15]))));
+        atk_idm750c_uart_printf("Acceleration Z-Axis: %d mg\r\n", (int)(*((float *)(&slave_Data[19]))));
+        atk_idm750c_uart_printf("\r\n");
         memset(slave_Data,0,8);
-        master_data = 0;
+        master_data=0;
     }
+    else if (data_ready)
+    {
+        Buffer[0] = get_master_id();//中心站id
+        Buffer[2] = data_ready;//传感器数据有效位
+        atk_idm750c_uart_printf("master_id:%d significant bit:%d\r\nTemp:%d.%d    Humi:%d.%d\r\n", Buffer[0],Buffer[2],Buffer[5],Buffer[6],Buffer[3],Buffer[4]);
+        atk_idm750c_uart_printf("Distance: %d cm\r\n", (int)(*((float *)(&Buffer[7]))));
+        atk_idm750c_uart_printf("Acceleration X-Axis: %d mg\r\n", (int)(*((float *)(&Buffer[11]))));
+        atk_idm750c_uart_printf("Acceleration Y-Axis: %d mg\r\n", (int)(*((float *)(&Buffer[15]))));
+        atk_idm750c_uart_printf("Acceleration Z-Axis: %d mg\r\n", (int)(*((float *)(&Buffer[19]))));
+        atk_idm750c_uart_printf("\r\n");
+        // memset(Buffer,0,sizeof(Buffer));
+        tx_done = 0;
+        data_ready = 0;
+    }
+    
     
 }
 

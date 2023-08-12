@@ -45,6 +45,7 @@ HAL_START_OS:
 	mov  lr,r5  
 	mov  pc,r6  
 
+
 HAL_SCHED_BRIDGE:
 	ldr     r0,  =NVIC_INT_CTRL          @触发pendsv中断切换进程
 	ldr     r1,  =NVIC_PENDSVSET
@@ -95,12 +96,12 @@ HAL_CONTEXT_SWITCH:
 PENDSV_CALL:
     mrs r8,primask
     CPSID   I
-    push    {r0,lr}			
+	push    {r0,lr}		
     mrs     r0,psp
     stmfd   r0!,{r1,r4-r11}       
     msr     psp,r0
     bl acoral_real_intr_sched
-    pop     {r0,lr}
+	pop     {r0,lr}
     mrs     r0,psp
     ldmfd   r0!,{r1,r4-r11}
     msr     psp,r0
