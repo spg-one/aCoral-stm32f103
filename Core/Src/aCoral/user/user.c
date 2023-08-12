@@ -18,12 +18,12 @@ void dummy(void *args){
 void user_main(void)
 {
 	
-	acoral_period_policy_data_t* data;
-	data = acoral_malloc(sizeof(acoral_period_policy_data_t));
-	data->prio = 5;
-	data->prio_type = ACORAL_HARD_PRIO;
-	data->time = 5000;
-	acoral_create_thread(get_distance_thread, 512, NULL, "tmp_humi_thread", NULL, ACORAL_SCHED_POLICY_PERIOD, data); //超声波测距
+	// acoral_period_policy_data_t* data;
+	// data = acoral_malloc(sizeof(acoral_period_policy_data_t));
+	// data->prio = 5;
+	// data->prio_type = ACORAL_HARD_PRIO;
+	// data->time = 5000;
+	// acoral_create_thread(get_distance_thread, 512, NULL, "get_distance_thread", NULL, ACORAL_SCHED_POLICY_PERIOD, data); //超声波测距
 	
 	acoral_period_policy_data_t* data2;
 	data2 = acoral_malloc(sizeof(acoral_period_policy_data_t));
@@ -31,6 +31,14 @@ void user_main(void)
 	data2->prio_type = ACORAL_HARD_PRIO;
 	data2->time = 5000;
 	acoral_create_thread(get_temp_humi_thread,512,NULL,"tmp_humi_thread",NULL,ACORAL_SCHED_POLICY_PERIOD,data2); //温湿度线程+OLED显示
+
+	acoral_period_policy_data_t* data5;
+	data5 = acoral_malloc(sizeof(acoral_period_policy_data_t));
+	data5->prio = 5;
+	data5->prio_type = ACORAL_HARD_PRIO;
+	data5->time = 5000;
+	acoral_create_thread(getXYZAxisAccelerationsThread, 1024, NULL, "getXYZAxisAccelerationsThread", NULL, ACORAL_SCHED_POLICY_PERIOD, data5); //超声波测距
+	
 
 
 	#if defined( MASTER )//当前为中心站
@@ -79,10 +87,10 @@ void user_main(void)
 	/*终端lora接收线程*/
 	acoral_period_policy_data_t* data1;
 	data1 = acoral_malloc(sizeof(acoral_period_policy_data_t));
-	data1->prio = 4;
+	data1->prio = 3;
 	data1->prio_type = ACORAL_HARD_PRIO;
 	data1->time = 5000;
-	acoral_create_thread(slave_rx,512,NULL,"slave_rx",NULL,ACORAL_SCHED_POLICY_PERIOD,data1);
+	acoral_create_thread(slave_rx,1024,NULL,"slave_rx",NULL,ACORAL_SCHED_POLICY_PERIOD,data1);
 	
 	#endif
 

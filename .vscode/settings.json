@@ -29,6 +29,7 @@
         "sx1276loramisc.h": "c",
         "sx1276lora.h": "c",
         "spi.h": "c",
-        "cmd.h": "c"
+        "cmd.h": "c",
+        "adxl345.h": "c"
     }
 }

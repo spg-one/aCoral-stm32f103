@@ -16,7 +16,7 @@ float compute_distance(uint32_t count, float temperature);
 
 #if defined(USE_BARE_BOARD)
 void HC_SR04_SEND_PeriodElapsedCallback(void);
-#define GET_TEMPERATURE()   20;
+// #define GET_TEMPERATURE()   20;
 void delay_20us(void);
 #else 
 // When use OS, this need modified.
@@ -117,7 +117,8 @@ HAL_StatusTypeDef HcSr04_GetDistance(HcSr04_DistanceTypeDef *data) {
         status = HAL_ERROR;
     }else { 
     // The distance is in range.
-        hcsr04.CMeasureData -> Temperature = GET_TEMPERATURE();
+        // hcsr04.CMeasureData -> Temperature = GET_TEMPERATURE();
+        hcsr04.CMeasureData -> Temperature = (float)get_newest_temp();
         hcsr04.CMeasureData -> Distance = compute_distance(hcsr04.CMeasureData -> TimerCount, hcsr04.CMeasureData -> Temperature);
         hcsr04.PreMeasureState = HcSr04_M_STATE_IN_RANGE;
         hcsr04.CCaptureFlag = NULL;
@@ -220,7 +221,7 @@ void get_distance_thread()
     HcSr04_DistanceTypeDef data;
     if(HcSr04_GetDistance(&data) == HAL_OK) {
         // acoral_print("Distance: %d cm\r\n", (int)data.Distance);
-        Buffer[2] = (int)data.Distance;
+        *((float *)(&Buffer[7])) = data.Distance;
         data_ready|=1;
     } else {
         acoral_print("Disctance Measure Failure -----");

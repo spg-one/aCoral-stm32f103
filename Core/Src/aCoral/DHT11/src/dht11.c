@@ -141,7 +141,6 @@ void for_delay_us(uint32_t us)
  */
 void get_temp_humi_thread()
 {
-  get_distance_thread();
 	if(DHT_Get_Temp_Humi_Data(DHT_Buffer))
 		{
 			// acoral_print("Temp:%d.%d    ",DHT_Buffer[2],DHT_Buffer[3]);
@@ -156,4 +155,8 @@ void get_temp_humi_thread()
       acoral_print("-------\r\n");
     }
   
+}
+
+uint8_t get_newest_temp(void) {
+  return DHT_Buffer[2];
 }
