@@ -218,13 +218,28 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 void get_distance_thread()
 {
-    HcSr04_DistanceTypeDef data;
-    if(HcSr04_GetDistance(&data) == HAL_OK) {
-        // acoral_print("Distance: %d cm\r\n", (int)data.Distance);
-        *((float *)(&Buffer[7])) = data.Distance;
-        data_ready|=1;
-    } else {
-        acoral_print("Disctance Measure Failure -----");
+    if((cur_period.significant&0x01u))
+    {
+        acoral_enter_critical();
+        ((period_private_data_t *)acoral_cur_thread->private_data)->time = (cur_period.distance)*1000;
+        // period_thread_delay(acoral_cur_thread,((period_private_data_t *)acoral_cur_thread->private_data)->time);
+        cur_period.significant &= (~0x01u);
+        acoral_exit_critical();
+    }
+    else
+    {
+        HcSr04_DistanceTypeDef data;
+        if(HcSr04_GetDistance(&data) == HAL_OK) 
+        {
+            // acoral_print("Distance: %d cm\r\n", (int)data.Distance);
+            Buffer.distance = data.Distance;
+            Buffer.distance_period = (((period_private_data_t *)acoral_cur_thread->private_data)->time)/1000;
+            data_ready|=1;
+        } 
+        else 
+        {
+            acoral_print("Disctance Measure Failure -----");
+        }
     }
     
 }

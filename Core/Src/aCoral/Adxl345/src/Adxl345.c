@@ -91,18 +91,30 @@ HAL_StatusTypeDef Adxl345_GetAccelerations(Adxl345_AccelerationTypeDef *data) {
 }
 
 void getXYZAxisAccelerationsThread() {
-	Adxl345_AccelerationTypeDef acceleration_data;
-	acceleration_data.XAxisAcceleration = 0;
-    acceleration_data.YAxisAcceleration = 0;
-    acceleration_data.ZAxisAcceleration = 0;
-    Adxl345_GetAccelerations(&acceleration_data);
-    data_ready|=(1<<2);
-    *((float *)(&Buffer[11])) = acceleration_data.XAxisAcceleration;
-    *((float *)(&Buffer[15])) = acceleration_data.YAxisAcceleration;
-    *((float *)(&Buffer[19])) = acceleration_data.ZAxisAcceleration;
-	// acoral_print("The acceleration of X-Axis：%d", (int)acceleration_data.XAxisAcceleration);
-	// acoral_print("The acceleration of Y-Axis：%d", (int)acceleration_data.YAxisAcceleration);
-	// acoral_print("The acceleration of Z-Axis：%d", (int)acceleration_data.ZAxisAcceleration);
+    if((cur_period.significant&(0x01u<<2)))
+    {
+        acoral_enter_critical();
+        ((period_private_data_t *)acoral_cur_thread->private_data)->time = (cur_period.acceleration)*1000;
+        // period_thread_delay(acoral_cur_thread,((period_private_data_t *)acoral_cur_thread->private_data)->time);
+        cur_period.significant &= (~(0x01u<<2));
+        acoral_exit_critical();
+    }
+    else
+	{
+        Adxl345_AccelerationTypeDef acceleration_data;
+        acceleration_data.XAxisAcceleration = 0;
+        acceleration_data.YAxisAcceleration = 0;
+        acceleration_data.ZAxisAcceleration = 0;
+        Adxl345_GetAccelerations(&acceleration_data);
+        Buffer.acceleration_period = (((period_private_data_t *)acoral_cur_thread->private_data)->time)/1000;
+        data_ready|=(1<<2);
+        Buffer.acceleration_x = acceleration_data.XAxisAcceleration;
+        Buffer.acceleration_y = acceleration_data.YAxisAcceleration;
+        Buffer.acceleration_z = acceleration_data.ZAxisAcceleration;
+        // acoral_print("The acceleration of X-Axis：%d", (int)acceleration_data.XAxisAcceleration);
+        // acoral_print("The acceleration of Y-Axis：%d", (int)acceleration_data.YAxisAcceleration);
+        // acoral_print("The acceleration of Z-Axis：%d", (int)acceleration_data.ZAxisAcceleration);
+    }
 }
 
 

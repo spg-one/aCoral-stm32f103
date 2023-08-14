@@ -20,7 +20,7 @@
 
 volatile extern unsigned int acoral_start_sched;
 
-#define DAEM_STACK_SIZE 256
+#define DAEM_STACK_SIZE 1536
 #define IDLE_STACK_SIZE 128
 
 /**

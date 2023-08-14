@@ -20,30 +20,63 @@
 
 
 
-
+/*中心站终端标识符*/
 // #define MASTER
 #define SLAVE
 
-#define BUFFER_SIZE     30                  // lora消息接收发送用户数据缓冲区Buffer大小
-extern uint16_t BufferSize;   
-extern uint8_t  Buffer[BUFFER_SIZE];        // lora消息接收发送用户数据缓冲区Buffer
+typedef struct 
+{
+    uint8_t data_type;           //0x01表示数据，0x02表示命令
+    uint8_t master_id;
+    uint8_t slave_device_id;
+    uint8_t data_significant;
+
+    uint8_t command_significant;
+    uint8_t update_temp_humi_period;
+    uint8_t update_distance_period;
+    uint8_t update_acceleration_period;
+
+    uint8_t temp_int;
+    uint8_t temp_dec;
+    uint8_t humi_int;
+    uint8_t humi_dec;
+
+    uint8_t temp_humi_period;
+    uint8_t distance_period;
+    uint8_t acceleration_period;
+
+    float distance;
+    float acceleration_x;
+    float acceleration_y;
+    float acceleration_z;
+
+} data_buffer;
+
+
+
+
+
+  
+extern data_buffer  Buffer;        // 中心站采集数据缓冲区Buffer
+extern data_buffer  slave_Data;    // 终端采集数据缓冲区      
+extern data_buffer rx_cmd;
+
 extern tRadioDriver *Radio;                 // lora操作指针，所有的函数调用和消息接发都通过此变量操作，tRadioDriver类型定义在头文件radio.h中定义
-extern uint8_t EnableMaster;                // 主机、从机标识符，true表示主机，false为从机
-extern uint8_t rx_cmd[6];
-extern uint8_t slave_Data[30];
-extern uint8_t master_data; 
+
+extern uint8_t master_device_id;
+extern uint8_t master_data;                 //中心站是否接收到终端数据标识符
+
+
 
 
 
 void lora_init();                           //Radio初始化
-void master_tx(void *args);                               //中心站发送服务函数
-void master_rx(void *args);                               //中心站接收服务函数
-void slave_tx(void *args);                                //终端发送服务函数    
-void slave_rx(void *args);                                //终端接收服务函数    
-uint8_t get_master_data();
+void master_tx(void *args);                 //中心站发送服务函数
+void master_rx(void *args);                 //中心站接收服务函数
+void slave_tx(void *args);                  //终端发送服务函数    
+void slave_rx(void *args);                  //终端接收服务函数    
 void test();
-uint8_t get_master_id();
-uint8_t get_slave_device_id();
+
 
 
 #endif

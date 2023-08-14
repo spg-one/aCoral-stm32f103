@@ -19,6 +19,7 @@
 extern uint8_t DHT_Buffer[5];
 extern uint8_t j;
 
+
 void DHT_GPIO_Init(uint32_t Mode);
 uint8_t DHT_Start(void);
 uint8_t DHT_Get_Byte_Data(void);

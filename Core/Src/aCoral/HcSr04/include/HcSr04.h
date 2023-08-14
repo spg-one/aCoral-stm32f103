@@ -102,6 +102,8 @@ HAL_StatusTypeDef HcSr04_Init(void);
 // The function for reading distance by hc_sr04
 HAL_StatusTypeDef HcSr04_GetDistance(HcSr04_DistanceTypeDef *data);
 
+
+
 void get_distance_thread();
 
 
