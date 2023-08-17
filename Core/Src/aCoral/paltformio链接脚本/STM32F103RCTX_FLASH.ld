@@ -39,8 +39,8 @@ ENTRY(Reset_Handler)
 /* Highest address of the user mode stack */
 _estack = ORIGIN(RAM) + LENGTH(RAM); /* end of "RAM" Ram type memory */
 
-_Min_Heap_Size = 0x7800; /* required amount of heap */
-_Min_Stack_Size = 0x2800; /* required amount of stack */
+_Min_Heap_Size = 0xA000; /* required amount of heap */
+_Min_Stack_Size = 0x00; /* required amount of stack */
 
 /* Memories definition */
 MEMORY
@@ -188,11 +188,13 @@ SECTIONS
 
   .ARM.attributes 0 : { *(.ARM.attributes) }
 
-  stack_base = 0x2000A000 - 4;
-	Msp_size   =  0x2800;      
-	Psp_size   =  0x7800;    
 
-	Msp_stack        =  stack_base; 
-	Psp_stack        =  Msp_stack   - Msp_size;  
+	Msp_size   =  0x800;      
+	Psp_size   =  0x0;    
+
+	 
+	Psp_stack        =  heap_end + Psp_size;
+  Msp_stack        =  Psp_stack + Msp_size;
+    
 
 }
