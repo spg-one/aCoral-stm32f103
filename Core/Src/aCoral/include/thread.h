@@ -116,6 +116,8 @@ void acoral_thread_change_prio(acoral_thread_t* thread, unsigned int prio);
  */
 int acoral_create_thread(void (*route)(void *args),unsigned int stack_size,void *args,char *name,void *stack,unsigned int sched_policy,void *data);
 
+
+
 /**
  * @brief 挂起当前线程
  * 

@@ -3,15 +3,9 @@
 
 uint8_t data_ready = 0;
 threads_period cur_period;
+threads cur_threads = {0};
 
-void dummy(void *args){
-	int i=0;
-	while(1){
-		i++;
-//		LedControl(i);
-		acoral_delay_self(1000);
-	}
-}
+
 
 
 
@@ -22,25 +16,25 @@ void user_main(void)
 	get_distance_thread_data = acoral_malloc(sizeof(acoral_period_policy_data_t));
 	get_distance_thread_data->prio = 5;
 	get_distance_thread_data->prio_type = ACORAL_HARD_PRIO;
-	get_distance_thread_data->time = 5000;
+	get_distance_thread_data->time = 20000;
 	cur_period.distance = (get_distance_thread_data->time)/1000;
-	acoral_create_thread(test, 512, NULL, "get_distance_thread", NULL, ACORAL_SCHED_POLICY_PERIOD, get_distance_thread_data); //超声波测距
+	cur_threads.distance_thread = acoral_create_thread(get_distance_thread, 512, NULL, "get_distance_thread", NULL, ACORAL_SCHED_POLICY_PERIOD, get_distance_thread_data); //超声波测距
 	
 	acoral_period_policy_data_t* tmp_humi_thread_data;
 	tmp_humi_thread_data = acoral_malloc(sizeof(acoral_period_policy_data_t));
 	tmp_humi_thread_data->prio = 5;
 	tmp_humi_thread_data->prio_type = ACORAL_HARD_PRIO;
-	tmp_humi_thread_data->time = 5000;
+	tmp_humi_thread_data->time = 20000;
 	cur_period.temp_humi = (tmp_humi_thread_data->time)/1000;
-	acoral_create_thread(get_temp_humi_thread,512,NULL,"tmp_humi_thread",NULL,ACORAL_SCHED_POLICY_PERIOD,tmp_humi_thread_data); //温湿度线程+OLED显示
+	cur_threads.temp_humi_thread = acoral_create_thread(get_temp_humi_thread,512,NULL,"tmp_humi_thread",NULL,ACORAL_SCHED_POLICY_PERIOD,tmp_humi_thread_data); //温湿度线程+OLED显示
 
 	acoral_period_policy_data_t* getXYZAxisAccelerationsThread_data;
 	getXYZAxisAccelerationsThread_data = acoral_malloc(sizeof(acoral_period_policy_data_t));
 	getXYZAxisAccelerationsThread_data->prio = 5;
 	getXYZAxisAccelerationsThread_data->prio_type = ACORAL_HARD_PRIO;
-	getXYZAxisAccelerationsThread_data->time = 5000;
+	getXYZAxisAccelerationsThread_data->time = 20000;
 	cur_period.acceleration = (getXYZAxisAccelerationsThread_data->time)/1000;
-	acoral_create_thread(getXYZAxisAccelerationsThread, 1536, NULL, "getXYZAxisAccelerationsThread", NULL, ACORAL_SCHED_POLICY_PERIOD, getXYZAxisAccelerationsThread_data); //超声波测距
+	cur_threads.acceleration_thread = acoral_create_thread(getXYZAxisAccelerationsThread, 1536, NULL, "getXYZAxisAccelerationsThread", NULL, ACORAL_SCHED_POLICY_PERIOD, getXYZAxisAccelerationsThread_data); //超声波测距
 	
 
 
@@ -84,7 +78,7 @@ void user_main(void)
 	slave_tx_data = acoral_malloc(sizeof(acoral_period_policy_data_t));
 	slave_tx_data->prio = 3;
 	slave_tx_data->prio_type = ACORAL_HARD_PRIO;
-	slave_tx_data->time = 3000;
+	slave_tx_data->time = 2000;
 	acoral_create_thread(slave_tx,512,NULL,"slave_tx",NULL,ACORAL_SCHED_POLICY_PERIOD,slave_tx_data);
 
 	/*终端lora接收线程*/

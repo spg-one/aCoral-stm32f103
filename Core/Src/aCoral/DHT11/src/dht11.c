@@ -141,33 +141,23 @@ void for_delay_us(uint32_t us)
  */
 void get_temp_humi_thread()
 {
-  if((cur_period.significant&(0x01u<<1)))
+  if(DHT_Get_Temp_Humi_Data(DHT_Buffer))
   {
-    acoral_enter_critical();
-    ((period_private_data_t *)acoral_cur_thread->private_data)->time = (cur_period.temp_humi)*1000;
-    // period_thread_delay(acoral_cur_thread,((period_private_data_t *)acoral_cur_thread->private_data)->time);
-    cur_period.significant &= (~(0x01u<<1));
-    acoral_exit_critical();
+    // acoral_print("Temp:%d.%d    ",DHT_Buffer[2],DHT_Buffer[3]);
+    // acoral_print("Humi:%d.%d\r\n",DHT_Buffer[0],DHT_Buffer[1]);
+    Buffer.humi_int = DHT_Buffer[0];
+    Buffer.humi_dec= DHT_Buffer[1];
+    Buffer.temp_int = DHT_Buffer[2];
+    Buffer.temp_dec = DHT_Buffer[3];
+    Buffer.temp_humi_period = (((period_private_data_t *)acoral_cur_thread->private_data)->time)/1000;
+    data_ready|=(1<<1);
   }
   else
   {
-	  if(DHT_Get_Temp_Humi_Data(DHT_Buffer))
-    {
-      // acoral_print("Temp:%d.%d    ",DHT_Buffer[2],DHT_Buffer[3]);
-      // acoral_print("Humi:%d.%d\r\n",DHT_Buffer[0],DHT_Buffer[1]);
-      Buffer.humi_int = DHT_Buffer[0];
-      Buffer.humi_dec= DHT_Buffer[1];
-      Buffer.temp_int = DHT_Buffer[2];
-      Buffer.temp_dec = DHT_Buffer[3];
-      Buffer.temp_humi_period = (((period_private_data_t *)acoral_cur_thread->private_data)->time)/1000;
-      data_ready|=(1<<1);
-    }
-    else
-    {
-      acoral_print("-------\r\n");
-    }
+    acoral_print("-------\r\n");
   }
-}
+  }
+
 
 uint8_t get_newest_temp(void) {
   return DHT_Buffer[2];

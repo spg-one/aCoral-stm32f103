@@ -21,8 +21,8 @@
 
 
 /*中心站终端标识符*/
-// #define MASTER
-#define SLAVE
+#define MASTER
+// #define SLAVE
 
 typedef struct 
 {
@@ -76,6 +76,7 @@ void master_rx(void *args);                 //中心站接收服务函数
 void slave_tx(void *args);                  //终端发送服务函数    
 void slave_rx(void *args);                  //终端接收服务函数    
 void test();
+void period_change();                       //线程周期更改函数
 
 
 

@@ -48,6 +48,7 @@ int acoral_create_thread(void (*route)(void *args),unsigned int stack_size,void 
 	return acoral_policy_thread_init(sched_policy,thread,route,args,data);
 }
 
+
 extern int daemon_id;
 void acoral_release_thread1(acoral_thread_t *thread){//SPG这个和acoral_release_thread有什么区别
 	acoral_list_t *head;

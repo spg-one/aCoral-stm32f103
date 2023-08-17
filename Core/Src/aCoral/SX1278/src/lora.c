@@ -6,6 +6,7 @@
 * @date: 2023-05-13
 */
 #include"lora.h"
+#include "hal_thread.h"
 
 
 tRadioDriver *Radio;                                    
@@ -34,6 +35,73 @@ void lora_init()
     Radio->Init( );				//sx1278的真正初始化，根据用户在radio.h中设置的LORA变量选择进行lora初始化还是fsk初始化
 }
 
+/**
+* @author: 王若宇
+* @brief: 线程周期更改函数
+* @version: 1.0
+* @date: 2023-08-17
+*/
+void period_change()
+{
+    period_private_data_t * private_data;
+    /*更改超声波线程周期*/
+    if((cur_period.significant&0x01u))
+    {
+        acoral_enter_critical();
+        ((period_private_data_t *)(cur_threads.distance_thread)->private_data)->time = (cur_period.distance)*1000;
+        private_data=(cur_threads.distance_thread)->private_data;
+        acoral_list_del(&(cur_threads.distance_thread->waiting));
+        if(((cur_threads.distance_thread)->state&ACORAL_THREAD_STATE_SUSPEND))
+        {
+            (cur_threads.distance_thread)->stack=(unsigned int *)((char *)(cur_threads.distance_thread)->stack_buttom+(cur_threads.distance_thread)->stack_size-4);
+			HAL_STACK_INIT(&(cur_threads.distance_thread)->stack,private_data->route,period_thread_exit,private_data->args);
+            acoral_rdyqueue_add((cur_threads.distance_thread));
+        }
+        period_thread_delay((cur_threads.distance_thread),private_data->time);
+        // period_thread_delay(acoral_cur_thread,((period_private_data_t *)acoral_cur_thread->private_data)->time);
+        cur_period.significant &= (~0x01u);
+        acoral_exit_critical();
+    }
+
+    /*更改温湿度线程周期*/
+    if((cur_period.significant&(0x01u<<1)))
+    {
+        acoral_enter_critical();
+        ((period_private_data_t *)(cur_threads.temp_humi_thread)->private_data)->time = (cur_period.temp_humi)*1000;
+        private_data=(cur_threads.temp_humi_thread)->private_data;
+        acoral_list_del(&(cur_threads.temp_humi_thread->waiting));
+        if(((cur_threads.temp_humi_thread)->state&ACORAL_THREAD_STATE_SUSPEND))
+        {
+            (cur_threads.temp_humi_thread)->stack=(unsigned int *)((char *)(cur_threads.temp_humi_thread)->stack_buttom+(cur_threads.temp_humi_thread)->stack_size-4);
+			HAL_STACK_INIT(&(cur_threads.temp_humi_thread)->stack,private_data->route,period_thread_exit,private_data->args);
+            acoral_rdyqueue_add((cur_threads.temp_humi_thread));
+        }
+        period_thread_delay((cur_threads.temp_humi_thread),private_data->time);
+        // period_thread_delay(acoral_cur_thread,((period_private_data_t *)acoral_cur_thread->private_data)->time);
+        cur_period.significant &= (~(0x01u<<1));
+        acoral_exit_critical();
+    }
+
+    /*更改加速度线程周期*/
+    if((cur_period.significant&(0x01u<<2)))
+    {
+        acoral_enter_critical();
+        ((period_private_data_t *)(cur_threads.acceleration_thread)->private_data)->time = (cur_period.acceleration)*1000;
+        private_data=(cur_threads.acceleration_thread)->private_data;
+        acoral_list_del(&(cur_threads.acceleration_thread->waiting));
+        if(((cur_threads.acceleration_thread)->state&ACORAL_THREAD_STATE_SUSPEND))
+        {
+            (cur_threads.acceleration_thread)->stack=(unsigned int *)((char *)(cur_threads.acceleration_thread)->stack_buttom+(cur_threads.acceleration_thread)->stack_size-4);
+			HAL_STACK_INIT(&(cur_threads.acceleration_thread)->stack,private_data->route,period_thread_exit,private_data->args);
+            acoral_rdyqueue_add((cur_threads.acceleration_thread));
+        }
+        period_thread_delay((cur_threads.acceleration_thread),private_data->time);
+        // period_thread_delay(acoral_cur_thread,((period_private_data_t *)acoral_cur_thread->private_data)->time);
+        cur_period.significant &= (~(0x01u<<2));
+        acoral_exit_critical();
+    }
+
+}
 
 #if defined( MASTER )
     uint8_t master_device_id = 0x00;//高2位表示设备类型，00表示中心站，01表示终端，后6位表示设备地址
@@ -87,6 +155,7 @@ void master_tx(void *args)
             cur_period.temp_humi = rx_cmd.update_temp_humi_period;
             cur_period.acceleration = rx_cmd.update_acceleration_period;
             data_4g = 0;
+            period_change();
         }
         /*发送给终端的命令*/
         else if((rx_cmd.master_id==master_device_id))

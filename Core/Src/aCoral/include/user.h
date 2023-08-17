@@ -10,6 +10,14 @@
 #include "HcSr04.h"
 #include "Adxl345.h"
 
+/*现有传感器线程id*/
+typedef struct
+{
+    acoral_thread_t *temp_humi_thread;
+    acoral_thread_t *distance_thread;
+    acoral_thread_t *acceleration_thread;
+} threads;
+
 /*现有传感器线程周期*/
 typedef struct
 {
@@ -19,8 +27,11 @@ typedef struct
     uint8_t acceleration;
 } threads_period;
 
+
+
 extern uint8_t data_ready;  //某位为1则说明该传感器采集到数据，0则没有，从低位到高位一次代表加速度传感器、温湿度传感器
 
 extern threads_period cur_period;
+extern threads cur_threads;
 
 #endif

@@ -69,7 +69,7 @@ int period_policy_thread_init(acoral_thread_t *thread,void (*route)(void *args),
 	acoral_enter_critical();
 	period_thread_delay(thread,((period_private_data_t *)thread->private_data)->time);
 	acoral_exit_critical();
-	return thread->res.id;
+	return thread;
 }
 
 void period_policy_thread_release(acoral_thread_t *thread){
