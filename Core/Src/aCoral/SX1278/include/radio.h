@@ -52,7 +52,7 @@ typedef struct sRadioDriver
     void ( *StartRx )( void );
     void ( *GetRxPacket )( void *buffer, uint16_t *size );
     void ( *SetTxPacket )( const void *buffer, uint16_t size );
-    uint32_t ( *Process )( void );
+    uint32_t ( *Process )( void );  //查询发送或接收完时的状态
 }tRadioDriver;
 
 /*!

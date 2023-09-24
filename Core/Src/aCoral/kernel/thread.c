@@ -122,6 +122,7 @@ static void acoral_delay_thread(acoral_thread_t* thread,unsigned int time){
 	acoral_delayqueue_add(&time_delay_queue,thread);
 }
 
+//有问题，需要改
 void acoral_delay_self(unsigned int time){
 	acoral_delay_thread(acoral_cur_thread,time);
 }

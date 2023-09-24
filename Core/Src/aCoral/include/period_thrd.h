@@ -33,7 +33,7 @@ typedef struct{
  * 
  */
 typedef struct{
-	unsigned int time; 			///<线程周期，单位为毫秒
+	unsigned int time; 			///<线程周期，单位为毫秒，不会改变，delay才表示延时剩余时间。
 	void (*route)(void *args); 	///<线程函数
 	void *args; 				///<线程函数的参数
 }period_private_data_t;
@@ -43,4 +43,6 @@ void period_thread_delay(acoral_thread_t* thread,unsigned int time);
 void period_delay_deal(void);
 int period_policy_thread_init(acoral_thread_t *thread,void (*route)(void *args),void *args,void *data);
 void period_policy_init(void);
+void acoral_periodqueue_remove(acoral_thread_t *thread_to_remove);
+
 #endif

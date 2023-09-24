@@ -3,19 +3,19 @@
 #include "atk_idm750c.h"
 #include "string.h"
 
-static uint8_t dtu_rxcmdbuf[DTU_RX_CMD_BUF_SIZE];       /*´¦ÀíDTUÏà¹ØÊý¾Ý»º´æ*/
+static uint8_t dtu_rxcmdbuf[DTU_RX_CMD_BUF_SIZE];       /*å¤„ç†DTUç›¸å…³æ•°æ®ç¼“å­˜*/
 
 /**
- * @brief       ATK-IDM750CÄ£¿é³õÊ¼»¯
- * @param       baudrate: ATK-IDM750C UARTÍ¨Ñ¶²¨ÌØÂÊ
- * @retval      ATK_IDM750C_EOK  : ATK-IDM750C³õÊ¼»¯³É¹¦£¬º¯ÊýÖ´ÐÐ³É¹¦
- *              ATK_IDM750C_ERROR: ATK-IDM750C³õÊ¼»¯Ê§°Ü£¬º¯ÊýÖ´ÐÐÊ§°Ü
+ * @brief       ATK-IDM750Cæ¨¡å—åˆå§‹åŒ–
+ * @param       baudrate: ATK-IDM750C UARTé€šè®¯æ³¢ç‰¹çŽ‡
+ * @retval      ATK_IDM750C_EOK  : ATK-IDM750Cåˆå§‹åŒ–æˆåŠŸï¼Œå‡½æ•°æ‰§è¡ŒæˆåŠŸ
+ *              ATK_IDM750C_ERROR: ATK-IDM750Cåˆå§‹åŒ–å¤±è´¥ï¼Œå‡½æ•°æ‰§è¡Œå¤±è´¥
  */
 uint8_t atk_idm750c_init(uint32_t baudrate)
 {
     atk_idm750c_uart_init(baudrate);
     atk_idm750c_dtu_enter_configmode();
-    if (atk_idm750c_at_test() != ATK_IDM750C_EOK)   /* ATK-IDM750C ATÖ¸Áî²âÊÔ */
+    if (atk_idm750c_at_test() != ATK_IDM750C_EOK)   /* ATK-IDM750C ATæŒ‡ä»¤æµ‹è¯• */
     {
         return ATK_IDM750C_ERROR;
     }
@@ -24,10 +24,10 @@ uint8_t atk_idm750c_init(uint32_t baudrate)
 }
 
 /**
- * @brief       DTU×Ô¶¯ÉÏ±¨URCÐÅÏ¢´¦Àíº¯Êý:´¦Àí+ATK ERRORÐÅÏ¢
- * @param       data    :   ½ÓÊÕµ½DTUµÄURCÊý¾Ý»º´æ
- * @param       len     :   URCÊý¾Ý³¤¶È
- * @return      ÎÞ
+ * @brief       DTUè‡ªåŠ¨ä¸ŠæŠ¥URCä¿¡æ¯å¤„ç†å‡½æ•°:å¤„ç†+ATK ERRORä¿¡æ¯
+ * @param       data    :   æŽ¥æ”¶åˆ°DTUçš„URCæ•°æ®ç¼“å­˜
+ * @param       len     :   URCæ•°æ®é•¿åº¦
+ * @return      æ— 
  */
 static void dtu_urc_atk_error(const char *data, uint32_t len)
 {
@@ -35,10 +35,10 @@ static void dtu_urc_atk_error(const char *data, uint32_t len)
 }
 
 /**
- * @brief       DTU×Ô¶¯ÉÏ±¨URCÐÅÏ¢´¦Àíº¯Êý:´¦ÀíPlease check SIM CardÐÅÏ¢
- * @param       data    :   ½ÓÊÕµ½DTUµÄURCÊý¾Ý»º´æ
- * @param       len     :   URCÊý¾Ý³¤¶È
- * @return      ÎÞ
+ * @brief       DTUè‡ªåŠ¨ä¸ŠæŠ¥URCä¿¡æ¯å¤„ç†å‡½æ•°:å¤„ç†Please check SIM Cardä¿¡æ¯
+ * @param       data    :   æŽ¥æ”¶åˆ°DTUçš„URCæ•°æ®ç¼“å­˜
+ * @param       len     :   URCæ•°æ®é•¿åº¦
+ * @return      æ— 
  */
 static void dtu_urc_error_sim(const char *data, uint32_t len)
 {
@@ -46,10 +46,10 @@ static void dtu_urc_error_sim(const char *data, uint32_t len)
 }
 
 /**
- * @brief       DTU×Ô¶¯ÉÏ±¨URCÐÅÏ¢´¦Àíº¯Êý:´¦ÀíPlease check GPRSÐÅÏ¢
- * @param       data    :   ½ÓÊÕµ½DTUµÄURCÊý¾Ý»º´æ
- * @param       len     :   URCÊý¾Ý³¤¶È
- * @return      ÎÞ
+ * @brief       DTUè‡ªåŠ¨ä¸ŠæŠ¥URCä¿¡æ¯å¤„ç†å‡½æ•°:å¤„ç†Please check GPRSä¿¡æ¯
+ * @param       data    :   æŽ¥æ”¶åˆ°DTUçš„URCæ•°æ®ç¼“å­˜
+ * @param       len     :   URCæ•°æ®é•¿åº¦
+ * @return      æ— 
  */
 static void dtu_urc_error_gprs(const char *data, uint32_t len)
 {
@@ -57,10 +57,10 @@ static void dtu_urc_error_gprs(const char *data, uint32_t len)
 }
 
 /**
- * @brief       DTU×Ô¶¯ÉÏ±¨URCÐÅÏ¢´¦Àíº¯Êý:´¦ÀíPlease check CSQÐÅÏ¢
- * @param       data    :   ½ÓÊÕµ½DTUµÄURCÊý¾Ý»º´æ
- * @param       len     :   URCÊý¾Ý³¤¶È
- * @return      ÎÞ
+ * @brief       DTUè‡ªåŠ¨ä¸ŠæŠ¥URCä¿¡æ¯å¤„ç†å‡½æ•°:å¤„ç†Please check CSQä¿¡æ¯
+ * @param       data    :   æŽ¥æ”¶åˆ°DTUçš„URCæ•°æ®ç¼“å­˜
+ * @param       len     :   URCæ•°æ®é•¿åº¦
+ * @return      æ— 
  */
 static void dtu_urc_error_csq(const char *data, uint32_t len)
 {
@@ -68,10 +68,10 @@ static void dtu_urc_error_csq(const char *data, uint32_t len)
 }
 
 /**
- * @brief       DTU×Ô¶¯ÉÏ±¨URCÐÅÏ¢´¦Àíº¯Êý:´¦ÀíPlease check MQTT ParameterÐÅÏ¢
- * @param       data    :   ½ÓÊÕµ½DTUµÄURCÊý¾Ý»º´æ
- * @param       len     :   URCÊý¾Ý³¤¶È
- * @return      ÎÞ
+ * @brief       DTUè‡ªåŠ¨ä¸ŠæŠ¥URCä¿¡æ¯å¤„ç†å‡½æ•°:å¤„ç†Please check MQTT Parameterä¿¡æ¯
+ * @param       data    :   æŽ¥æ”¶åˆ°DTUçš„URCæ•°æ®ç¼“å­˜
+ * @param       len     :   URCæ•°æ®é•¿åº¦
+ * @return      æ— 
  */
 static void dtu_urc_error_mqtt(const char *data, uint32_t len)
 {
@@ -80,17 +80,17 @@ static void dtu_urc_error_mqtt(const char *data, uint32_t len)
 
 static _dtu_urc_st DTU_ATK_M750_URC[ATK_IDM750C_DTU_URC_SIZE] =
 {
-    {"+ATK ERROR:",                         dtu_urc_atk_error},         /*DTU´æÔÚÎÊÌâ£¬ÐèÒªÁªÏµ¼¼ÊõÖ§³Ö½øÐÐÈ·ÈÏ*/
-    {"Please check SIM Card !!!\r\n",       dtu_urc_error_sim},         /*DTUÎ´¼ì²âµ½ÊÖ»ú¿¨,Çë¼ì²éÊÖ»ú¿¨ÊÇ·ñÕýÈ·²åÈë*/
-    {"Please check GPRS !!!\r\n",           dtu_urc_error_gprs},        /*Çë¼ì²éSIM¿¨ÊÇ·ñÇ··Ñ*/
-    {"Please check CSQ !!!\r\n",            dtu_urc_error_csq},         /*Çë¼ì²éÌìÏßÊÇ·ñÕýÈ·½ÓÈë£¬²¢È·±£ÌìÏßÎ»ÖÃµÄÕýÈ·ÐÔ*/
-    {"Please check MQTT Parameter !!!\r\n", dtu_urc_error_mqtt},        /*MQTT²ÎÊýÓÐÎó*/
+    {"+ATK ERROR:",                         dtu_urc_atk_error},         /*DTUå­˜åœ¨é—®é¢˜ï¼Œéœ€è¦è”ç³»æŠ€æœ¯æ”¯æŒè¿›è¡Œç¡®è®¤*/
+    {"Please check SIM Card !!!\r\n",       dtu_urc_error_sim},         /*DTUæœªæ£€æµ‹åˆ°æ‰‹æœºå¡,è¯·æ£€æŸ¥æ‰‹æœºå¡æ˜¯å¦æ­£ç¡®æ’å…¥*/
+    {"Please check GPRS !!!\r\n",           dtu_urc_error_gprs},        /*è¯·æ£€æŸ¥SIMå¡æ˜¯å¦æ¬ è´¹*/
+    {"Please check CSQ !!!\r\n",            dtu_urc_error_csq},         /*è¯·æ£€æŸ¥å¤©çº¿æ˜¯å¦æ­£ç¡®æŽ¥å…¥ï¼Œå¹¶ç¡®ä¿å¤©çº¿ä½ç½®çš„æ­£ç¡®æ€§*/
+    {"Please check MQTT Parameter !!!\r\n", dtu_urc_error_mqtt},        /*MQTTå‚æ•°æœ‰è¯¯*/
 };
 
 /**
- * @brief       ´¦ÀíDTUÖ÷¶¯ÉÏ±¨µÄURCÐÅÏ¢Êý¾Ý£¬×¢Òâ£º´®¿ÚÃ¿½ÓÊÕÒ»¸ö×Ö½ÚÊý¾Ý£¬¶¼ÐèÒªÍ¨¹ýº¯ÊýÈë¿Ú´«Êä½øÀ´
- * @param       ch:´®¿Ú½ÓÊÕµÄÒ»¸ö×Ö½ÚÊý¾Ý
- * @return      ÎÞ
+ * @brief       å¤„ç†DTUä¸»åŠ¨ä¸ŠæŠ¥çš„URCä¿¡æ¯æ•°æ®ï¼Œæ³¨æ„ï¼šä¸²å£æ¯æŽ¥æ”¶ä¸€ä¸ªå­—èŠ‚æ•°æ®ï¼Œéƒ½éœ€è¦é€šè¿‡å‡½æ•°å…¥å£ä¼ è¾“è¿›æ¥
+ * @param       ch:ä¸²å£æŽ¥æ”¶çš„ä¸€ä¸ªå­—èŠ‚æ•°æ®
+ * @return      æ— 
  */
 void atk_idm750c_dtu_get_urc_info(uint8_t ch)
 {
@@ -98,18 +98,18 @@ void atk_idm750c_dtu_get_urc_info(uint8_t ch)
     static uint32_t rx_len = 0;
     int i;
     
-    /*½ÓÊÕDTUÊý¾Ý*/
+    /*æŽ¥æ”¶DTUæ•°æ®*/
     dtu_rxcmdbuf[rx_len++] = ch;
     
     if (rx_len >= DTU_RX_CMD_BUF_SIZE)
     {
-        /*³¬³¤´¦Àí*/
+        /*è¶…é•¿å¤„ç†*/
         ch_last = 0;
         rx_len = 0;
         memset(dtu_rxcmdbuf, 0, DTU_RX_CMD_BUF_SIZE);
     }
     
-    /*´¦ÀíDTUµÄURCÊý¾Ý*/
+    /*å¤„ç†DTUçš„URCæ•°æ®*/
     if ((ch_last == '\r') && (ch == '\n'))
     {
         for (i = 0; i < ATK_IDM750C_DTU_URC_SIZE; i++)
@@ -128,12 +128,12 @@ void atk_idm750c_dtu_get_urc_info(uint8_t ch)
 }
 
 /**
- * @brief       ATK-IDM750C·¢ËÍATÖ¸Áî
- * @param       cmd: ´ý·¢ËÍµÄATÖ¸Áî
- *              ack: µÈ´ýµÄÏìÓ¦
- *              timeout: µÈ´ý³¬Ê±Ê±¼ä
- * @retval      ATK_IDM750C_EOK: º¯ÊýÖ´ÐÐ³É¹¦
- *              ATK_IDM750C_ETIMEOUT: µÈ´ýÆÚÍûÓ¦´ð³¬Ê±£¬º¯ÊýÖ´ÐÐÊ§°Ü
+ * @brief       ATK-IDM750Cå‘é€ATæŒ‡ä»¤
+ * @param       cmd: å¾…å‘é€çš„ATæŒ‡ä»¤
+ *              ack: ç­‰å¾…çš„å“åº”
+ *              timeout: ç­‰å¾…è¶…æ—¶æ—¶é—´
+ * @retval      ATK_IDM750C_EOK: å‡½æ•°æ‰§è¡ŒæˆåŠŸ
+ *              ATK_IDM750C_ETIMEOUT: ç­‰å¾…æœŸæœ›åº”ç­”è¶…æ—¶ï¼Œå‡½æ•°æ‰§è¡Œå¤±è´¥
  */
 uint8_t atk_idm750c_send_cmd_to_dtu(char *cmd, char *ack, uint32_t timeout)
 {
@@ -174,10 +174,10 @@ uint8_t atk_idm750c_send_cmd_to_dtu(char *cmd, char *ack, uint32_t timeout)
 }
 
 /**
- * @brief       ATK-IDM750C ATÖ¸Áî²âÊÔ
- * @param       ÎÞ
- * @retval      ATK_IDM750C_EOK: ATÖ¸Áî²âÊÔ³É¹¦
- *              ATK_IDM750C_ERROR: ATÖ¸Áî²âÊÔÊ§°Ü
+ * @brief       ATK-IDM750C ATæŒ‡ä»¤æµ‹è¯•
+ * @param       æ— 
+ * @retval      ATK_IDM750C_EOK: ATæŒ‡ä»¤æµ‹è¯•æˆåŠŸ
+ *              ATK_IDM750C_ERROR: ATæŒ‡ä»¤æµ‹è¯•å¤±è´¥
  */
 uint8_t atk_idm750c_at_test(void)
 {
@@ -198,18 +198,18 @@ uint8_t atk_idm750c_at_test(void)
 }
 
 /**
- * @brief       DTU½øÈëÅäÖÃ×´Ì¬
+ * @brief       DTUè¿›å…¥é…ç½®çŠ¶æ€
  * 
- * @param       ÎÞ
+ * @param       æ— 
  * 
- * @return      0  :    ³É¹¦½øÈëÅäÖÃ×´Ì¬
- *             -1  :    ½øÈëÅäÖÃ×´Ì¬Ê§°Ü
+ * @return      0  :    æˆåŠŸè¿›å…¥é…ç½®çŠ¶æ€
+ *             -1  :    è¿›å…¥é…ç½®çŠ¶æ€å¤±è´¥
  */
 uint8_t atk_idm750c_dtu_enter_configmode(void)
 {
     uint8_t ret;
     
-    /* ·¢ËÍ+++×¼±¸½øÈëÅäÖÃ×´Ì¬ */
+    /* å‘é€+++å‡†å¤‡è¿›å…¥é…ç½®çŠ¶æ€ */
     atk_idm750c_uart_rx_restart();
     atk_idm750c_uart_printf("+++");
     ret = atk_idm750c_send_cmd_to_dtu(NULL, "atk", 1000);
@@ -218,7 +218,7 @@ uint8_t atk_idm750c_dtu_enter_configmode(void)
         return ATK_IDM750C_ERROR;
     }
     
-    /* ·¢ËÍatkÈ·ÈÏ½øÈëÅäÖÃ×´Ì¬ */
+    /* å‘é€atkç¡®è®¤è¿›å…¥é…ç½®çŠ¶æ€ */
     atk_idm750c_uart_rx_restart();
     atk_idm750c_uart_printf("atk");
     ret = atk_idm750c_send_cmd_to_dtu(NULL, "OK", 1000);
@@ -232,10 +232,10 @@ uint8_t atk_idm750c_dtu_enter_configmode(void)
 }
 
 /**
- * @brief       ATK-IDM750C»Ö¸´³ö³§ÉèÖÃ
- * @param       ÎÞ
- * @retval      ATK_IDM750C_EOK  : »Ö¸´³ö³¡ÉèÖÃ³É¹¦
- *              ATK_IDM750C_ERROR: »Ö¸´³ö³¡ÉèÖÃÊ§°Ü
+ * @brief       ATK-IDM750Cæ¢å¤å‡ºåŽ‚è®¾ç½®
+ * @param       æ— 
+ * @retval      ATK_IDM750C_EOK  : æ¢å¤å‡ºåœºè®¾ç½®æˆåŠŸ
+ *              ATK_IDM750C_ERROR: æ¢å¤å‡ºåœºè®¾ç½®å¤±è´¥
  */
 uint8_t atk_idm750c_restore(void)
 {
@@ -253,10 +253,10 @@ uint8_t atk_idm750c_restore(void)
 }
 
 /**
- * @brief       ATK-IDM750C²éÑ¯°æ±¾ºÅ
- * @param       ÎÞ
- * @retval      ATK_IDM750C_EOK  : ²éÑ¯°æ±¾ºÅ³É¹¦
- *              ATK_IDM750C_ERROR: ²éÑ¯°æ±¾ºÅÊ§°Ü
+ * @brief       ATK-IDM750CæŸ¥è¯¢ç‰ˆæœ¬å·
+ * @param       æ— 
+ * @retval      ATK_IDM750C_EOK  : æŸ¥è¯¢ç‰ˆæœ¬å·æˆåŠŸ
+ *              ATK_IDM750C_ERROR: æŸ¥è¯¢ç‰ˆæœ¬å·å¤±è´¥
  */
 uint8_t atk_idm750c_query_versionnumber(void)
 {
@@ -274,10 +274,10 @@ uint8_t atk_idm750c_query_versionnumber(void)
 }
 
 /**
- * @brief       ATK-IDM750C²éÑ¯IMEIÂë
- * @param       ÎÞ
- * @retval      ATK_IDM750C_EOK  : ²éÑ¯IMEIÂë³É¹¦
- *              ATK_IDM750C_ERROR: ²éÑ¯IMEIÂëÊ§°Ü
+ * @brief       ATK-IDM750CæŸ¥è¯¢IMEIç 
+ * @param       æ— 
+ * @retval      ATK_IDM750C_EOK  : æŸ¥è¯¢IMEIç æˆåŠŸ
+ *              ATK_IDM750C_ERROR: æŸ¥è¯¢IMEIç å¤±è´¥
  */
 uint8_t atk_idm750c_query_imeinumber(void)
 {
@@ -295,10 +295,10 @@ uint8_t atk_idm750c_query_imeinumber(void)
 }
 
 /**
- * @brief       ATK-IDM750C²éÑ¯ICCIDÂë
- * @param       ÎÞ
- * @retval      ATK_IDM750C_EOK  : ²éÑ¯ICCIDÂë³É¹¦
- *              ATK_IDM750C_ERROR: ²éÑ¯ICCIDÂëÊ§°Ü
+ * @brief       ATK-IDM750CæŸ¥è¯¢ICCIDç 
+ * @param       æ— 
+ * @retval      ATK_IDM750C_EOK  : æŸ¥è¯¢ICCIDç æˆåŠŸ
+ *              ATK_IDM750C_ERROR: æŸ¥è¯¢ICCIDç å¤±è´¥
  */
 uint8_t atk_idm750c_query_iccidnumber(void)
 {
@@ -316,10 +316,10 @@ uint8_t atk_idm750c_query_iccidnumber(void)
 }
 
 /**
- * @brief       ATK-IDM750C²éÑ¯IMSIÂë
- * @param       ÎÞ
- * @retval      ATK_IDM750C_EOK  : ²éÑ¯IMSIÂë³É¹¦
- *              ATK_IDM750C_ERROR: ²éÑ¯IMSIÂëÊ§°Ü
+ * @brief       ATK-IDM750CæŸ¥è¯¢IMSIç 
+ * @param       æ— 
+ * @retval      ATK_IDM750C_EOK  : æŸ¥è¯¢IMSIç æˆåŠŸ
+ *              ATK_IDM750C_ERROR: æŸ¥è¯¢IMSIç å¤±è´¥
  */
 uint8_t atk_idm750c_query_imsinumber(void)
 {
@@ -337,10 +337,10 @@ uint8_t atk_idm750c_query_imsinumber(void)
 }
 
 /**
- * @brief       ATK-IDM750C²éÑ¯²úÆ·ÐòÁÐºÅ
- * @param       ÎÞ
- * @retval      ATK_IDM750C_EOK  : ²éÑ¯²úÆ·ÐòÁÐºÅ³É¹¦
- *              ATK_IDM750C_ERROR: ²éÑ¯²úÆ·ÐòÁÐºÅÊ§°Ü
+ * @brief       ATK-IDM750CæŸ¥è¯¢äº§å“åºåˆ—å·
+ * @param       æ— 
+ * @retval      ATK_IDM750C_EOK  : æŸ¥è¯¢äº§å“åºåˆ—å·æˆåŠŸ
+ *              ATK_IDM750C_ERROR: æŸ¥è¯¢äº§å“åºåˆ—å·å¤±è´¥
  */
 uint8_t atk_idm750c_query_productid(void)
 {
@@ -358,10 +358,10 @@ uint8_t atk_idm750c_query_productid(void)
 }
 
 /**
- * @brief       ATK-IDM750C½øÈëÍ¸´«×´Ì¬
- * @param       ÎÞ
- * @retval      ATK_IDM750C_EOK  : ½øÈëÍ¸´«×´Ì¬³É¹¦
- *              ATK_IDM750C_ERROR: ½øÈëÍ¸´«×´Ì¬Ê§°Ü
+ * @brief       ATK-IDM750Cè¿›å…¥é€ä¼ çŠ¶æ€
+ * @param       æ— 
+ * @retval      ATK_IDM750C_EOK  : è¿›å…¥é€ä¼ çŠ¶æ€æˆåŠŸ
+ *              ATK_IDM750C_ERROR: è¿›å…¥é€ä¼ çŠ¶æ€å¤±è´¥
  */
 uint8_t atk_idm750c_enter_transfermode(void)
 {
@@ -379,12 +379,12 @@ uint8_t atk_idm750c_enter_transfermode(void)
 }
 
 /**
- * @brief       ATK-IDM750C ´ò¿ªÖ¸Áî»ØÏÔ
- * @param       enable:Ö¸Áî»ØÏÔµÄÊ¹ÄÜ×´Ì¬
- *              ON:Ö¸Áî»ØÏÔ
- *              OFF:Ö¸Áî²»»ØÏÔ
- * @retval      ATK_IDM750C_EOK  : Ö¸Áî»ØÏÔ³É¹¦
- *              ATK_IDM750C_ERROR: Ö¸Áî»ØÏÔÊ§°Ü
+ * @brief       ATK-IDM750C æ‰“å¼€æŒ‡ä»¤å›žæ˜¾
+ * @param       enable:æŒ‡ä»¤å›žæ˜¾çš„ä½¿èƒ½çŠ¶æ€
+ *              ON:æŒ‡ä»¤å›žæ˜¾
+ *              OFF:æŒ‡ä»¤ä¸å›žæ˜¾
+ * @retval      ATK_IDM750C_EOK  : æŒ‡ä»¤å›žæ˜¾æˆåŠŸ
+ *              ATK_IDM750C_ERROR: æŒ‡ä»¤å›žæ˜¾å¤±è´¥
  */
 uint8_t atk_idm750c_commandecho(atk_idm750c_echo_t echo)
 {
@@ -422,10 +422,10 @@ uint8_t atk_idm750c_commandecho(atk_idm750c_echo_t echo)
 }
 
 /**
- * @brief       ATK-IDM750C ¹¤×÷Ä£Ê½ÉèÖÃ
- * @param       ÎÞ
- * @retval      ATK_IDM750C_EOK  : ¹¤×÷Ä£Ê½ÉèÖÃ²âÊÔ³É¹¦
- *              ATK_IDM750C_ERROR: ¹¤×÷Ä£Ê½ÉèÖÃ²âÊÔÊ§°Ü
+ * @brief       ATK-IDM750C å·¥ä½œæ¨¡å¼è®¾ç½®
+ * @param       æ— 
+ * @retval      ATK_IDM750C_EOK  : å·¥ä½œæ¨¡å¼è®¾ç½®æµ‹è¯•æˆåŠŸ
+ *              ATK_IDM750C_ERROR: å·¥ä½œæ¨¡å¼è®¾ç½®æµ‹è¯•å¤±è´¥
  */
 uint8_t atk_idm750c_query_workmode(atk_idm750c_workmode_t mode)
 {
@@ -434,37 +434,37 @@ uint8_t atk_idm750c_query_workmode(atk_idm750c_workmode_t mode)
     
     switch (mode)
     {
-        case ATK_IDM750C_WORKMODE_NET:       /* ÍøÂçÍ¸´«Ä£Ê½ */
+        case ATK_IDM750C_WORKMODE_NET:       /* ç½‘ç»œé€ä¼ æ¨¡å¼ */
         {
             sprintf(cmd, "AT+WORK=\"NET\"");
             break;
         }
-        case ATK_IDM750C_WORKMODE_HTTP:      /* HTTPÍ¸´«Ä£Ê½ */
+        case ATK_IDM750C_WORKMODE_HTTP:      /* HTTPé€ä¼ æ¨¡å¼ */
         {
             sprintf(cmd, "AT+WORK=\"HTTP\"");
             break;
         }
-        case ATK_IDM750C_WORKMODE_MQTT:      /* MQTTÍ¸´«Ä£Ê½ */
+        case ATK_IDM750C_WORKMODE_MQTT:      /* MQTTé€ä¼ æ¨¡å¼ */
         {
             sprintf(cmd, "AT+WORK=\"MQTT\"");
             break;
         }
-        case ATK_IDM750C_WORKMODE_ALIYUN:    /* °¢ÀïÔÆÍ¸´«Ä£Ê½ */
+        case ATK_IDM750C_WORKMODE_ALIYUN:    /* é˜¿é‡Œäº‘é€ä¼ æ¨¡å¼ */
         {
             sprintf(cmd, "AT+WORK=\"ALIYUN\"");
             break;
         }
-        case ATK_IDM750C_WORKMODE_ONENET:    /* OneNETÍ¸´«Ä£Ê½ */
+        case ATK_IDM750C_WORKMODE_ONENET:    /* OneNETé€ä¼ æ¨¡å¼ */
         {
             sprintf(cmd, "AT+WORK=\"ONENET\"");
             break;
         }
-        case ATK_IDM750C_WORKMODE_BAUDUYUN:  /* °Ù¶ÈÔÆÍ¸´«Ä£Ê½ */
+        case ATK_IDM750C_WORKMODE_BAUDUYUN:  /* ç™¾åº¦äº‘é€ä¼ æ¨¡å¼ */
         {
             sprintf(cmd, "AT+WORK=\"BAIDUYUN\"");
             break;
         }
-        case ATK_IDM750C_WORKMODE_RNDIS:     /* ÎÞÏßÉÏÍø¹¤×÷Ä£Ê½ */
+        case ATK_IDM750C_WORKMODE_RNDIS:     /* æ— çº¿ä¸Šç½‘å·¥ä½œæ¨¡å¼ */
         {
             sprintf(cmd, "AT+WORK=\"RNDIS\"");
             break;
@@ -488,13 +488,13 @@ uint8_t atk_idm750c_query_workmode(atk_idm750c_workmode_t mode)
 }
 
 /**
- * @brief       ATK-IDM750C ´®¿Ú²ÎÊý
- * @param       boud:´®¿Ú²¨ÌØÂÊ
- *              stop:´®¿ÚÍ£Ö¹Î»
- *              data£º´®¿ÚÊý¾ÝÎ»
- *              parity:´®¿ÚÆæÅ¼Ð£ÑéÎ»
- * @retval      ATK_IDM750C_EOK  : ´®¿Ú²ÎÊýÅäÖÃ²âÊÔ³É¹¦
- *              ATK_IDM750C_ERROR: ´®¿Ú²ÎÊýÅäÖÃ²âÊÔÊ§°Ü
+ * @brief       ATK-IDM750C ä¸²å£å‚æ•°
+ * @param       boud:ä¸²å£æ³¢ç‰¹çŽ‡
+ *              stop:ä¸²å£åœæ­¢ä½
+ *              dataï¼šä¸²å£æ•°æ®ä½
+ *              parity:ä¸²å£å¥‡å¶æ ¡éªŒä½
+ * @retval      ATK_IDM750C_EOK  : ä¸²å£å‚æ•°é…ç½®æµ‹è¯•æˆåŠŸ
+ *              ATK_IDM750C_ERROR: ä¸²å£å‚æ•°é…ç½®æµ‹è¯•å¤±è´¥
  */
 uint8_t atk_idm750c_uart_parameter(atk_idm750c_uartmode_t mode)
 {
@@ -504,67 +504,67 @@ uint8_t atk_idm750c_uart_parameter(atk_idm750c_uartmode_t mode)
     
     switch (mode)
     {
-        case ATK_IDM750C_UARTMODE_FIRST:      /* boud£º1200£¬stop£º1£¬data£º8£¬parity£ºNONE */
+        case ATK_IDM750C_UARTMODE_FIRST:      /* boudï¼š1200ï¼Œstopï¼š1ï¼Œdataï¼š8ï¼Œparityï¼šNONE */
         {
             sprintf(cmd, "AT+UART=\"%d\",\"%d\",\"%d\",\"%s\"",1200,1,8,NONE);
             break;
         }
-        case ATK_IDM750C_UARTMODE_SECOND:     /* boud£º2400£¬stop£º1£¬data£º8£¬parity£ºNONE */
+        case ATK_IDM750C_UARTMODE_SECOND:     /* boudï¼š2400ï¼Œstopï¼š1ï¼Œdataï¼š8ï¼Œparityï¼šNONE */
         {
             sprintf(cmd, "AT+UART=\"%d\",\"%d\",\"%d\",\"%s\"",2400,1,8,NONE);
             break;
         }
-        case ATK_IDM750C_UARTMODE_THIRD:      /* boud£º4800£¬stop£º1£¬data£º8£¬parity£ºNONE */
+        case ATK_IDM750C_UARTMODE_THIRD:      /* boudï¼š4800ï¼Œstopï¼š1ï¼Œdataï¼š8ï¼Œparityï¼šNONE */
         {
             sprintf(cmd, "AT+UART=\"%d\",\"%d\",\"%d\",\"%s\"",4800,1,8,NONE);
             break;
         }
-        case ATK_IDM750C_UARTMODE_FOURTH:     /* boud£º9600£¬stop£º1£¬data£º8£¬parity£ºNONE */
+        case ATK_IDM750C_UARTMODE_FOURTH:     /* boudï¼š9600ï¼Œstopï¼š1ï¼Œdataï¼š8ï¼Œparityï¼šNONE */
         {
             sprintf(cmd, "AT+UART=\"%d\",\"%d\",\"%d\",\"%s\"",9600,1,8,NONE);
             break;
         }
-        case ATK_IDM750C_UARTMODE_FIFTH:      /* boud£º14400£¬stop£º1£¬data£º8£¬parity£ºNONE */
+        case ATK_IDM750C_UARTMODE_FIFTH:      /* boudï¼š14400ï¼Œstopï¼š1ï¼Œdataï¼š8ï¼Œparityï¼šNONE */
         {
             sprintf(cmd, "AT+UART=\"%d\",\"%d\",\"%d\",\"%s\"",14400,1,8,NONE);
             break;
         }
-        case ATK_IDM750C_UARTMODE_SIXTH:      /* boud£º19200£¬stop£º1£¬data£º8£¬parity£ºNONE */
+        case ATK_IDM750C_UARTMODE_SIXTH:      /* boudï¼š19200ï¼Œstopï¼š1ï¼Œdataï¼š8ï¼Œparityï¼šNONE */
         {
             sprintf(cmd, "AT+UART=\"%d\",\"%d\",\"%d\",\"%s\"",19200,1,8,NONE);
             break;
         }
-        case ATK_IDM750C_UARTMODE_SEVENTH:    /* boud£º38400£¬stop£º1£¬data£º8£¬parity£ºNONE */
+        case ATK_IDM750C_UARTMODE_SEVENTH:    /* boudï¼š38400ï¼Œstopï¼š1ï¼Œdataï¼š8ï¼Œparityï¼šNONE */
         {
             sprintf(cmd, "AT+UART=\"%d\",\"%d\",\"%d\",\"%s\"",38400,1,8,NONE);
             break;
         }
-        case ATK_IDM750C_UARTMODE_EIGHTH:     /* boud£º57600£¬stop£º1£¬data£º8£¬parity£ºNONE */
+        case ATK_IDM750C_UARTMODE_EIGHTH:     /* boudï¼š57600ï¼Œstopï¼š1ï¼Œdataï¼š8ï¼Œparityï¼šNONE */
         {
             sprintf(cmd, "AT+UART=\"%d\",\"%d\",\"%d\",\"%s\"",57600,1,8,NONE);
             break;
         }
-        case ATK_IDM750C_UARTMODE_NINTH:      /* boud£º115200£¬stop£º1£¬data£º8£¬parity£ºNONE£¨Ä¬ÈÏ£© */
+        case ATK_IDM750C_UARTMODE_NINTH:      /* boudï¼š115200ï¼Œstopï¼š1ï¼Œdataï¼š8ï¼Œparityï¼šNONEï¼ˆé»˜è®¤ï¼‰ */
         {
             sprintf(cmd, "AT+UART=\"%d\",\"%d\",\"%d\",\"%s\"",115200,1,8,NONE);
             break;
         }
-        case ATK_IDM750C_UARTMODE_TENTH:      /* boud£º128000£¬stop£º1£¬data£º8£¬parity£ºNONE */
+        case ATK_IDM750C_UARTMODE_TENTH:      /* boudï¼š128000ï¼Œstopï¼š1ï¼Œdataï¼š8ï¼Œparityï¼šNONE */
         {
             sprintf(cmd, "AT+UART=\"%d\",\"%d\",\"%d\",\"%s\"",128000,1,8,NONE);
             break;
         }
-        case ATK_IDM750C_UARTMODE_ELEVENTH:   /* boud£º230400£¬stop£º1£¬data£º8£¬parity£ºNONE */
+        case ATK_IDM750C_UARTMODE_ELEVENTH:   /* boudï¼š230400ï¼Œstopï¼š1ï¼Œdataï¼š8ï¼Œparityï¼šNONE */
         {
             sprintf(cmd, "AT+UART=\"%d\",\"%d\",\"%d\",\"%s\"",230400,1,8,NONE);
             break;
         }
-        case ATK_IDM750C_UARTMODE_TWELFTH:    /* boud£º460800£¬stop£º1£¬data£º8£¬parity£ºNONE */
+        case ATK_IDM750C_UARTMODE_TWELFTH:    /* boudï¼š460800ï¼Œstopï¼š1ï¼Œdataï¼š8ï¼Œparityï¼šNONE */
         {
             sprintf(cmd, "AT+UART=\"%d\",\"%d\",\"%d\",\"%s\"",460800,1,8,NONE);
             break;
         }
-        case ATK_IDM750C_UARTMODE_THIRTEENTH: /* boud£º921600£¬stop£º1£¬data£º8£¬parity£ºNONE */
+        case ATK_IDM750C_UARTMODE_THIRTEENTH: /* boudï¼š921600ï¼Œstopï¼š1ï¼Œdataï¼š8ï¼Œparityï¼šNONE */
         {
             sprintf(cmd, "AT+UART=\"%d\",\"%d\",\"%d\",\"%s\"",921600,1,8,NONE);
             break;
@@ -588,12 +588,12 @@ uint8_t atk_idm750c_uart_parameter(atk_idm750c_uartmode_t mode)
 }
 
 /**
- * @brief       ATK-IDM750C ´®¿ÚÍ¸´«ÅäÖÃ
- * @param       enable:´®¿ÚÍ¸´«Ö¸ÁîµÄÊ¹ÄÜ×´Ì¬
- *              ON:Ê¹ÓÃ´®¿ÚÍ¸´«Ö¸Áî
- *              OFF:²»Ê¹ÓÃ´®¿ÚÍ¸´«Ö¸Áî
- * @retval      ATK_IDM750C_EOK  : ´®¿ÚÍ¸´«ÅäÖÃ³É¹¦
- *              ATK_IDM750C_ERROR: ´®¿ÚÍ¸´«ÅäÖÃÊ§°Ü
+ * @brief       ATK-IDM750C ä¸²å£é€ä¼ é…ç½®
+ * @param       enable:ä¸²å£é€ä¼ æŒ‡ä»¤çš„ä½¿èƒ½çŠ¶æ€
+ *              ON:ä½¿ç”¨ä¸²å£é€ä¼ æŒ‡ä»¤
+ *              OFF:ä¸ä½¿ç”¨ä¸²å£é€ä¼ æŒ‡ä»¤
+ * @retval      ATK_IDM750C_EOK  : ä¸²å£é€ä¼ é…ç½®æˆåŠŸ
+ *              ATK_IDM750C_ERROR: ä¸²å£é€ä¼ é…ç½®å¤±è´¥
  */
 uint8_t atk_idm750c_uart(atk_idm750c_urat_t uart)
 {
@@ -631,11 +631,11 @@ uint8_t atk_idm750c_uart(atk_idm750c_urat_t uart)
 }
 
 /**
- * @brief       ATK-IDM750C´®¿Ú´ò°ü²ÎÊý
- * @param       length£º´®¿Ú´ò°ü³¤¶È£¬ ·¶Î§£º 1-1024(×Ö½Ú)
- *              time:´®¿Ú´ò°üÊ±¼ä,·¶Î§£º 50ms-10000ms
- * @retval      ATK_IDM750C_EOK  : ½øÈëÍ¸´«×´Ì¬³É¹¦
- *              ATK_IDM750C_ERROR: ½øÈëÍ¸´«×´Ì¬Ê§°Ü
+ * @brief       ATK-IDM750Cä¸²å£æ‰“åŒ…å‚æ•°
+ * @param       lengthï¼šä¸²å£æ‰“åŒ…é•¿åº¦ï¼Œ èŒƒå›´ï¼š 1-1024(å­—èŠ‚)
+ *              time:ä¸²å£æ‰“åŒ…æ—¶é—´,èŒƒå›´ï¼š 50ms-10000ms
+ * @retval      ATK_IDM750C_EOK  : è¿›å…¥é€ä¼ çŠ¶æ€æˆåŠŸ
+ *              ATK_IDM750C_ERROR: è¿›å…¥é€ä¼ çŠ¶æ€å¤±è´¥
  */
 uint8_t atk_idm750c_uart_pack_parameter(void)
 {
@@ -655,12 +655,12 @@ uint8_t atk_idm750c_uart_pack_parameter(void)
 }
 
 /**
- * @brief       ATK-IDM750C ÍøÂçÍ¸´«Ö¸Áî
- * @param       enable:ÍøÂçÍ¸´«Ö¸ÁîµÄÊ¹ÄÜ×´Ì¬
- *              ON:Ê¹ÓÃÍøÂçÍ¸´«Ö¸Áî
- *              OFF:²»Ê¹ÓÃÍøÂçÍ¸´«Ö¸Áî
- * @retval      ATK_IDM750C_EOK  : ÍøÂçÍ¸´«ÅäÖÃ³É¹¦
- *              ATK_IDM750C_ERROR: ÍøÂçÍ¸´«ÅäÖÃÊ§°Ü
+ * @brief       ATK-IDM750C ç½‘ç»œé€ä¼ æŒ‡ä»¤
+ * @param       enable:ç½‘ç»œé€ä¼ æŒ‡ä»¤çš„ä½¿èƒ½çŠ¶æ€
+ *              ON:ä½¿ç”¨ç½‘ç»œé€ä¼ æŒ‡ä»¤
+ *              OFF:ä¸ä½¿ç”¨ç½‘ç»œé€ä¼ æŒ‡ä»¤
+ * @retval      ATK_IDM750C_EOK  : ç½‘ç»œé€ä¼ é…ç½®æˆåŠŸ
+ *              ATK_IDM750C_ERROR: ç½‘ç»œé€ä¼ é…ç½®å¤±è´¥
  */
 uint8_t atk_idm750c_net(atk_idm750c_net_t net)
 {
@@ -698,11 +698,11 @@ uint8_t atk_idm750c_net(atk_idm750c_net_t net)
 }
 
 /**
- * @brief       ATK-IDM750C Í¸´«Ö¸ÁîÃÜÔ¿
- * @param       data:Ö¸ÁîÃÜÔ¿Êý¾Ý£¬×î´óÏÞÖÆ 20 ¸ö×Ö½Ú
- *              data Ä¬ÈÏ²ÎÊý£º ALIENTEK
- * @retval      ATK_IDM750C_EOK  : Í¸´«Ö¸ÁîÃÜÔ¿ÅäÖÃ³É¹¦
- *              ATK_IDM750C_ERROR: Í¸´«Ö¸ÁîÃÜÔ¿ÅäÖÃÊ§°Ü
+ * @brief       ATK-IDM750C é€ä¼ æŒ‡ä»¤å¯†é’¥
+ * @param       data:æŒ‡ä»¤å¯†é’¥æ•°æ®ï¼Œæœ€å¤§é™åˆ¶ 20 ä¸ªå­—èŠ‚
+ *              data é»˜è®¤å‚æ•°ï¼š ALIENTEK
+ * @retval      ATK_IDM750C_EOK  : é€ä¼ æŒ‡ä»¤å¯†é’¥é…ç½®æˆåŠŸ
+ *              ATK_IDM750C_ERROR: é€ä¼ æŒ‡ä»¤å¯†é’¥é…ç½®å¤±è´¥
  */
 uint8_t atk_idm750c_cmdkey(void)
 {
@@ -723,11 +723,11 @@ uint8_t atk_idm750c_cmdkey(void)
 }
 
 /**
- * @brief       ATK-IDM750C ÓÃ»§×Ô¶¨ÒåÊý¾Ý
- * @param       data:ÓÃ»§×Ô¶¨ÒåÊý¾Ý£¬×î´óÏÞÖÆ 32 ¸ö×Ö½Ú
- *              data Ä¬ÈÏ²ÎÊý£º ALIENTEK
- * @retval      ATK_IDM750C_EOK  : ÓÃ»§×Ô¶¨ÒåÊý¾ÝÅäÖÃ³É¹¦
- *              ATK_IDM750C_ERROR: ÓÃ»§×Ô¶¨ÒåÊý¾ÝÅäÖÃÊ§°Ü
+ * @brief       ATK-IDM750C ç”¨æˆ·è‡ªå®šä¹‰æ•°æ®
+ * @param       data:ç”¨æˆ·è‡ªå®šä¹‰æ•°æ®ï¼Œæœ€å¤§é™åˆ¶ 32 ä¸ªå­—èŠ‚
+ *              data é»˜è®¤å‚æ•°ï¼š ALIENTEK
+ * @retval      ATK_IDM750C_EOK  : ç”¨æˆ·è‡ªå®šä¹‰æ•°æ®é…ç½®æˆåŠŸ
+ *              ATK_IDM750C_ERROR: ç”¨æˆ·è‡ªå®šä¹‰æ•°æ®é…ç½®å¤±è´¥
  */
 uint8_t atk_idm750c_user(void)
 {
@@ -748,11 +748,11 @@ uint8_t atk_idm750c_user(void)
 }
 
 /**
- * @brief       ATK-IDM750C ÎÞÍøÂçÊý¾Ý´«Êä×Ô¶¯ÖØÆôÊ±¼ä
- * @param       time:×Ô¶¯ÖØÆôÊ±¼ä,Ê±¼äÉèÖÃ·¶Î§£º 60s-3600s
- *              time Ä¬ÈÏ²ÎÊý£º 1200
- * @retval      ATK_IDM750C_EOK  : ÎÞÍøÂçÊý¾Ý´«Êä×Ô¶¯ÖØÆôÊ±¼äÅäÖÃ³É¹¦
- *              ATK_IDM750C_ERROR: ÎÞÍøÂçÊý¾Ý´«Êä×Ô¶¯ÖØÆôÊ±¼äÅäÖÃÊ§°Ü
+ * @brief       ATK-IDM750C æ— ç½‘ç»œæ•°æ®ä¼ è¾“è‡ªåŠ¨é‡å¯æ—¶é—´
+ * @param       time:è‡ªåŠ¨é‡å¯æ—¶é—´,æ—¶é—´è®¾ç½®èŒƒå›´ï¼š 60s-3600s
+ *              time é»˜è®¤å‚æ•°ï¼š 1200
+ * @retval      ATK_IDM750C_EOK  : æ— ç½‘ç»œæ•°æ®ä¼ è¾“è‡ªåŠ¨é‡å¯æ—¶é—´é…ç½®æˆåŠŸ
+ *              ATK_IDM750C_ERROR: æ— ç½‘ç»œæ•°æ®ä¼ è¾“è‡ªåŠ¨é‡å¯æ—¶é—´é…ç½®å¤±è´¥
  */
 uint8_t atk_idm750c_rstime(void)
 {
@@ -773,11 +773,11 @@ uint8_t atk_idm750c_rstime(void)
 }
 
 /**
- * @brief       ATK-IDM750C ÍøÂçÁ¬½Ó³¬Ê±ÖØÆôÊ±¼ä
- * @param       time:³¬Ê±ÖØÆôÊ±¼ä£¬·¶Î§£º 30s-6000s
- *              time Ä¬ÈÏ²ÎÊý£º 120s
- * @retval      ATK_IDM750C_EOK  : ÍøÂçÁ¬½Ó³¬Ê±ÖØÆôÊ±¼äÅäÖÃ³É¹¦
- *              ATK_IDM750C_ERROR: ÍøÂçÁ¬½Ó³¬Ê±ÖØÆôÊ±¼äÅäÖÃÊ§°Ü
+ * @brief       ATK-IDM750C ç½‘ç»œè¿žæŽ¥è¶…æ—¶é‡å¯æ—¶é—´
+ * @param       time:è¶…æ—¶é‡å¯æ—¶é—´ï¼ŒèŒƒå›´ï¼š 30s-6000s
+ *              time é»˜è®¤å‚æ•°ï¼š 120s
+ * @retval      ATK_IDM750C_EOK  : ç½‘ç»œè¿žæŽ¥è¶…æ—¶é‡å¯æ—¶é—´é…ç½®æˆåŠŸ
+ *              ATK_IDM750C_ERROR: ç½‘ç»œè¿žæŽ¥è¶…æ—¶é‡å¯æ—¶é—´é…ç½®å¤±è´¥
  */
 uint8_t atk_idm750c_link_rstime(void)
 {
@@ -798,11 +798,11 @@ uint8_t atk_idm750c_link_rstime(void)
 }
 
 /**
- * @brief       ATK-IDM750C ·¢ËÍÓ¢ÎÄ¶ÌÐÅ
- * @param       phone:Ä¿±êµç»°ºÅÂë£¬×î´óÏÞÖÆ 20 ¸ö×Ö½Ú
- *              data£º ¶ÌÐÅÄÚÈÝ£¬×î´óÏÞÖÆ 160 ¸ö×Ö½Ú
- * @retval      ATK_IDM750C_EOK  : ·¢ËÍÓ¢ÎÄ¶ÌÐÅ³É¹¦
- *              ATK_IDM750C_ERROR: ·¢ËÍÓ¢ÎÄ¶ÌÐÅÊ§°Ü
+ * @brief       ATK-IDM750C å‘é€è‹±æ–‡çŸ­ä¿¡
+ * @param       phone:ç›®æ ‡ç”µè¯å·ç ï¼Œæœ€å¤§é™åˆ¶ 20 ä¸ªå­—èŠ‚
+ *              dataï¼š çŸ­ä¿¡å†…å®¹ï¼Œæœ€å¤§é™åˆ¶ 160 ä¸ªå­—èŠ‚
+ * @retval      ATK_IDM750C_EOK  : å‘é€è‹±æ–‡çŸ­ä¿¡æˆåŠŸ
+ *              ATK_IDM750C_ERROR: å‘é€è‹±æ–‡çŸ­ä¿¡å¤±è´¥
  */
 uint8_t atk_idm750c_send_english_message(void)
 {
@@ -824,14 +824,14 @@ uint8_t atk_idm750c_send_english_message(void)
 }
 
 /**
- * @brief       ATK-IDM750C µÚÒ»Â·Á¬½Ó²ÎÊý
- * @param       TCP:TCP Ä£Ê½
- *              UDP:UDP Ä£Ê½
- *              ip£º ·þÎñÆ÷µØÖ·£¨IP µØÖ·ºÍÓòÃû¶¼Ö§³Ö£© ,×î´óÏÞÖÆ 100 ¸ö×Ö½Ú
- *              port£º·þÎñÆ÷¶Ë¿ÚºÅ£¬´óÐ¡·¶Î§ 0-65535
- *              µÚÒ»Â·Á¬½ÓÄ¬ÈÏ²ÎÊý£º AT+LINK1="TCP","cloud.alientek.com","59666"
- * @retval      ATK_IDM750C_EOK  : µÚÒ»Â·Á¬½Ó²ÎÊýÅäÖÃ³É¹¦
- *              ATK_IDM750C_ERROR: µÚÒ»Â·Á¬½Ó²ÎÊýÅäÖÃÊ§°Ü
+ * @brief       ATK-IDM750C ç¬¬ä¸€è·¯è¿žæŽ¥å‚æ•°
+ * @param       TCP:TCP æ¨¡å¼
+ *              UDP:UDP æ¨¡å¼
+ *              ipï¼š æœåŠ¡å™¨åœ°å€ï¼ˆIP åœ°å€å’ŒåŸŸåéƒ½æ”¯æŒï¼‰ ,æœ€å¤§é™åˆ¶ 100 ä¸ªå­—èŠ‚
+ *              portï¼šæœåŠ¡å™¨ç«¯å£å·ï¼Œå¤§å°èŒƒå›´ 0-65535
+ *              ç¬¬ä¸€è·¯è¿žæŽ¥é»˜è®¤å‚æ•°ï¼š AT+LINK1="TCP","cloud.alientek.com","59666"
+ * @retval      ATK_IDM750C_EOK  : ç¬¬ä¸€è·¯è¿žæŽ¥å‚æ•°é…ç½®æˆåŠŸ
+ *              ATK_IDM750C_ERROR: ç¬¬ä¸€è·¯è¿žæŽ¥å‚æ•°é…ç½®å¤±è´¥
  */
 uint8_t atk_idm750c_link1(atk_idm750c_link1mode_t link1, char *link1_domainname, char *link1_port)
 {
@@ -869,14 +869,14 @@ uint8_t atk_idm750c_link1(atk_idm750c_link1mode_t link1, char *link1_domainname,
 }
 
 /**
- * @brief       ATK-IDM750C µÚ¶þÂ·Á¬½Ó²ÎÊý
- * @param       TCP:TCP Ä£Ê½
- *              UDP:UDP Ä£Ê½
- *              ip£º ·þÎñÆ÷µØÖ·£¨IP µØÖ·ºÍÓòÃû¶¼Ö§³Ö£© ,×î´óÏÞÖÆ 100 ¸ö×Ö½Ú
- *              port£º·þÎñÆ÷¶Ë¿ÚºÅ£¬´óÐ¡·¶Î§ 0-65535
- *              µÚ¶þÂ·Á¬½ÓÄ¬ÈÏ²ÎÊý£º AT+LINK1="TCP","cloud.alientek.com","59666"
- * @retval      ATK_IDM750C_EOK  : µÚ¶þÂ·Á¬½Ó²ÎÊýÅäÖÃ³É¹¦
- *              ATK_IDM750C_ERROR: µÚ¶þÂ·Á¬½Ó²ÎÊýÅäÖÃÊ§°Ü
+ * @brief       ATK-IDM750C ç¬¬äºŒè·¯è¿žæŽ¥å‚æ•°
+ * @param       TCP:TCP æ¨¡å¼
+ *              UDP:UDP æ¨¡å¼
+ *              ipï¼š æœåŠ¡å™¨åœ°å€ï¼ˆIP åœ°å€å’ŒåŸŸåéƒ½æ”¯æŒï¼‰ ,æœ€å¤§é™åˆ¶ 100 ä¸ªå­—èŠ‚
+ *              portï¼šæœåŠ¡å™¨ç«¯å£å·ï¼Œå¤§å°èŒƒå›´ 0-65535
+ *              ç¬¬äºŒè·¯è¿žæŽ¥é»˜è®¤å‚æ•°ï¼š AT+LINK1="TCP","cloud.alientek.com","59666"
+ * @retval      ATK_IDM750C_EOK  : ç¬¬äºŒè·¯è¿žæŽ¥å‚æ•°é…ç½®æˆåŠŸ
+ *              ATK_IDM750C_ERROR: ç¬¬äºŒè·¯è¿žæŽ¥å‚æ•°é…ç½®å¤±è´¥
  */
 uint8_t atk_idm750c_link2(atk_idm750c_link2mode_t link2, char *link2_domainname, char *link2_port)
 {
@@ -914,14 +914,14 @@ uint8_t atk_idm750c_link2(atk_idm750c_link2mode_t link2, char *link2_domainname,
 }
 
 /**
- * @brief       ATK-IDM750C µÚÈýÂ·Á¬½Ó²ÎÊý
- * @param       TCP:TCP Ä£Ê½
- *              UDP:UDP Ä£Ê½
- *              ip£º ·þÎñÆ÷µØÖ·£¨IP µØÖ·ºÍÓòÃû¶¼Ö§³Ö£© ,×î´óÏÞÖÆ 100 ¸ö×Ö½Ú
- *              port£º·þÎñÆ÷¶Ë¿ÚºÅ£¬´óÐ¡·¶Î§ 0-65535
- *              µÚÈýÂ·Á¬½ÓÄ¬ÈÏ²ÎÊý£º AT+LINK1="TCP","cloud.alientek.com","59666"
- * @retval      ATK_IDM750C_EOK  : µÚÈýÂ·Á¬½Ó²ÎÊýÅäÖÃ³É¹¦
- *              ATK_IDM750C_ERROR: µÚÈýÂ·Á¬½Ó²ÎÊýÅäÖÃÊ§°Ü
+ * @brief       ATK-IDM750C ç¬¬ä¸‰è·¯è¿žæŽ¥å‚æ•°
+ * @param       TCP:TCP æ¨¡å¼
+ *              UDP:UDP æ¨¡å¼
+ *              ipï¼š æœåŠ¡å™¨åœ°å€ï¼ˆIP åœ°å€å’ŒåŸŸåéƒ½æ”¯æŒï¼‰ ,æœ€å¤§é™åˆ¶ 100 ä¸ªå­—èŠ‚
+ *              portï¼šæœåŠ¡å™¨ç«¯å£å·ï¼Œå¤§å°èŒƒå›´ 0-65535
+ *              ç¬¬ä¸‰è·¯è¿žæŽ¥é»˜è®¤å‚æ•°ï¼š AT+LINK1="TCP","cloud.alientek.com","59666"
+ * @retval      ATK_IDM750C_EOK  : ç¬¬ä¸‰è·¯è¿žæŽ¥å‚æ•°é…ç½®æˆåŠŸ
+ *              ATK_IDM750C_ERROR: ç¬¬ä¸‰è·¯è¿žæŽ¥å‚æ•°é…ç½®å¤±è´¥
  */
 uint8_t atk_idm750c_link3(atk_idm750c_link3mode_t link3, char *link3_domainname, char *link3_port)
 {
@@ -959,14 +959,14 @@ uint8_t atk_idm750c_link3(atk_idm750c_link3mode_t link3, char *link3_domainname,
 }
 
 /**
- * @brief       ATK-IDM750C µÚËÄÂ·Á¬½Ó²ÎÊý
- * @param       TCP:TCP Ä£Ê½
- *              UDP:UDP Ä£Ê½
- *              ip£º ·þÎñÆ÷µØÖ·£¨IP µØÖ·ºÍÓòÃû¶¼Ö§³Ö£© ,×î´óÏÞÖÆ 100 ¸ö×Ö½Ú 
- *              port£º·þÎñÆ÷¶Ë¿ÚºÅ£¬´óÐ¡·¶Î§ 0-65535
- *              µÚËÄÂ·Á¬½ÓÄ¬ÈÏ²ÎÊý£º AT+LINK1="TCP","cloud.alientek.com","59666"
- * @retval      ATK_IDM750C_EOK  : µÚËÄÂ·Á¬½Ó²ÎÊýÅäÖÃ³É¹¦
- *              ATK_IDM750C_ERROR: µÚËÄÂ·Á¬½Ó²ÎÊýÅäÖÃÊ§°Ü
+ * @brief       ATK-IDM750C ç¬¬å››è·¯è¿žæŽ¥å‚æ•°
+ * @param       TCP:TCP æ¨¡å¼
+ *              UDP:UDP æ¨¡å¼
+ *              ipï¼š æœåŠ¡å™¨åœ°å€ï¼ˆIP åœ°å€å’ŒåŸŸåéƒ½æ”¯æŒï¼‰ ,æœ€å¤§é™åˆ¶ 100 ä¸ªå­—èŠ‚ 
+ *              portï¼šæœåŠ¡å™¨ç«¯å£å·ï¼Œå¤§å°èŒƒå›´ 0-65535
+ *              ç¬¬å››è·¯è¿žæŽ¥é»˜è®¤å‚æ•°ï¼š AT+LINK1="TCP","cloud.alientek.com","59666"
+ * @retval      ATK_IDM750C_EOK  : ç¬¬å››è·¯è¿žæŽ¥å‚æ•°é…ç½®æˆåŠŸ
+ *              ATK_IDM750C_ERROR: ç¬¬å››è·¯è¿žæŽ¥å‚æ•°é…ç½®å¤±è´¥
  */
 uint8_t atk_idm750c_link4(atk_idm750c_link4mode_t link4, char *link4_domainname, char *link4_port)
 {
@@ -1004,12 +1004,12 @@ uint8_t atk_idm750c_link4(atk_idm750c_link4mode_t link4, char *link4_domainname,
 }
 
 /**
- * @brief       ATK-IDM750C µÚÒ»Â·Á¬½ÓÊ¹ÄÜ×´Ì¬
- * @param       enable:Á¬½ÓÊ¹ÄÜ×´Ì¬
- *              ON:ÆôÓÃÁ¬½Ó
- *              OFF:²»ÆôÓÃÁ¬½Ó
- * @retval      ATK_IDM750C_EOK  : ÍøÂçÍ¸´«ÅäÖÃ³É¹¦
- *              ATK_IDM750C_ERROR: ÍøÂçÍ¸´«ÅäÖÃÊ§°Ü
+ * @brief       ATK-IDM750C ç¬¬ä¸€è·¯è¿žæŽ¥ä½¿èƒ½çŠ¶æ€
+ * @param       enable:è¿žæŽ¥ä½¿èƒ½çŠ¶æ€
+ *              ON:å¯ç”¨è¿žæŽ¥
+ *              OFF:ä¸å¯ç”¨è¿žæŽ¥
+ * @retval      ATK_IDM750C_EOK  : ç½‘ç»œé€ä¼ é…ç½®æˆåŠŸ
+ *              ATK_IDM750C_ERROR: ç½‘ç»œé€ä¼ é…ç½®å¤±è´¥
  */
 uint8_t atk_idm750c_link1en(atk_idm750c_link1en_t link1en)
 {
@@ -1047,12 +1047,12 @@ uint8_t atk_idm750c_link1en(atk_idm750c_link1en_t link1en)
 }
 
 /**
- * @brief       ATK-IDM750C µÚ¶þÂ·Á¬½ÓÊ¹ÄÜ×´Ì¬
- * @param       enable:Á¬½ÓÊ¹ÄÜ×´Ì¬
- *              ON:ÆôÓÃÁ¬½Ó
- *              OFF:²»ÆôÓÃÁ¬½Ó
- * @retval      ATK_IDM750C_EOK  : ÍøÂçÍ¸´«ÅäÖÃ³É¹¦
- *              ATK_IDM750C_ERROR: ÍøÂçÍ¸´«ÅäÖÃÊ§°Ü
+ * @brief       ATK-IDM750C ç¬¬äºŒè·¯è¿žæŽ¥ä½¿èƒ½çŠ¶æ€
+ * @param       enable:è¿žæŽ¥ä½¿èƒ½çŠ¶æ€
+ *              ON:å¯ç”¨è¿žæŽ¥
+ *              OFF:ä¸å¯ç”¨è¿žæŽ¥
+ * @retval      ATK_IDM750C_EOK  : ç½‘ç»œé€ä¼ é…ç½®æˆåŠŸ
+ *              ATK_IDM750C_ERROR: ç½‘ç»œé€ä¼ é…ç½®å¤±è´¥
  */
 uint8_t atk_idm750c_link2en(atk_idm750c_link2en_t link2en)
 {
@@ -1090,12 +1090,12 @@ uint8_t atk_idm750c_link2en(atk_idm750c_link2en_t link2en)
 }
 
 /**
- * @brief       ATK-IDM750C µÚÈýÂ·Á¬½ÓÊ¹ÄÜ×´Ì¬
- * @param       enable:Á¬½ÓÊ¹ÄÜ×´Ì¬
- *              ON:ÆôÓÃÁ¬½Ó
- *              OFF:²»ÆôÓÃÁ¬½Ó
- * @retval      ATK_IDM750C_EOK  : ÍøÂçÍ¸´«ÅäÖÃ³É¹¦
- *              ATK_IDM750C_ERROR: ÍøÂçÍ¸´«ÅäÖÃÊ§°Ü
+ * @brief       ATK-IDM750C ç¬¬ä¸‰è·¯è¿žæŽ¥ä½¿èƒ½çŠ¶æ€
+ * @param       enable:è¿žæŽ¥ä½¿èƒ½çŠ¶æ€
+ *              ON:å¯ç”¨è¿žæŽ¥
+ *              OFF:ä¸å¯ç”¨è¿žæŽ¥
+ * @retval      ATK_IDM750C_EOK  : ç½‘ç»œé€ä¼ é…ç½®æˆåŠŸ
+ *              ATK_IDM750C_ERROR: ç½‘ç»œé€ä¼ é…ç½®å¤±è´¥
  */
 uint8_t atk_idm750c_link3en(atk_idm750c_link3en_t link3en)
 {
@@ -1133,12 +1133,12 @@ uint8_t atk_idm750c_link3en(atk_idm750c_link3en_t link3en)
 }
 
 /**
- * @brief       ATK-IDM750C µÚËÄÂ·Á¬½ÓÊ¹ÄÜ×´Ì¬
- * @param       enable:Á¬½ÓÊ¹ÄÜ×´Ì¬
- *              ON:ÆôÓÃÁ¬½Ó
- *              OFF:²»ÆôÓÃÁ¬½Ó
- * @retval      ATK_IDM750C_EOK  : ÍøÂçÍ¸´«ÅäÖÃ³É¹¦
- *              ATK_IDM750C_ERROR: ÍøÂçÍ¸´«ÅäÖÃÊ§°Ü
+ * @brief       ATK-IDM750C ç¬¬å››è·¯è¿žæŽ¥ä½¿èƒ½çŠ¶æ€
+ * @param       enable:è¿žæŽ¥ä½¿èƒ½çŠ¶æ€
+ *              ON:å¯ç”¨è¿žæŽ¥
+ *              OFF:ä¸å¯ç”¨è¿žæŽ¥
+ * @retval      ATK_IDM750C_EOK  : ç½‘ç»œé€ä¼ é…ç½®æˆåŠŸ
+ *              ATK_IDM750C_ERROR: ç½‘ç»œé€ä¼ é…ç½®å¤±è´¥
  */
 uint8_t atk_idm750c_link4en(atk_idm750c_link4en_t link4en)
 {
@@ -1176,12 +1176,12 @@ uint8_t atk_idm750c_link4en(atk_idm750c_link4en_t link4en)
 }
 
 /**
- * @brief       ATK-IDM750C µÚÒ»Â·Á¬½ÓÄ£Ê½
- * @param       mode:Á¬½ÓÄ£Ê½
- *              LONG:³¤Á¬½Ó£¨Ä¬ÈÏ£©
- *              SHORT:¶ÌÁ¬½Ó
- * @retval      ATK_IDM750C_EOK  : ÍøÂçÍ¸´«ÅäÖÃ³É¹¦
- *              ATK_IDM750C_ERROR: ÍøÂçÍ¸´«ÅäÖÃÊ§°Ü
+ * @brief       ATK-IDM750C ç¬¬ä¸€è·¯è¿žæŽ¥æ¨¡å¼
+ * @param       mode:è¿žæŽ¥æ¨¡å¼
+ *              LONG:é•¿è¿žæŽ¥ï¼ˆé»˜è®¤ï¼‰
+ *              SHORT:çŸ­è¿žæŽ¥
+ * @retval      ATK_IDM750C_EOK  : ç½‘ç»œé€ä¼ é…ç½®æˆåŠŸ
+ *              ATK_IDM750C_ERROR: ç½‘ç»œé€ä¼ é…ç½®å¤±è´¥
  */
 uint8_t atk_idm750c_link1md(atk_idm750c_link1md_t link1md)
 {
@@ -1219,12 +1219,12 @@ uint8_t atk_idm750c_link1md(atk_idm750c_link1md_t link1md)
 }
 
 /**
- * @brief       ATK-IDM750C µÚ¶þÂ·Á¬½ÓÄ£Ê½
- * @param       mode:Á¬½ÓÄ£Ê½
- *              LONG:³¤Á¬½Ó£¨Ä¬ÈÏ£©
- *              SHORT:¶ÌÁ¬½Ó
- * @retval      ATK_IDM750C_EOK  : ÍøÂçÍ¸´«ÅäÖÃ³É¹¦
- *              ATK_IDM750C_ERROR: ÍøÂçÍ¸´«ÅäÖÃÊ§°Ü
+ * @brief       ATK-IDM750C ç¬¬äºŒè·¯è¿žæŽ¥æ¨¡å¼
+ * @param       mode:è¿žæŽ¥æ¨¡å¼
+ *              LONG:é•¿è¿žæŽ¥ï¼ˆé»˜è®¤ï¼‰
+ *              SHORT:çŸ­è¿žæŽ¥
+ * @retval      ATK_IDM750C_EOK  : ç½‘ç»œé€ä¼ é…ç½®æˆåŠŸ
+ *              ATK_IDM750C_ERROR: ç½‘ç»œé€ä¼ é…ç½®å¤±è´¥
  */
 uint8_t atk_idm750c_link2md(atk_idm750c_link2md_t link2md)
 {
@@ -1262,12 +1262,12 @@ uint8_t atk_idm750c_link2md(atk_idm750c_link2md_t link2md)
 }
 
 /**
- * @brief       ATK-IDM750C µÚÈýÂ·Á¬½ÓÄ£Ê½
- * @param       mode:Á¬½ÓÄ£Ê½
- *              LONG:³¤Á¬½Ó£¨Ä¬ÈÏ£©
- *              SHORT:¶ÌÁ¬½Ó
- * @retval      ATK_IDM750C_EOK  : ÍøÂçÍ¸´«ÅäÖÃ³É¹¦
- *              ATK_IDM750C_ERROR: ÍøÂçÍ¸´«ÅäÖÃÊ§°Ü
+ * @brief       ATK-IDM750C ç¬¬ä¸‰è·¯è¿žæŽ¥æ¨¡å¼
+ * @param       mode:è¿žæŽ¥æ¨¡å¼
+ *              LONG:é•¿è¿žæŽ¥ï¼ˆé»˜è®¤ï¼‰
+ *              SHORT:çŸ­è¿žæŽ¥
+ * @retval      ATK_IDM750C_EOK  : ç½‘ç»œé€ä¼ é…ç½®æˆåŠŸ
+ *              ATK_IDM750C_ERROR: ç½‘ç»œé€ä¼ é…ç½®å¤±è´¥
  */
 uint8_t atk_idm750c_link3md(atk_idm750c_link3md_t link3md)
 {
@@ -1305,12 +1305,12 @@ uint8_t atk_idm750c_link3md(atk_idm750c_link3md_t link3md)
 }
 
 /**
- * @brief       ATK-IDM750C µÚËÄÂ·Á¬½ÓÄ£Ê½
- * @param       mode:Á¬½ÓÄ£Ê½
- *              LONG:³¤Á¬½Ó£¨Ä¬ÈÏ£©
- *              SHORT:¶ÌÁ¬½Ó
- * @retval      ATK_IDM750C_EOK  : ÍøÂçÍ¸´«ÅäÖÃ³É¹¦
- *              ATK_IDM750C_ERROR: ÍøÂçÍ¸´«ÅäÖÃÊ§°Ü
+ * @brief       ATK-IDM750C ç¬¬å››è·¯è¿žæŽ¥æ¨¡å¼
+ * @param       mode:è¿žæŽ¥æ¨¡å¼
+ *              LONG:é•¿è¿žæŽ¥ï¼ˆé»˜è®¤ï¼‰
+ *              SHORT:çŸ­è¿žæŽ¥
+ * @retval      ATK_IDM750C_EOK  : ç½‘ç»œé€ä¼ é…ç½®æˆåŠŸ
+ *              ATK_IDM750C_ERROR: ç½‘ç»œé€ä¼ é…ç½®å¤±è´¥
  */
 uint8_t atk_idm750c_link4md(atk_idm750c_link4md_t link4md)
 {
@@ -1348,12 +1348,12 @@ uint8_t atk_idm750c_link4md(atk_idm750c_link4md_t link4md)
 }
 
 /**
- * @brief       ATK-IDM750C ²éÑ¯µÚÒ»Â·Á¬½Ó×´Ì¬
- * @param       state£ºÍøÂçÁ¬½Ó×´Ì¬
- *              CONNECTED£ºÒÑÁ¬½Ó
- *              DISCONNECTED£ºÎ´Á¬½Ó
- * @retval      ATK_IDM750C_EOK  : ²éÑ¯³É¹¦
- *              ATK_IDM750C_ERROR: ²éÑ¯Ê§°Ü
+ * @brief       ATK-IDM750C æŸ¥è¯¢ç¬¬ä¸€è·¯è¿žæŽ¥çŠ¶æ€
+ * @param       stateï¼šç½‘ç»œè¿žæŽ¥çŠ¶æ€
+ *              CONNECTEDï¼šå·²è¿žæŽ¥
+ *              DISCONNECTEDï¼šæœªè¿žæŽ¥
+ * @retval      ATK_IDM750C_EOK  : æŸ¥è¯¢æˆåŠŸ
+ *              ATK_IDM750C_ERROR: æŸ¥è¯¢å¤±è´¥
  */
 uint8_t atk_idm750c_query_link1sta(void)
 {
@@ -1371,12 +1371,12 @@ uint8_t atk_idm750c_query_link1sta(void)
 }
 
 /**
- * @brief       ATK-IDM750C ²éÑ¯µÚ¶þÂ·Á¬½Ó×´Ì¬
- * @param       state£ºÍøÂçÁ¬½Ó×´Ì¬
- *              CONNECTED£ºÒÑÁ¬½Ó
- *              DISCONNECTED£ºÎ´Á¬½Ó
- * @retval      ATK_IDM750C_EOK  : ²éÑ¯³É¹¦
- *              ATK_IDM750C_ERROR: ²éÑ¯Ê§°Ü
+ * @brief       ATK-IDM750C æŸ¥è¯¢ç¬¬äºŒè·¯è¿žæŽ¥çŠ¶æ€
+ * @param       stateï¼šç½‘ç»œè¿žæŽ¥çŠ¶æ€
+ *              CONNECTEDï¼šå·²è¿žæŽ¥
+ *              DISCONNECTEDï¼šæœªè¿žæŽ¥
+ * @retval      ATK_IDM750C_EOK  : æŸ¥è¯¢æˆåŠŸ
+ *              ATK_IDM750C_ERROR: æŸ¥è¯¢å¤±è´¥
  */
 uint8_t atk_idm750c_query_link2sta(void)
 {
@@ -1394,12 +1394,12 @@ uint8_t atk_idm750c_query_link2sta(void)
 }
 
 /**
- * @brief       ATK-IDM750C ²éÑ¯µÚÈýÂ·Á¬½Ó×´Ì¬
- * @param       state£ºÍøÂçÁ¬½Ó×´Ì¬
- *              CONNECTED£ºÒÑÁ¬½Ó
- *              DISCONNECTED£ºÎ´Á¬½Ó
- * @retval      ATK_IDM750C_EOK  : ²éÑ¯³É¹¦
- *              ATK_IDM750C_ERROR: ²éÑ¯Ê§°Ü
+ * @brief       ATK-IDM750C æŸ¥è¯¢ç¬¬ä¸‰è·¯è¿žæŽ¥çŠ¶æ€
+ * @param       stateï¼šç½‘ç»œè¿žæŽ¥çŠ¶æ€
+ *              CONNECTEDï¼šå·²è¿žæŽ¥
+ *              DISCONNECTEDï¼šæœªè¿žæŽ¥
+ * @retval      ATK_IDM750C_EOK  : æŸ¥è¯¢æˆåŠŸ
+ *              ATK_IDM750C_ERROR: æŸ¥è¯¢å¤±è´¥
  */
 uint8_t atk_idm750c_query_link3sta(void)
 {
@@ -1417,12 +1417,12 @@ uint8_t atk_idm750c_query_link3sta(void)
 }
 
 /**
- * @brief       ATK-IDM750C ²éÑ¯µÚËÄÂ·Á¬½Ó×´Ì¬
- * @param       state£ºÍøÂçÁ¬½Ó×´Ì¬
- *              CONNECTED£ºÒÑÁ¬½Ó
- *              DISCONNECTED£ºÎ´Á¬½Ó
- * @retval      ATK_IDM750C_EOK  : ²éÑ¯³É¹¦
- *              ATK_IDM750C_ERROR: ²éÑ¯Ê§°Ü
+ * @brief       ATK-IDM750C æŸ¥è¯¢ç¬¬å››è·¯è¿žæŽ¥çŠ¶æ€
+ * @param       stateï¼šç½‘ç»œè¿žæŽ¥çŠ¶æ€
+ *              CONNECTEDï¼šå·²è¿žæŽ¥
+ *              DISCONNECTEDï¼šæœªè¿žæŽ¥
+ * @retval      ATK_IDM750C_EOK  : æŸ¥è¯¢æˆåŠŸ
+ *              ATK_IDM750C_ERROR: æŸ¥è¯¢å¤±è´¥
  */
 uint8_t atk_idm750c_query_link4sta(void)
 {
@@ -1440,11 +1440,11 @@ uint8_t atk_idm750c_query_link4sta(void)
 }
 
 /**
- * @brief       ATK-IDM750C µÚÒ»Â·³¬Ê±ÖØÁ¬Ê±¼ä
- * @param       time£º³¬Ê±ÖØÁ¬Ê±¼ä£¬·¶Î§1s-60s
- *              timeÄ¬ÈÏÖµÎª£º5s
- * @retval      ATK_IDM750C_EOK  : ÖØÁ¬³É¹¦
- *              ATK_IDM750C_ERROR: ÖØÁ¬Ê§°Ü
+ * @brief       ATK-IDM750C ç¬¬ä¸€è·¯è¶…æ—¶é‡è¿žæ—¶é—´
+ * @param       timeï¼šè¶…æ—¶é‡è¿žæ—¶é—´ï¼ŒèŒƒå›´1s-60s
+ *              timeé»˜è®¤å€¼ä¸ºï¼š5s
+ * @retval      ATK_IDM750C_EOK  : é‡è¿žæˆåŠŸ
+ *              ATK_IDM750C_ERROR: é‡è¿žå¤±è´¥
  */
 uint8_t atk_idm750c_link1_timeout(void)
 {
@@ -1465,11 +1465,11 @@ uint8_t atk_idm750c_link1_timeout(void)
 }
 
 /**
- * @brief       ATK-IDM750C µÚ¶þÂ·³¬Ê±ÖØÁ¬Ê±¼ä
- * @param       time£º³¬Ê±ÖØÁ¬Ê±¼ä£¬·¶Î§1s-60s
- *              timeÄ¬ÈÏÖµÎª£º5s
- * @retval      ATK_IDM750C_EOK  : ÖØÁ¬³É¹¦
- *              ATK_IDM750C_ERROR: ÖØÁ¬Ê§°Ü
+ * @brief       ATK-IDM750C ç¬¬äºŒè·¯è¶…æ—¶é‡è¿žæ—¶é—´
+ * @param       timeï¼šè¶…æ—¶é‡è¿žæ—¶é—´ï¼ŒèŒƒå›´1s-60s
+ *              timeé»˜è®¤å€¼ä¸ºï¼š5s
+ * @retval      ATK_IDM750C_EOK  : é‡è¿žæˆåŠŸ
+ *              ATK_IDM750C_ERROR: é‡è¿žå¤±è´¥
  */
 uint8_t atk_idm750c_link2_timeout(void)
 {
@@ -1490,11 +1490,11 @@ uint8_t atk_idm750c_link2_timeout(void)
 }
 
 /**
- * @brief       ATK-IDM750C µÚÈýÂ·³¬Ê±ÖØÁ¬Ê±¼ä
- * @param       time£º³¬Ê±ÖØÁ¬Ê±¼ä£¬·¶Î§1s-60s
- *              timeÄ¬ÈÏÖµÎª£º5s
- * @retval      ATK_IDM750C_EOK  : ÖØÁ¬³É¹¦
- *              ATK_IDM750C_ERROR: ÖØÁ¬Ê§°Ü
+ * @brief       ATK-IDM750C ç¬¬ä¸‰è·¯è¶…æ—¶é‡è¿žæ—¶é—´
+ * @param       timeï¼šè¶…æ—¶é‡è¿žæ—¶é—´ï¼ŒèŒƒå›´1s-60s
+ *              timeé»˜è®¤å€¼ä¸ºï¼š5s
+ * @retval      ATK_IDM750C_EOK  : é‡è¿žæˆåŠŸ
+ *              ATK_IDM750C_ERROR: é‡è¿žå¤±è´¥
  */
 uint8_t atk_idm750c_link3_timeout(void)
 {
@@ -1515,11 +1515,11 @@ uint8_t atk_idm750c_link3_timeout(void)
 }
 
 /**
- * @brief       ATK-IDM750C µÚËÄÂ·³¬Ê±ÖØÁ¬Ê±¼ä
- * @param       time£º³¬Ê±ÖØÁ¬Ê±¼ä£¬·¶Î§1s-60s
- *              timeÄ¬ÈÏÖµÎª£º5s
- * @retval      ATK_IDM750C_EOK  : ÖØÁ¬³É¹¦
- *              ATK_IDM750C_ERROR: ÖØÁ¬Ê§°Ü
+ * @brief       ATK-IDM750C ç¬¬å››è·¯è¶…æ—¶é‡è¿žæ—¶é—´
+ * @param       timeï¼šè¶…æ—¶é‡è¿žæ—¶é—´ï¼ŒèŒƒå›´1s-60s
+ *              timeé»˜è®¤å€¼ä¸ºï¼š5s
+ * @retval      ATK_IDM750C_EOK  : é‡è¿žæˆåŠŸ
+ *              ATK_IDM750C_ERROR: é‡è¿žå¤±è´¥
  */
 uint8_t atk_idm750c_link4_timeout(void)
 {
@@ -1540,11 +1540,11 @@ uint8_t atk_idm750c_link4_timeout(void)
 }
 
 /**
- * @brief       ATK-IDM750C µÚÒ»Â·¶ÌÁ¬½Ó³ÖÐøÊ±¼ä
- * @param       time£ºÁ¬½Ó³¬Ê±Ê±¼ä£¬·¶Î§1s-100s
- *              timeÄ¬ÈÏÖµÎª£º10s
- * @retval      ATK_IDM750C_EOK  : ÅäÖÃ³É¹¦
- *              ATK_IDM750C_ERROR: ÅäÖÃÊ§°Ü
+ * @brief       ATK-IDM750C ç¬¬ä¸€è·¯çŸ­è¿žæŽ¥æŒç»­æ—¶é—´
+ * @param       timeï¼šè¿žæŽ¥è¶…æ—¶æ—¶é—´ï¼ŒèŒƒå›´1s-100s
+ *              timeé»˜è®¤å€¼ä¸ºï¼š10s
+ * @retval      ATK_IDM750C_EOK  : é…ç½®æˆåŠŸ
+ *              ATK_IDM750C_ERROR: é…ç½®å¤±è´¥
  */
 uint8_t atk_idm750c_link1_duration(void)
 {
@@ -1565,11 +1565,11 @@ uint8_t atk_idm750c_link1_duration(void)
 }
 
 /**
- * @brief       ATK-IDM750C µÚ¶þÂ·¶ÌÁ¬½Ó³ÖÐøÊ±¼ä
- * @param       time£ºÁ¬½Ó³¬Ê±Ê±¼ä£¬·¶Î§1s-100s
- *              timeÄ¬ÈÏÖµÎª£º10s
- * @retval      ATK_IDM750C_EOK  : ÅäÖÃ³É¹¦
- *              ATK_IDM750C_ERROR: ÅäÖÃÊ§°Ü
+ * @brief       ATK-IDM750C ç¬¬äºŒè·¯çŸ­è¿žæŽ¥æŒç»­æ—¶é—´
+ * @param       timeï¼šè¿žæŽ¥è¶…æ—¶æ—¶é—´ï¼ŒèŒƒå›´1s-100s
+ *              timeé»˜è®¤å€¼ä¸ºï¼š10s
+ * @retval      ATK_IDM750C_EOK  : é…ç½®æˆåŠŸ
+ *              ATK_IDM750C_ERROR: é…ç½®å¤±è´¥
  */
 uint8_t atk_idm750c_link2_duration(void)
 {
@@ -1590,11 +1590,11 @@ uint8_t atk_idm750c_link2_duration(void)
 }
 
 /**
- * @brief       ATK-IDM750C µÚÈýÂ·¶ÌÁ¬½Ó³ÖÐøÊ±¼ä
- * @param       time£ºÁ¬½Ó³¬Ê±Ê±¼ä£¬·¶Î§1s-100s
- *              timeÄ¬ÈÏÖµÎª£º10s
- * @retval      ATK_IDM750C_EOK  : ÅäÖÃ³É¹¦
- *              ATK_IDM750C_ERROR: ÅäÖÃÊ§°Ü
+ * @brief       ATK-IDM750C ç¬¬ä¸‰è·¯çŸ­è¿žæŽ¥æŒç»­æ—¶é—´
+ * @param       timeï¼šè¿žæŽ¥è¶…æ—¶æ—¶é—´ï¼ŒèŒƒå›´1s-100s
+ *              timeé»˜è®¤å€¼ä¸ºï¼š10s
+ * @retval      ATK_IDM750C_EOK  : é…ç½®æˆåŠŸ
+ *              ATK_IDM750C_ERROR: é…ç½®å¤±è´¥
  */
 uint8_t atk_idm750c_link3_duration(void)
 {
@@ -1615,11 +1615,11 @@ uint8_t atk_idm750c_link3_duration(void)
 }
 
 /**
- * @brief       ATK-IDM750C µÚËÄÂ·¶ÌÁ¬½Ó³ÖÐøÊ±¼ä
- * @param       time£ºÁ¬½Ó³¬Ê±Ê±¼ä£¬·¶Î§1s-100s
- *              timeÄ¬ÈÏÖµÎª£º10s
- * @retval      ATK_IDM750C_EOK  : ÅäÖÃ³É¹¦
- *              ATK_IDM750C_ERROR: ÅäÖÃÊ§°Ü
+ * @brief       ATK-IDM750C ç¬¬å››è·¯çŸ­è¿žæŽ¥æŒç»­æ—¶é—´
+ * @param       timeï¼šè¿žæŽ¥è¶…æ—¶æ—¶é—´ï¼ŒèŒƒå›´1s-100s
+ *              timeé»˜è®¤å€¼ä¸ºï¼š10s
+ * @retval      ATK_IDM750C_EOK  : é…ç½®æˆåŠŸ
+ *              ATK_IDM750C_ERROR: é…ç½®å¤±è´¥
  */
 uint8_t atk_idm750c_link4_duration(void)
 {
@@ -1640,17 +1640,17 @@ uint8_t atk_idm750c_link4_duration(void)
 }
 
 /**
- * @brief       ATK-IDM750C APNÅäÖÃ
- * @param       apn:APNÀàÐÍ£¬×î´óÏÞÖÆ98¸ö×Ö½Ú
- *              ÒÔÏÂÎªÍ¨ÓÃ½ÓÈëµã£º
- *              ×Ô¶¯»ñÈ¡APN½ÓÈëµã£ºAUTO£¬ÖÐ¹úÒÆ¶¯½ÓÈëµã£ºCMNET
- *              ÖÐ¹úÁªÍ¨½ÓÈëµã£ºUNINET£¬ÖÐ¹úµçÐÅ½ÓÈëµã£ºCTNET
- *              user name£ºÓÃ»§Ãû£¬ÈôÃ»ÓÐ±ã²»ÐèÒªÌîÐ´£¬×î´óÏÞÖÆ30¸ö×Ö½Ú
- *              password£ºÃÜÂë£¬ÈôÃ»ÓÐ±ã²»ÐèÒªÌîÐ´£¬×î´óÏÞÖÆ30¸ö×Ö½Ú
- *              CONNECTED£ºÒÑÁ¬½Ó
- *              DISCONNECTED£ºÎ´Á¬½Ó
- * @retval      ATK_IDM750C_EOK  : ·¢ËÍÓ¢ÎÄ¶ÌÐÅ³É¹¦
- *              ATK_IDM750C_ERROR: ·¢ËÍÓ¢ÎÄ¶ÌÐÅÊ§°Ü
+ * @brief       ATK-IDM750C APNé…ç½®
+ * @param       apn:APNç±»åž‹ï¼Œæœ€å¤§é™åˆ¶98ä¸ªå­—èŠ‚
+ *              ä»¥ä¸‹ä¸ºé€šç”¨æŽ¥å…¥ç‚¹ï¼š
+ *              è‡ªåŠ¨èŽ·å–APNæŽ¥å…¥ç‚¹ï¼šAUTOï¼Œä¸­å›½ç§»åŠ¨æŽ¥å…¥ç‚¹ï¼šCMNET
+ *              ä¸­å›½è”é€šæŽ¥å…¥ç‚¹ï¼šUNINETï¼Œä¸­å›½ç”µä¿¡æŽ¥å…¥ç‚¹ï¼šCTNET
+ *              user nameï¼šç”¨æˆ·åï¼Œè‹¥æ²¡æœ‰ä¾¿ä¸éœ€è¦å¡«å†™ï¼Œæœ€å¤§é™åˆ¶30ä¸ªå­—èŠ‚
+ *              passwordï¼šå¯†ç ï¼Œè‹¥æ²¡æœ‰ä¾¿ä¸éœ€è¦å¡«å†™ï¼Œæœ€å¤§é™åˆ¶30ä¸ªå­—èŠ‚
+ *              CONNECTEDï¼šå·²è¿žæŽ¥
+ *              DISCONNECTEDï¼šæœªè¿žæŽ¥
+ * @retval      ATK_IDM750C_EOK  : å‘é€è‹±æ–‡çŸ­ä¿¡æˆåŠŸ
+ *              ATK_IDM750C_ERROR: å‘é€è‹±æ–‡çŸ­ä¿¡å¤±è´¥
  */
 uint8_t atk_idm750c_set_apn(void)
 {
@@ -1672,14 +1672,14 @@ uint8_t atk_idm750c_set_apn(void)
 }
 
 /**
- * @brief       ATK-IDM750C Ö¸¶¨Êý¾Ý·¢ËÍµ½Ò»Â·Á¬½Ó
- * @param       socket£º·¢ËÍÊý¾Ýµ½ÄÄÒ»Â·Á¬½Ó£¬²ÎÊý·¶Î§£º1-4
- *              data£ºÐèÒª·¢ËÍµÄÊý¾Ý
- *              ALIENTEK£ºÍ¸´«Ö¸ÁîÃÜÔ¿£¨¿ÉÒÔÍ¨¹ý AT Ö¸Áî»òÕßÉÏÎ»»úÐÞ¸Ä£¬³ö³§Ä¬ÈÏÎª£º ALIENTEK£©
- *              1£ºÎªµÚÒ»Â·Á¬½Ó
- *              alientek£ºÍ¸´«Êý¾Ý£¨¶ººÅºóÃæµÄÊý¾ÝÈ«²¿ÎªÍ¸´«Êý¾Ý£©
- * @retval      ATK_IDM750C_EOK  : ·¢ËÍ³É¹¦
- *              ATK_IDM750C_ERROR: ·¢ËÍÊ§°Ü
+ * @brief       ATK-IDM750C æŒ‡å®šæ•°æ®å‘é€åˆ°ä¸€è·¯è¿žæŽ¥
+ * @param       socketï¼šå‘é€æ•°æ®åˆ°å“ªä¸€è·¯è¿žæŽ¥ï¼Œå‚æ•°èŒƒå›´ï¼š1-4
+ *              dataï¼šéœ€è¦å‘é€çš„æ•°æ®
+ *              ALIENTEKï¼šé€ä¼ æŒ‡ä»¤å¯†é’¥ï¼ˆå¯ä»¥é€šè¿‡ AT æŒ‡ä»¤æˆ–è€…ä¸Šä½æœºä¿®æ”¹ï¼Œå‡ºåŽ‚é»˜è®¤ä¸ºï¼š ALIENTEKï¼‰
+ *              1ï¼šä¸ºç¬¬ä¸€è·¯è¿žæŽ¥
+ *              alientekï¼šé€ä¼ æ•°æ®ï¼ˆé€—å·åŽé¢çš„æ•°æ®å…¨éƒ¨ä¸ºé€ä¼ æ•°æ®ï¼‰
+ * @retval      ATK_IDM750C_EOK  : å‘é€æˆåŠŸ
+ *              ATK_IDM750C_ERROR: å‘é€å¤±è´¥
  */
 uint8_t atk_idm750c_send_data(void)
 {
@@ -1701,13 +1701,13 @@ uint8_t atk_idm750c_send_data(void)
 }
 
 /**
- * @brief       ATK-IDM750C ÍøÂçÍ¸´«Ä£Ê½Êý¾Ý·¢ËÍÄ£Ê½
- * @param       enable Êý¾Ý·¢ËÍÄ£Ê½:
- *              ON : ¿ì·¢Ä£Ê½
- *              OFF£ºÂý·¢Ä£Ê½
- *              Ä¬ÈÏÎª¿ì·¢Ä£Ê½£º +SENDFAST: "ON"
- * @retval      ATK_IDM750C_EOK  : ·¢ËÍ³É¹¦
- *              ATK_IDM750C_ERROR: ·¢ËÍÊ§°Ü
+ * @brief       ATK-IDM750C ç½‘ç»œé€ä¼ æ¨¡å¼æ•°æ®å‘é€æ¨¡å¼
+ * @param       enable æ•°æ®å‘é€æ¨¡å¼:
+ *              ON : å¿«å‘æ¨¡å¼
+ *              OFFï¼šæ…¢å‘æ¨¡å¼
+ *              é»˜è®¤ä¸ºå¿«å‘æ¨¡å¼ï¼š +SENDFAST: "ON"
+ * @retval      ATK_IDM750C_EOK  : å‘é€æˆåŠŸ
+ *              ATK_IDM750C_ERROR: å‘é€å¤±è´¥
  */
 uint8_t atk_idm750c_send_fast(atk_idm750c_sendfast_t sendfast)
 {
@@ -1745,13 +1745,13 @@ uint8_t atk_idm750c_send_fast(atk_idm750c_sendfast_t sendfast)
 }
 
 /**
- * @brief       ATK-IDM750C Ô­×ÓÔÆÏà¹ØÖ¸Áî
- * @param       enable ÆôÓÃ×´Ì¬
- *              ON : ÆôÓÃ
- *              OFF£º²»ÆôÓÃ
- *              Ä¬ÈÏ²ÎÊý£ºOFF
- * @retval      ATK_IDM750C_EOK  : ÆôÓÃ³É¹¦
- *              ATK_IDM750C_ERROR: ÆôÓÃÊ§°Ü
+ * @brief       ATK-IDM750C åŽŸå­äº‘ç›¸å…³æŒ‡ä»¤
+ * @param       enable å¯ç”¨çŠ¶æ€
+ *              ON : å¯ç”¨
+ *              OFFï¼šä¸å¯ç”¨
+ *              é»˜è®¤å‚æ•°ï¼šOFF
+ * @retval      ATK_IDM750C_EOK  : å¯ç”¨æˆåŠŸ
+ *              ATK_IDM750C_ERROR: å¯ç”¨å¤±è´¥
  */
 uint8_t atk_idm750c_set_yuanziyun(atk_idm750c_set_yuanziyun_t yuanziyun)
 {
@@ -1789,12 +1789,12 @@ uint8_t atk_idm750c_set_yuanziyun(atk_idm750c_set_yuanziyun_t yuanziyun)
 }
 
 /**
- * @brief       ATK-IDM750C Ô­×ÓÔÆÉè±¸±àºÅ
- * @param       data£º Éè±¸±àºÅ£¬¹Ì¶¨Îª20¸ö×Ö½Ú£¬ÇÒÎª´¿Êý×Ö
- *              dataÄ¬ÈÏ²ÎÊý£º12345678901234567890£¬¾ßÌå²ÎÊý
- *              ¸ù¾ÝÔ­×ÓÔÆÉú³ÉµÄÉè±¸±àºÅÎª×¼
- * @retval      ATK_IDM750C_EOK  : ÅäÖÃ³É¹¦
- *              ATK_IDM750C_ERROR: ÅäÖÃÊ§°Ü
+ * @brief       ATK-IDM750C åŽŸå­äº‘è®¾å¤‡ç¼–å·
+ * @param       dataï¼š è®¾å¤‡ç¼–å·ï¼Œå›ºå®šä¸º20ä¸ªå­—èŠ‚ï¼Œä¸”ä¸ºçº¯æ•°å­—
+ *              dataé»˜è®¤å‚æ•°ï¼š12345678901234567890ï¼Œå…·ä½“å‚æ•°
+ *              æ ¹æ®åŽŸå­äº‘ç”Ÿæˆçš„è®¾å¤‡ç¼–å·ä¸ºå‡†
+ * @retval      ATK_IDM750C_EOK  : é…ç½®æˆåŠŸ
+ *              ATK_IDM750C_ERROR: é…ç½®å¤±è´¥
  */
 uint8_t atk_idm750c_device_num(char *devicenum)
 {
@@ -1814,11 +1814,11 @@ uint8_t atk_idm750c_device_num(char *devicenum)
 }
 
 /**
- * @brief       ATK-IDM750C Ô­×ÓÔÆÉè±¸ÃÜÂë
- * @param       data£ºÉè±¸ÃÜÂë£¬¹Ì¶¨8¸ö×Ö½Ú£¬ÇÒÎª´¿Êý×Ö
- *              Ä¬ÈÏ²ÎÊý£º12345678,ÓÃ»§Ò²¿ÉÒÔ×ÔÐÐÉèÖÃ
- * @retval      ATK_IDM750C_EOK  : ·¢ËÍ³É¹¦
- *              ATK_IDM750C_ERROR: ·¢ËÍÊ§°Ü
+ * @brief       ATK-IDM750C åŽŸå­äº‘è®¾å¤‡å¯†ç 
+ * @param       dataï¼šè®¾å¤‡å¯†ç ï¼Œå›ºå®š8ä¸ªå­—èŠ‚ï¼Œä¸”ä¸ºçº¯æ•°å­—
+ *              é»˜è®¤å‚æ•°ï¼š12345678,ç”¨æˆ·ä¹Ÿå¯ä»¥è‡ªè¡Œè®¾ç½®
+ * @retval      ATK_IDM750C_EOK  : å‘é€æˆåŠŸ
+ *              ATK_IDM750C_ERROR: å‘é€å¤±è´¥
  */
 uint8_t atk_idm750c_device_password(char *devicepassword)
 {
@@ -1838,13 +1838,13 @@ uint8_t atk_idm750c_device_password(char *devicepassword)
 }
 
 /**
- * @brief       ATK-IDM750C ×¢²á°üÆôÓÃ×´Ì¬
- * @param       enable ÆôÓÃ×´Ì¬
- *              ON : ÆôÓÃ
- *              OFF£º²»ÆôÓÃ
- *              Ä¬ÈÏ²ÎÊý£ºOFF
- * @retval      ATK_IDM750C_EOK  : ·¢ËÍ³É¹¦
- *              ATK_IDM750C_ERROR: ·¢ËÍÊ§°Ü
+ * @brief       ATK-IDM750C æ³¨å†ŒåŒ…å¯ç”¨çŠ¶æ€
+ * @param       enable å¯ç”¨çŠ¶æ€
+ *              ON : å¯ç”¨
+ *              OFFï¼šä¸å¯ç”¨
+ *              é»˜è®¤å‚æ•°ï¼šOFF
+ * @retval      ATK_IDM750C_EOK  : å‘é€æˆåŠŸ
+ *              ATK_IDM750C_ERROR: å‘é€å¤±è´¥
  */
 uint8_t atk_idm750c_registration_package(atk_idm750c_regen_t regen)
 {
@@ -1882,12 +1882,12 @@ uint8_t atk_idm750c_registration_package(atk_idm750c_regen_t regen)
 }
 
 /**
- * @brief       ATK-IDM750C ×¢²á°üÊý¾Ý
- * @param       data:×¢²á°üÊý¾Ý£¬ ×î´óÏÞÖÆ 100 ¸ö×Ö½Ú£¬
- *              ÇÒÊäÈëÊ®Áù½øÖÆ×Ö·û´®±ØÐëÎªÅ¼Êý£¡ ²»×ã²¹Áã¡£
- *              data Ä¬ÈÏ²ÎÊý£º 414C49454E54454B2D5245474454
- * @retval      ATK_IDM750C_EOK  : ·¢ËÍ³É¹¦
- *              ATK_IDM750C_ERROR: ·¢ËÍÊ§°Ü
+ * @brief       ATK-IDM750C æ³¨å†ŒåŒ…æ•°æ®
+ * @param       data:æ³¨å†ŒåŒ…æ•°æ®ï¼Œ æœ€å¤§é™åˆ¶ 100 ä¸ªå­—èŠ‚ï¼Œ
+ *              ä¸”è¾“å…¥åå…­è¿›åˆ¶å­—ç¬¦ä¸²å¿…é¡»ä¸ºå¶æ•°ï¼ ä¸è¶³è¡¥é›¶ã€‚
+ *              data é»˜è®¤å‚æ•°ï¼š 414C49454E54454B2D5245474454
+ * @retval      ATK_IDM750C_EOK  : å‘é€æˆåŠŸ
+ *              ATK_IDM750C_ERROR: å‘é€å¤±è´¥
  */
 uint8_t atk_idm750c_registration_package_data(void)
 {
@@ -1907,14 +1907,14 @@ uint8_t atk_idm750c_registration_package_data(void)
 }
 
 /**
- * @brief       ATK-IDM750C ×¢²á°ü·¢ËÍ·½Ê½
- * @param       mode:×¢²á°ü·¢ËÍÄ£Ê½
- *              LINK:³É¹¦Á¬½Ó½¨Á¢ºó·¢ËÍÒ»´Î
- *              DATA:Ã¿Ö¡Êý¾ÝÇ°·¢ËÍ·¢ËÍÒ»´Î
- *              ALL£ºÍ¬Ê±Ö§³ÖÒÔÉÏÁ½ÖÖ·¢ËÍÄ£Ê½
- *              mode Ä¬ÈÏ²ÎÊý£º LINK
- * @retval      ATK_IDM750C_EOK  : ·¢ËÍ³É¹¦
- *              ATK_IDM750C_ERROR: ·¢ËÍÊ§°Ü
+ * @brief       ATK-IDM750C æ³¨å†ŒåŒ…å‘é€æ–¹å¼
+ * @param       mode:æ³¨å†ŒåŒ…å‘é€æ¨¡å¼
+ *              LINK:æˆåŠŸè¿žæŽ¥å»ºç«‹åŽå‘é€ä¸€æ¬¡
+ *              DATA:æ¯å¸§æ•°æ®å‰å‘é€å‘é€ä¸€æ¬¡
+ *              ALLï¼šåŒæ—¶æ”¯æŒä»¥ä¸Šä¸¤ç§å‘é€æ¨¡å¼
+ *              mode é»˜è®¤å‚æ•°ï¼š LINK
+ * @retval      ATK_IDM750C_EOK  : å‘é€æˆåŠŸ
+ *              ATK_IDM750C_ERROR: å‘é€å¤±è´¥
  */
 uint8_t atk_idm750c_registration_package_send_method(void)
 {
@@ -1934,15 +1934,15 @@ uint8_t atk_idm750c_registration_package_send_method(void)
 }
 
 /**
- * @brief       ATK-IDM750C ×¢²á°üÊý¾ÝÀàÐÍ
- * @param       type:×¢²á°üÊý¾ÝÀàÐÍ
-                IMEI:°Ñ IMEI µ±×ö×¢²á°üÊý¾Ý
-                ICCID:°Ñ ICCID µ±×ö×¢²á°üÊý¾Ý
-                IMSI:°Ñ IMSI µ±×ö×¢²á°üÊý¾Ý
-                USER£º ÓÃ»§×Ô¶¨Òå×¢²á°üÊý¾Ý£¬Í¨¹ý AT+REGDT Ö¸ÁîÅäÖÃ
-                type Ä¬ÈÏ²ÎÊý£º IMEI
- * @retval      ATK_IDM750C_EOK  : ·¢ËÍ³É¹¦
- *              ATK_IDM750C_ERROR: ·¢ËÍÊ§°Ü
+ * @brief       ATK-IDM750C æ³¨å†ŒåŒ…æ•°æ®ç±»åž‹
+ * @param       type:æ³¨å†ŒåŒ…æ•°æ®ç±»åž‹
+                IMEI:æŠŠ IMEI å½“åšæ³¨å†ŒåŒ…æ•°æ®
+                ICCID:æŠŠ ICCID å½“åšæ³¨å†ŒåŒ…æ•°æ®
+                IMSI:æŠŠ IMSI å½“åšæ³¨å†ŒåŒ…æ•°æ®
+                USERï¼š ç”¨æˆ·è‡ªå®šä¹‰æ³¨å†ŒåŒ…æ•°æ®ï¼Œé€šè¿‡ AT+REGDT æŒ‡ä»¤é…ç½®
+                type é»˜è®¤å‚æ•°ï¼š IMEI
+ * @retval      ATK_IDM750C_EOK  : å‘é€æˆåŠŸ
+ *              ATK_IDM750C_ERROR: å‘é€å¤±è´¥
  */
 uint8_t atk_idm750c_registration_package_data_type(void)
 {
@@ -1962,13 +1962,13 @@ uint8_t atk_idm750c_registration_package_data_type(void)
 }
 
 /**
- * @brief       ATK-IDM750C ÐÄÌø°üÆôÓÃ×´Ì¬
- * @param       enable ÆôÓÃ×´Ì¬
- *              ON : ÆôÓÃ
- *              OFF£º²»ÆôÓÃ
- *              Ä¬ÈÏ²ÎÊý£ºOFF
- * @retval      ATK_IDM750C_EOK  : ¿ªÆô³É¹¦
- *              ATK_IDM750C_ERROR: ¿ªÆôÊ§°Ü
+ * @brief       ATK-IDM750C å¿ƒè·³åŒ…å¯ç”¨çŠ¶æ€
+ * @param       enable å¯ç”¨çŠ¶æ€
+ *              ON : å¯ç”¨
+ *              OFFï¼šä¸å¯ç”¨
+ *              é»˜è®¤å‚æ•°ï¼šOFF
+ * @retval      ATK_IDM750C_EOK  : å¼€å¯æˆåŠŸ
+ *              ATK_IDM750C_ERROR: å¼€å¯å¤±è´¥
  */
 uint8_t atk_idm750c_heartbeat_package(atk_idm750c_hrten_t heart)
 {
@@ -2006,12 +2006,12 @@ uint8_t atk_idm750c_heartbeat_package(atk_idm750c_hrten_t heart)
 }
 
 /**
- * @brief       ATK-IDM750C ÐÄÌø°üÊý¾Ý
- * @param       data:ÐÄÌø°üÊý¾Ý£¬ ×î´óÏÞÖÆ 100 ¸ö×Ö½Ú£¬
- *              ÇÒÊäÈëÊ®Áù½øÖÆ×Ö·û´®±ØÐëÎªÅ¼Êý£¡ ²»×ã²¹Áã¡£
- *              data Ä¬ÈÏ²ÎÊý£º 414C49454E54454B2D4852544454
- * @retval      ATK_IDM750C_EOK  : ·¢ËÍ³É¹¦
- *              ATK_IDM750C_ERROR: ·¢ËÍÊ§°Ü
+ * @brief       ATK-IDM750C å¿ƒè·³åŒ…æ•°æ®
+ * @param       data:å¿ƒè·³åŒ…æ•°æ®ï¼Œ æœ€å¤§é™åˆ¶ 100 ä¸ªå­—èŠ‚ï¼Œ
+ *              ä¸”è¾“å…¥åå…­è¿›åˆ¶å­—ç¬¦ä¸²å¿…é¡»ä¸ºå¶æ•°ï¼ ä¸è¶³è¡¥é›¶ã€‚
+ *              data é»˜è®¤å‚æ•°ï¼š 414C49454E54454B2D4852544454
+ * @retval      ATK_IDM750C_EOK  : å‘é€æˆåŠŸ
+ *              ATK_IDM750C_ERROR: å‘é€å¤±è´¥
  */
 uint8_t atk_idm750c_heartbeat_package_data(void)
 {
@@ -2031,11 +2031,11 @@ uint8_t atk_idm750c_heartbeat_package_data(void)
 }
 
 /**
- * @brief       ATK-IDM750C ÐÄÌø°üÊ±¼ä¼ä¸ô
- * @param       time:µ¥Î»Ãë£¬·¶Î§£º 5s-1200s
- *              time Ä¬ÈÏ²ÎÊý£º 120s
- * @retval      ATK_IDM750C_EOK  : ÐÄÌø°üÊ±¼ä¼ä¸ôÅäÖÃ³É¹¦
- *              ATK_IDM750C_ERROR: ÐÄÌø°üÊ±¼ä¼ä¸ôÅäÖÃÊ§°Ü
+ * @brief       ATK-IDM750C å¿ƒè·³åŒ…æ—¶é—´é—´éš”
+ * @param       time:å•ä½ç§’ï¼ŒèŒƒå›´ï¼š 5s-1200s
+ *              time é»˜è®¤å‚æ•°ï¼š 120s
+ * @retval      ATK_IDM750C_EOK  : å¿ƒè·³åŒ…æ—¶é—´é—´éš”é…ç½®æˆåŠŸ
+ *              ATK_IDM750C_ERROR: å¿ƒè·³åŒ…æ—¶é—´é—´éš”é…ç½®å¤±è´¥
  */
 uint8_t atk_idm750c_heartbeat_package_interval(void)
 {
@@ -2056,13 +2056,13 @@ uint8_t atk_idm750c_heartbeat_package_interval(void)
 }
 
 /**
- * @brief       ATK-IDM750C HTTPÏà¹ØÖ¸Áî
- * @param       mode:HTTP ÇëÇó·½Ê½
- *              GET: GET ·½Ê½
- *              POST:POST ·½Ê½
- *              mode Ä¬ÈÏ²ÎÊý£º GET
- * @retval      ATK_IDM750C_EOK  : ÅäÖÃ³É¹¦
- *              ATK_IDM750C_ERROR: ÅäÖÃÊ§°Ü
+ * @brief       ATK-IDM750C HTTPç›¸å…³æŒ‡ä»¤
+ * @param       mode:HTTP è¯·æ±‚æ–¹å¼
+ *              GET: GET æ–¹å¼
+ *              POST:POST æ–¹å¼
+ *              mode é»˜è®¤å‚æ•°ï¼š GET
+ * @retval      ATK_IDM750C_EOK  : é…ç½®æˆåŠŸ
+ *              ATK_IDM750C_ERROR: é…ç½®å¤±è´¥
  */
 uint8_t atk_idm750c_http_request_mode(atk_idm750c_http_request_mode_t mode)
 {
@@ -2100,12 +2100,12 @@ uint8_t atk_idm750c_http_request_mode(atk_idm750c_http_request_mode_t mode)
 }
 
 /**
- * @brief       ATK-IDM750C HTTP URLµØÖ·
- * @param       ²ÎÊý£º
- *              data:URL µØÖ·£¬×î´óÏÞÖÆ 200 ¸ö×Ö½Ú¡£
- *              data Ä¬ÈÏ²ÎÊý: AT+HTTPURL=" https://cloud.alientek.com/testfordtu?data="
- * @retval      ATK_IDM750C_EOK  : µØÖ·ÅäÖÃ³É¹¦
- *              ATK_IDM750C_ERROR: µØÖ·ÅäÖÃÊ§°Ü
+ * @brief       ATK-IDM750C HTTP URLåœ°å€
+ * @param       å‚æ•°ï¼š
+ *              data:URL åœ°å€ï¼Œæœ€å¤§é™åˆ¶ 200 ä¸ªå­—èŠ‚ã€‚
+ *              data é»˜è®¤å‚æ•°: AT+HTTPURL=" https://cloud.alientek.com/testfordtu?data="
+ * @retval      ATK_IDM750C_EOK  : åœ°å€é…ç½®æˆåŠŸ
+ *              ATK_IDM750C_ERROR: åœ°å€é…ç½®å¤±è´¥
  */
 uint8_t atk_idm750c_http_url_address(char *http_address)
 {
@@ -2126,11 +2126,11 @@ uint8_t atk_idm750c_http_url_address(char *http_address)
 }
 
 /**
- * @brief       ATK-IDM750C HTTPÇëÇó³¬Ê±Ê±¼ä
- * @param       time:ÇëÇó³¬Ê±Ê±¼ä£¬·¶Î§£º 5s-60s
- *              time Ä¬ÈÏ²ÎÊý£º 10s
- * @retval      ATK_IDM750C_EOK  : HTTPÇëÇó³¬Ê±Ê±¼ä¸ôÅäÖÃ³É¹¦
- *              ATK_IDM750C_ERROR: HTTPÇëÇó³¬Ê±Ê±¼ä¸ôÅäÖÃÊ§°Ü
+ * @brief       ATK-IDM750C HTTPè¯·æ±‚è¶…æ—¶æ—¶é—´
+ * @param       time:è¯·æ±‚è¶…æ—¶æ—¶é—´ï¼ŒèŒƒå›´ï¼š 5s-60s
+ *              time é»˜è®¤å‚æ•°ï¼š 10s
+ * @retval      ATK_IDM750C_EOK  : HTTPè¯·æ±‚è¶…æ—¶æ—¶é—´éš”é…ç½®æˆåŠŸ
+ *              ATK_IDM750C_ERROR: HTTPè¯·æ±‚è¶…æ—¶æ—¶é—´éš”é…ç½®å¤±è´¥
  */
 uint8_t atk_idm750c_http_request_timeout(void)
 {
@@ -2151,11 +2151,11 @@ uint8_t atk_idm750c_http_request_timeout(void)
 }
 
 /**
- * @brief       ATK-IDM750C HTTPÇëÇóÍ·ÐÅÏ¢
- * @param       header:ÇëÇóÍ·ÐÅÏ¢£¬ ÏÞÖÆ´óÐ¡ 200 ×Ö½Ú¡£
- *              header Ä¬ÈÏ²ÎÊý: AT+HTTPHD="Connection:close"
- * @retval      ATK_IDM750C_EOK  : HTTPÇëÇóÍ·ÐÅÏ¢ÅäÖÃ³É¹¦
- *              ATK_IDM750C_ERROR: HTTPÇëÇóÍ·ÐÅÏ¢ÅäÖÃÊ§°Ü
+ * @brief       ATK-IDM750C HTTPè¯·æ±‚å¤´ä¿¡æ¯
+ * @param       header:è¯·æ±‚å¤´ä¿¡æ¯ï¼Œ é™åˆ¶å¤§å° 200 å­—èŠ‚ã€‚
+ *              header é»˜è®¤å‚æ•°: AT+HTTPHD="Connection:close"
+ * @retval      ATK_IDM750C_EOK  : HTTPè¯·æ±‚å¤´ä¿¡æ¯é…ç½®æˆåŠŸ
+ *              ATK_IDM750C_ERROR: HTTPè¯·æ±‚å¤´ä¿¡æ¯é…ç½®å¤±è´¥
  */
 uint8_t atk_idm750c_http_request_header_information(void)
 {
@@ -2176,17 +2176,17 @@ uint8_t atk_idm750c_http_request_header_information(void)
 }
 
 /**
- * @brief       ATK-IDM750C MQTT clientid ÐÅÏ¢
- * @param       ²ÎÊý£º
- *              clientid:MQTT µÄ clientid ÐÅÏ¢£¬ÏÞÖÆ 200 ¸ö×Ö½Ú¡£
- *              clientid Ä¬ÈÏ²ÎÊý: AT+MQTTCD="alientek"
- * @retval      ATK_IDM750C_EOK  : ÅäÖÃ³É¹¦
- *              ATK_IDM750C_ERROR: ÅäÖÃÊ§°Ü
+ * @brief       ATK-IDM750C MQTT clientid ä¿¡æ¯
+ * @param       å‚æ•°ï¼š
+ *              clientid:MQTT çš„ clientid ä¿¡æ¯ï¼Œé™åˆ¶ 200 ä¸ªå­—èŠ‚ã€‚
+ *              clientid é»˜è®¤å‚æ•°: AT+MQTTCD="alientek"
+ * @retval      ATK_IDM750C_EOK  : é…ç½®æˆåŠŸ
+ *              ATK_IDM750C_ERROR: é…ç½®å¤±è´¥
  */
 uint8_t atk_idm750c_mqtt_clientid(char *clientid)
 {
     uint8_t ret;
-    char cmd[10];
+    char cmd[128];
     
     sprintf(cmd, "AT+MQTTCD=\"%s\"",clientid);
     ret  = atk_idm750c_send_cmd_to_dtu(cmd, "OK", ATK_IDM750C_TIME);
@@ -2202,12 +2202,12 @@ uint8_t atk_idm750c_mqtt_clientid(char *clientid)
 }
 
 /**
- * @brief       ATK-IDM750C MQTT username ÐÅÏ¢
- * @param       ²ÎÊý£º
- *              clientid:MQTT µÄ username ÐÅÏ¢£¬ÏÞÖÆ 200 ¸ö×Ö½Ú¡£
- *              clientid Ä¬ÈÏ²ÎÊý: AT+MQTTUN="admin"
- * @retval      ATK_IDM750C_EOK  : ÅäÖÃ³É¹¦
- *              ATK_IDM750C_ERROR: ÅäÖÃÊ§°Ü
+ * @brief       ATK-IDM750C MQTT username ä¿¡æ¯
+ * @param       å‚æ•°ï¼š
+ *              clientid:MQTT çš„ username ä¿¡æ¯ï¼Œé™åˆ¶ 200 ä¸ªå­—èŠ‚ã€‚
+ *              clientid é»˜è®¤å‚æ•°: AT+MQTTUN="admin"
+ * @retval      ATK_IDM750C_EOK  : é…ç½®æˆåŠŸ
+ *              ATK_IDM750C_ERROR: é…ç½®å¤±è´¥
  */
 uint8_t atk_idm750c_mqtt_username(char *username)
 {
@@ -2228,12 +2228,12 @@ uint8_t atk_idm750c_mqtt_username(char *username)
 }
 
 /**
- * @brief       ATK-IDM750C MQTT password ÐÅÏ¢
- * @param       ²ÎÊý£º
- *              clientid:MQTT µÄ password ÐÅÏ¢£¬ÏÞÖÆ 200 ¸ö×Ö½Ú¡£
- *              clientid Ä¬ÈÏ²ÎÊý: AT+MQTTUN="password"
- * @retval      ATK_IDM750C_EOK  : ÅäÖÃ³É¹¦
- *              ATK_IDM750C_ERROR: ÅäÖÃÊ§°Ü
+ * @brief       ATK-IDM750C MQTT password ä¿¡æ¯
+ * @param       å‚æ•°ï¼š
+ *              clientid:MQTT çš„ password ä¿¡æ¯ï¼Œé™åˆ¶ 200 ä¸ªå­—èŠ‚ã€‚
+ *              clientid é»˜è®¤å‚æ•°: AT+MQTTUN="password"
+ * @retval      ATK_IDM750C_EOK  : é…ç½®æˆåŠŸ
+ *              ATK_IDM750C_ERROR: é…ç½®å¤±è´¥
  */
 uint8_t atk_idm750c_mqtt_password(char *password)
 {
@@ -2254,13 +2254,13 @@ uint8_t atk_idm750c_mqtt_password(char *password)
 }
 
 /**
- * @brief       ATK-IDM750C MQTT ·þÎñÆ÷ÐÅÏ¢
- * @param       ²ÎÊý£º
- *              ip:MQTT ·þÎñÆ÷µØÖ·£¬ÏÞÖÆ 128 ¸ö×Ö½Ú¡£ ¿ÉÒÔÊÇ IP µØÖ·Ò²¿ÉÒÔÎªÓòÃû
- *              port:MQTT ·þÎñÆ÷¶Ë¿ÚºÅ£¬ ÏÞÖÆ 0-65535¡£
- *              Ä¬ÈÏ²ÎÊý: AT+MQTTIP="cloud.alientek.com","1883"
- * @retval      ATK_IDM750C_EOK  : ÅäÖÃ³É¹¦
- *              ATK_IDM750C_ERROR: ÅäÖÃÊ§°Ü
+ * @brief       ATK-IDM750C MQTT æœåŠ¡å™¨ä¿¡æ¯
+ * @param       å‚æ•°ï¼š
+ *              ip:MQTT æœåŠ¡å™¨åœ°å€ï¼Œé™åˆ¶ 128 ä¸ªå­—èŠ‚ã€‚ å¯ä»¥æ˜¯ IP åœ°å€ä¹Ÿå¯ä»¥ä¸ºåŸŸå
+ *              port:MQTT æœåŠ¡å™¨ç«¯å£å·ï¼Œ é™åˆ¶ 0-65535ã€‚
+ *              é»˜è®¤å‚æ•°: AT+MQTTIP="cloud.alientek.com","1883"
+ * @retval      ATK_IDM750C_EOK  : é…ç½®æˆåŠŸ
+ *              ATK_IDM750C_ERROR: é…ç½®å¤±è´¥
  */
 uint8_t atk_idm750c_server_address(char *ip,char *port)
 {
@@ -2281,12 +2281,12 @@ uint8_t atk_idm750c_server_address(char *ip,char *port)
 }
 
 /**
- * @brief       ATK-IDM750C MQTT ¶©ÔÄÖ÷ÌâÐÅÏ¢
- * @param       ²ÎÊý£º
- *              sub:¶©ÔÄÖ÷ÌâÐÅÏ¢£¬ ÏÞÖÆ´óÐ¡ 100 ×Ö½Ú¡£
- *              Ä¬ÈÏ²ÎÊý: AT+MQTTSUB="atk/sub"
- * @retval      ATK_IDM750C_EOK  : ÅäÖÃ³É¹¦
- *              ATK_IDM750C_ERROR: ÅäÖÃÊ§°Ü
+ * @brief       ATK-IDM750C MQTT è®¢é˜…ä¸»é¢˜ä¿¡æ¯
+ * @param       å‚æ•°ï¼š
+ *              sub:è®¢é˜…ä¸»é¢˜ä¿¡æ¯ï¼Œ é™åˆ¶å¤§å° 100 å­—èŠ‚ã€‚
+ *              é»˜è®¤å‚æ•°: AT+MQTTSUB="atk/sub"
+ * @retval      ATK_IDM750C_EOK  : é…ç½®æˆåŠŸ
+ *              ATK_IDM750C_ERROR: é…ç½®å¤±è´¥
  */
 uint8_t atk_idm750c_mqtt_sub_title(char *title)
 {
@@ -2307,12 +2307,12 @@ uint8_t atk_idm750c_mqtt_sub_title(char *title)
 }
 
 /**
- * @brief       ATK-IDM750C MQTT ·¢²¼Ö÷ÌâÐÅÏ¢
- * @param       ²ÎÊý£º
- *              pub:¶©ÔÄÖ÷ÌâÐÅÏ¢£¬ ÏÞÖÆ´óÐ¡ 100 ×Ö½Ú¡£
- *              Ä¬ÈÏ²ÎÊý: AT+MQTTPUB="atk/pub"
- * @retval      ATK_IDM750C_EOK  : ÅäÖÃ³É¹¦
- *              ATK_IDM750C_ERROR: ÅäÖÃÊ§°Ü
+ * @brief       ATK-IDM750C MQTT å‘å¸ƒä¸»é¢˜ä¿¡æ¯
+ * @param       å‚æ•°ï¼š
+ *              pub:è®¢é˜…ä¸»é¢˜ä¿¡æ¯ï¼Œ é™åˆ¶å¤§å° 100 å­—èŠ‚ã€‚
+ *              é»˜è®¤å‚æ•°: AT+MQTTPUB="atk/pub"
+ * @retval      ATK_IDM750C_EOK  : é…ç½®æˆåŠŸ
+ *              ATK_IDM750C_ERROR: é…ç½®å¤±è´¥
  */
 uint8_t atk_idm750c_mqtt_pub_title(char *title)
 {
@@ -2333,22 +2333,22 @@ uint8_t atk_idm750c_mqtt_pub_title(char *title)
 }
 
 /**
- * @brief       ATK-IDM750C MQTT ²ÎÊýÐÅÏ¢
- * @param       ²ÎÊý£º
- *              qos£ºÏûÏ¢·þÎñµÈ¼¶
- *              0:×î¶à·¢ËÍÒ»´Î
- *              1:ÖÁÉÙ·¢ËÍÒ»´Î
- *              2:Ö»·¢ËÍÒ»´Î
- *              retain:ÒÅÖö±£Áô×´Ì¬
- *              0:·þÎñÆ÷²»»á±£´æÒÅÖöÐÅÏ¢
- *              1:·þÎñÆ÷±£´æÒÅÖöÐÅÏ¢
- *              clean_session:Çå³ý»á»°×´Ì¬
- *              0: ¿Í»§¶ËÀëÏßºó£¬ ·þÎñÆ÷±£´æ»á»°ÏûÏ¢
- *              1: ¿Í»§¶ËÀëÏßºó£¬ ·þÎñÆ÷×Ô¶¯´Ý»ÙËùÓÐÊý¾Ý
- *              keepalive:±£»îÊ±¼ä,·¶Î§£º 1-65535£¬ µ¥Î»£ºÃë¡£
- *              Ä¬ÈÏ²ÎÊý: AT+MQTTCON="0","0","1","300"
- * @retval      ATK_IDM750C_EOK  : ÅäÖÃ³É¹¦
- *              ATK_IDM750C_ERROR: ÅäÖÃÊ§°Ü
+ * @brief       ATK-IDM750C MQTT å‚æ•°ä¿¡æ¯
+ * @param       å‚æ•°ï¼š
+ *              qosï¼šæ¶ˆæ¯æœåŠ¡ç­‰çº§
+ *              0:æœ€å¤šå‘é€ä¸€æ¬¡
+ *              1:è‡³å°‘å‘é€ä¸€æ¬¡
+ *              2:åªå‘é€ä¸€æ¬¡
+ *              retain:é—å˜±ä¿ç•™çŠ¶æ€
+ *              0:æœåŠ¡å™¨ä¸ä¼šä¿å­˜é—å˜±ä¿¡æ¯
+ *              1:æœåŠ¡å™¨ä¿å­˜é—å˜±ä¿¡æ¯
+ *              clean_session:æ¸…é™¤ä¼šè¯çŠ¶æ€
+ *              0: å®¢æˆ·ç«¯ç¦»çº¿åŽï¼Œ æœåŠ¡å™¨ä¿å­˜ä¼šè¯æ¶ˆæ¯
+ *              1: å®¢æˆ·ç«¯ç¦»çº¿åŽï¼Œ æœåŠ¡å™¨è‡ªåŠ¨æ‘§æ¯æ‰€æœ‰æ•°æ®
+ *              keepalive:ä¿æ´»æ—¶é—´,èŒƒå›´ï¼š 1-65535ï¼Œ å•ä½ï¼šç§’ã€‚
+ *              é»˜è®¤å‚æ•°: AT+MQTTCON="0","0","1","300"
+ * @retval      ATK_IDM750C_EOK  : é…ç½®æˆåŠŸ
+ *              ATK_IDM750C_ERROR: é…ç½®å¤±è´¥
  */
 uint8_t atk_idm750c_mqtt_para_information(atk_idm750c_mqtt_para_mode_t mode)
 {
@@ -2357,73 +2357,73 @@ uint8_t atk_idm750c_mqtt_para_information(atk_idm750c_mqtt_para_mode_t mode)
     
     switch (mode)
     {
-        /* 0£º×î¶à·¢ËÍÒ»´Î£¬0£º·þÎñÆ÷²»»á±£´æÒÅÖöÐÅÏ¢£¬0£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷±£´æ»á»°ÏûÏ¢ */
+        /* 0ï¼šæœ€å¤šå‘é€ä¸€æ¬¡ï¼Œ0ï¼šæœåŠ¡å™¨ä¸ä¼šä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ0ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨ä¿å­˜ä¼šè¯æ¶ˆæ¯ */
         case ATK_IDM750C_MQTT_ZERO_MODE1:
         {
             sprintf(cmd, "AT+MQTTCON=\"0\",\"0\",\"0\",\"300\"");
             break;
         }
-        /* 0£º×î¶à·¢ËÍÒ»´Î£¬0£º·þÎñÆ÷²»»á±£´æÒÅÖöÐÅÏ¢£¬1£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷×Ô¶¯´Ý»ÙËùÓÐÊý¾Ý (Ä¬ÈÏ)*/
+        /* 0ï¼šæœ€å¤šå‘é€ä¸€æ¬¡ï¼Œ0ï¼šæœåŠ¡å™¨ä¸ä¼šä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ1ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨è‡ªåŠ¨æ‘§æ¯æ‰€æœ‰æ•°æ® (é»˜è®¤)*/
         case ATK_IDM750C_MQTT_ZERO_MODE2:
         {
             sprintf(cmd, "AT+MQTTCON=\"0\",\"0\",\"1\",\"300\"");
             break;
         }
-        /* 0£º×î¶à·¢ËÍÒ»´Î£¬1£º·þÎñÆ÷±£´æÒÅÖöÐÅÏ¢£¬0£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷±£´æ»á»°ÏûÏ¢ */
+        /* 0ï¼šæœ€å¤šå‘é€ä¸€æ¬¡ï¼Œ1ï¼šæœåŠ¡å™¨ä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ0ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨ä¿å­˜ä¼šè¯æ¶ˆæ¯ */
         case ATK_IDM750C_MQTT_ZERO_MODE3:
         {
             sprintf(cmd, "AT+MQTTCON=\"0\",\"1\",\"0\",\"300\"");
             break;
         }
-        /* 0£º×î¶à·¢ËÍÒ»´Î£¬1£º·þÎñÆ÷±£´æÒÅÖöÐÅÏ¢£¬1£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷×Ô¶¯´Ý»ÙËùÓÐÊý¾Ý */
+        /* 0ï¼šæœ€å¤šå‘é€ä¸€æ¬¡ï¼Œ1ï¼šæœåŠ¡å™¨ä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ1ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨è‡ªåŠ¨æ‘§æ¯æ‰€æœ‰æ•°æ® */
         case ATK_IDM750C_MQTT_ZERO_MODE4:
         {
             sprintf(cmd, "AT+MQTTCON=\"0\",\"1\",\"1\",\"300\"");
             break;
         }
-        /* 1£ºÖÁÉÙ·¢ËÍÒ»´Î£¬0£º·þÎñÆ÷²»»á±£´æÒÅÖöÐÅÏ¢£¬0£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷±£´æ»á»°ÏûÏ¢ */
+        /* 1ï¼šè‡³å°‘å‘é€ä¸€æ¬¡ï¼Œ0ï¼šæœåŠ¡å™¨ä¸ä¼šä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ0ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨ä¿å­˜ä¼šè¯æ¶ˆæ¯ */
         case ATK_IDM750C_MQTT_ONE_MODE1:
         {
             sprintf(cmd, "AT+MQTTCON=\"1\",\"0\",\"0\",\"300\"");
             break;
         }
-        /* 1£ºÖÁÉÙ·¢ËÍÒ»´Î£¬0£º·þÎñÆ÷²»»á±£´æÒÅÖöÐÅÏ¢£¬1£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷×Ô¶¯´Ý»ÙËùÓÐÊý¾Ý */
+        /* 1ï¼šè‡³å°‘å‘é€ä¸€æ¬¡ï¼Œ0ï¼šæœåŠ¡å™¨ä¸ä¼šä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ1ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨è‡ªåŠ¨æ‘§æ¯æ‰€æœ‰æ•°æ® */
         case ATK_IDM750C_MQTT_ONE_MODE2:
         {
             sprintf(cmd, "AT+MQTTCON=\"1\",\"0\",\"1\",\"300\"");
             break;
         }
-        /* 1£ºÖÁÉÙ·¢ËÍÒ»´Î£¬1£º·þÎñÆ÷±£´æÒÅÖöÐÅÏ¢£¬0£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷±£´æ»á»°ÏûÏ¢ */
+        /* 1ï¼šè‡³å°‘å‘é€ä¸€æ¬¡ï¼Œ1ï¼šæœåŠ¡å™¨ä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ0ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨ä¿å­˜ä¼šè¯æ¶ˆæ¯ */
         case ATK_IDM750C_MQTT_ONE_MODE3:
         {
             sprintf(cmd, "AT+MQTTCON=\"1\",\"1\",\"0\",\"300\"");
             break;
         }
-        /* 1£ºÖÁÉÙ·¢ËÍÒ»´Î£¬1£º·þÎñÆ÷±£´æÒÅÖöÐÅÏ¢£¬1£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷×Ô¶¯´Ý»ÙËùÓÐÊý¾Ý */
+        /* 1ï¼šè‡³å°‘å‘é€ä¸€æ¬¡ï¼Œ1ï¼šæœåŠ¡å™¨ä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ1ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨è‡ªåŠ¨æ‘§æ¯æ‰€æœ‰æ•°æ® */
         case ATK_IDM750C_MQTT_ONE_MODE4:
         {
             sprintf(cmd, "AT+MQTTCON=\"1\",\"1\",\"1\",\"300\"");
             break;
         }
-        /* 2£ºÖ»·¢ËÍÒ»´Î£¬0£º·þÎñÆ÷²»»á±£´æÒÅÖöÐÅÏ¢£¬0£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷±£´æ»á»°ÏûÏ¢ */
+        /* 2ï¼šåªå‘é€ä¸€æ¬¡ï¼Œ0ï¼šæœåŠ¡å™¨ä¸ä¼šä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ0ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨ä¿å­˜ä¼šè¯æ¶ˆæ¯ */
         case ATK_IDM750C_MQTT_TWO_MODE1:
         {
             sprintf(cmd, "AT+MQTTCON=\"2\",\"0\",\"0\",\"300\"");
             break;
         }
-        /* 2£ºÖ»·¢ËÍÒ»´Î£¬0£º·þÎñÆ÷²»»á±£´æÒÅÖöÐÅÏ¢£¬1£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷×Ô¶¯´Ý»ÙËùÓÐÊý¾Ý */
+        /* 2ï¼šåªå‘é€ä¸€æ¬¡ï¼Œ0ï¼šæœåŠ¡å™¨ä¸ä¼šä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ1ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨è‡ªåŠ¨æ‘§æ¯æ‰€æœ‰æ•°æ® */
         case ATK_IDM750C_MQTT_TWO_MODE2:
         {
             sprintf(cmd, "AT+MQTTCON=\"2\",\"0\",\"1\",\"300\"");
             break;
         }
-        /* 2£ºÖ»·¢ËÍÒ»´Î£¬1£º·þÎñÆ÷±£´æÒÅÖöÐÅÏ¢£¬0£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷±£´æ»á»°ÏûÏ¢ */
+        /* 2ï¼šåªå‘é€ä¸€æ¬¡ï¼Œ1ï¼šæœåŠ¡å™¨ä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ0ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨ä¿å­˜ä¼šè¯æ¶ˆæ¯ */
         case ATK_IDM750C_MQTT_TWO_MODE3:
         {
             sprintf(cmd, "AT+MQTTCON=\"2\",\"1\",\"0\",\"300\"");
             break;
         }
-        /* 2£ºÖ»·¢ËÍÒ»´Î£¬1£º·þÎñÆ÷±£´æÒÅÖöÐÅÏ¢£¬1£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷×Ô¶¯´Ý»ÙËùÓÐÊý¾Ý */
+        /* 2ï¼šåªå‘é€ä¸€æ¬¡ï¼Œ1ï¼šæœåŠ¡å™¨ä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ1ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨è‡ªåŠ¨æ‘§æ¯æ‰€æœ‰æ•°æ® */
         case ATK_IDM750C_MQTT_TWO_MODE4:
         {
             sprintf(cmd, "AT+MQTTCON=\"2\",\"1\",\"1\",\"300\"");
@@ -2448,12 +2448,12 @@ uint8_t atk_idm750c_mqtt_para_information(atk_idm750c_mqtt_para_mode_t mode)
 }
 
 /**
- * @brief       ATK-IDM750C °¢ÀïÔÆProductKeyÐÅÏ¢
- * @param       ²ÎÊý£º
- *              pk:°¢ÀïÔÆ ProductKey ÐÅÏ¢£¬ ÏÞÖÆ´óÐ¡ 20 ×Ö½Ú¡£
- *              Ä¬ÈÏ²ÎÊý: AT+ALIPK="ProductKey"
- * @retval      ATK_IDM750C_EOK  : ÅäÖÃ³É¹¦
- *              ATK_IDM750C_ERROR: ÅäÖÃÊ§°Ü
+ * @brief       ATK-IDM750C é˜¿é‡Œäº‘ProductKeyä¿¡æ¯
+ * @param       å‚æ•°ï¼š
+ *              pk:é˜¿é‡Œäº‘ ProductKey ä¿¡æ¯ï¼Œ é™åˆ¶å¤§å° 20 å­—èŠ‚ã€‚
+ *              é»˜è®¤å‚æ•°: AT+ALIPK="ProductKey"
+ * @retval      ATK_IDM750C_EOK  : é…ç½®æˆåŠŸ
+ *              ATK_IDM750C_ERROR: é…ç½®å¤±è´¥
  */
 uint8_t atk_idm750c_aliyun_productkey(char *key)
 {
@@ -2474,12 +2474,12 @@ uint8_t atk_idm750c_aliyun_productkey(char *key)
 }
 
 /**
- * @brief       ATK-IDM750C °¢ÀïÔÆDeviceSecretÐÅÏ¢
- * @param       ²ÎÊý£º
- *              ds:°¢ÀïÔÆ DeviceSecret ÐÅÏ¢£¬ ÏÞÖÆ´óÐ¡ 64 ×Ö½Ú¡£
- *              Ä¬ÈÏ²ÎÊý: AT+ALIDS="DeviceSecret
- * @retval      ATK_IDM750C_EOK  : ÅäÖÃ³É¹¦
- *              ATK_IDM750C_ERROR: ÅäÖÃÊ§°Ü
+ * @brief       ATK-IDM750C é˜¿é‡Œäº‘DeviceSecretä¿¡æ¯
+ * @param       å‚æ•°ï¼š
+ *              ds:é˜¿é‡Œäº‘ DeviceSecret ä¿¡æ¯ï¼Œ é™åˆ¶å¤§å° 64 å­—èŠ‚ã€‚
+ *              é»˜è®¤å‚æ•°: AT+ALIDS="DeviceSecret
+ * @retval      ATK_IDM750C_EOK  : é…ç½®æˆåŠŸ
+ *              ATK_IDM750C_ERROR: é…ç½®å¤±è´¥
  */
 uint8_t atk_idm750c_aliyun_devicesecret(char *secret)
 {
@@ -2500,12 +2500,12 @@ uint8_t atk_idm750c_aliyun_devicesecret(char *secret)
 }
 
 /**
- * @brief       ATK-IDM750C °¢ÀïÔÆDeviceNameÐÅÏ¢
- * @param       ²ÎÊý£º
- *              dn: °¢ÀïÔÆ DeviceName ÐÅÏ¢£¬ ÏÞÖÆ´óÐ¡ 32 ×Ö½Ú¡£
- *              Ä¬ÈÏ²ÎÊý: AT+ALIDN="DeviceName"
- * @retval      ATK_IDM750C_EOK  : ÅäÖÃ³É¹¦
- *              ATK_IDM750C_ERROR: ÅäÖÃÊ§°Ü
+ * @brief       ATK-IDM750C é˜¿é‡Œäº‘DeviceNameä¿¡æ¯
+ * @param       å‚æ•°ï¼š
+ *              dn: é˜¿é‡Œäº‘ DeviceName ä¿¡æ¯ï¼Œ é™åˆ¶å¤§å° 32 å­—èŠ‚ã€‚
+ *              é»˜è®¤å‚æ•°: AT+ALIDN="DeviceName"
+ * @retval      ATK_IDM750C_EOK  : é…ç½®æˆåŠŸ
+ *              ATK_IDM750C_ERROR: é…ç½®å¤±è´¥
  */
 uint8_t atk_idm750c_aliyun_devicename(char *name)
 {
@@ -2526,12 +2526,12 @@ uint8_t atk_idm750c_aliyun_devicename(char *name)
 }
 
 /**
- * @brief       ATK-IDM750C °¢ÀïÔÆµØÓòÐÅÏ¢
- * @param       ²ÎÊý£º
- *              ri: °¢ÀïÔÆµØÓòÐÅÏ¢£¬ ÏÞÖÆ´óÐ¡ 20 ×Ö½Ú¡£
- *              Ä¬ÈÏ²ÎÊý: AT+ALIRI="cn-shanghai
- * @retval      ATK_IDM750C_EOK  : ÅäÖÃ³É¹¦
- *              ATK_IDM750C_ERROR: ÅäÖÃÊ§°Ü
+ * @brief       ATK-IDM750C é˜¿é‡Œäº‘åœ°åŸŸä¿¡æ¯
+ * @param       å‚æ•°ï¼š
+ *              ri: é˜¿é‡Œäº‘åœ°åŸŸä¿¡æ¯ï¼Œ é™åˆ¶å¤§å° 20 å­—èŠ‚ã€‚
+ *              é»˜è®¤å‚æ•°: AT+ALIRI="cn-shanghai
+ * @retval      ATK_IDM750C_EOK  : é…ç½®æˆåŠŸ
+ *              ATK_IDM750C_ERROR: é…ç½®å¤±è´¥
  */
 uint8_t atk_idm750c_aliyun_region(char *reg)
 {
@@ -2552,12 +2552,12 @@ uint8_t atk_idm750c_aliyun_region(char *reg)
 }
 
 /**
- * @brief       ATK-IDM750C °¢ÀïÔÆ¶©ÔÄÖ÷ÌâÐÅÏ¢
- * @param       ²ÎÊý£º
- *              sub:¶©ÔÄÖ÷ÌâÐÅÏ¢£¬ ÏÞÖÆ´óÐ¡ 100 ×Ö½Ú¡£
- *              Ä¬ÈÏ²ÎÊý: AT+ALISUB="get"
- * @retval      ATK_IDM750C_EOK  : ÅäÖÃ³É¹¦
- *              ATK_IDM750C_ERROR: ÅäÖÃÊ§°Ü
+ * @brief       ATK-IDM750C é˜¿é‡Œäº‘è®¢é˜…ä¸»é¢˜ä¿¡æ¯
+ * @param       å‚æ•°ï¼š
+ *              sub:è®¢é˜…ä¸»é¢˜ä¿¡æ¯ï¼Œ é™åˆ¶å¤§å° 100 å­—èŠ‚ã€‚
+ *              é»˜è®¤å‚æ•°: AT+ALISUB="get"
+ * @retval      ATK_IDM750C_EOK  : é…ç½®æˆåŠŸ
+ *              ATK_IDM750C_ERROR: é…ç½®å¤±è´¥
  */
 uint8_t atk_idm750c_aliyun_subscribe_title(char *asti)
 {
@@ -2578,12 +2578,12 @@ uint8_t atk_idm750c_aliyun_subscribe_title(char *asti)
 }
 
 /**
- * @brief       ATK-IDM750C °¢ÀïÔÆ·¢²¼Ö÷ÌâÐÅÏ¢
- * @param       ²ÎÊý£º
- *              pub:¶©ÔÄÖ÷ÌâÐÅÏ¢£¬ ÏÞÖÆ´óÐ¡ 100 ×Ö½Ú¡£
- *              Ä¬ÈÏ²ÎÊý: AT+ALIPUB="update"
- * @retval      ATK_IDM750C_EOK  : ÅäÖÃ³É¹¦
- *              ATK_IDM750C_ERROR: ÅäÖÃÊ§°Ü
+ * @brief       ATK-IDM750C é˜¿é‡Œäº‘å‘å¸ƒä¸»é¢˜ä¿¡æ¯
+ * @param       å‚æ•°ï¼š
+ *              pub:è®¢é˜…ä¸»é¢˜ä¿¡æ¯ï¼Œ é™åˆ¶å¤§å° 100 å­—èŠ‚ã€‚
+ *              é»˜è®¤å‚æ•°: AT+ALIPUB="update"
+ * @retval      ATK_IDM750C_EOK  : é…ç½®æˆåŠŸ
+ *              ATK_IDM750C_ERROR: é…ç½®å¤±è´¥
  */
 uint8_t atk_idm750c_aliyun_release_title(char *arti)
 {
@@ -2604,22 +2604,22 @@ uint8_t atk_idm750c_aliyun_release_title(char *arti)
 }
 
 /**
- * @brief       ATK-IDM750C °¢ÀïÔÆ²ÎÊýÐÅÏ¢
- * @param       ²ÎÊý£º
- *              qos£ºÏûÏ¢·þÎñµÈ¼¶
- *              0:×î¶à·¢ËÍÒ»´Î
- *              1:ÖÁÉÙ·¢ËÍÒ»´Î
- *              2:Ö»·¢ËÍÒ»´Î
- *              retain:ÒÅÖö±£Áô×´Ì¬
- *              0:·þÎñÆ÷²»»á±£´æÒÅÖöÐÅÏ¢
- *              1:·þÎñÆ÷±£´æÒÅÖöÐÅÏ¢
- *              clean_session:Çå³ý»á»°×´Ì¬
- *              0: ¿Í»§¶ËÀëÏßºó£¬ ·þÎñÆ÷±£´æ»á»°ÏûÏ¢
- *              1: ¿Í»§¶ËÀëÏßºó£¬ ·þÎñÆ÷×Ô¶¯´Ý»ÙËùÓÐÊý¾Ý
- *              keepalive:±£»îÊ±¼ä,·¶Î§£º 30-1200£¬µ¥Î»£ºÃë¡£ ¡£
- *              Ä¬ÈÏ²ÎÊý: AT+ALICON="0","0","1","300"
- * @retval      ATK_IDM750C_EOK  : ÅäÖÃ³É¹¦
- *              ATK_IDM750C_ERROR: ÅäÖÃÊ§°Ü
+ * @brief       ATK-IDM750C é˜¿é‡Œäº‘å‚æ•°ä¿¡æ¯
+ * @param       å‚æ•°ï¼š
+ *              qosï¼šæ¶ˆæ¯æœåŠ¡ç­‰çº§
+ *              0:æœ€å¤šå‘é€ä¸€æ¬¡
+ *              1:è‡³å°‘å‘é€ä¸€æ¬¡
+ *              2:åªå‘é€ä¸€æ¬¡
+ *              retain:é—å˜±ä¿ç•™çŠ¶æ€
+ *              0:æœåŠ¡å™¨ä¸ä¼šä¿å­˜é—å˜±ä¿¡æ¯
+ *              1:æœåŠ¡å™¨ä¿å­˜é—å˜±ä¿¡æ¯
+ *              clean_session:æ¸…é™¤ä¼šè¯çŠ¶æ€
+ *              0: å®¢æˆ·ç«¯ç¦»çº¿åŽï¼Œ æœåŠ¡å™¨ä¿å­˜ä¼šè¯æ¶ˆæ¯
+ *              1: å®¢æˆ·ç«¯ç¦»çº¿åŽï¼Œ æœåŠ¡å™¨è‡ªåŠ¨æ‘§æ¯æ‰€æœ‰æ•°æ®
+ *              keepalive:ä¿æ´»æ—¶é—´,èŒƒå›´ï¼š 30-1200ï¼Œå•ä½ï¼šç§’ã€‚ ã€‚
+ *              é»˜è®¤å‚æ•°: AT+ALICON="0","0","1","300"
+ * @retval      ATK_IDM750C_EOK  : é…ç½®æˆåŠŸ
+ *              ATK_IDM750C_ERROR: é…ç½®å¤±è´¥
  */
 uint8_t atk_idm750c_aliyun_para_information(atk_idm750c_aliyun_para_mode_t mode)
 {
@@ -2628,73 +2628,73 @@ uint8_t atk_idm750c_aliyun_para_information(atk_idm750c_aliyun_para_mode_t mode)
     
     switch (mode)
     {
-        /* 0£º×î¶à·¢ËÍÒ»´Î£¬0£º·þÎñÆ÷²»»á±£´æÒÅÖöÐÅÏ¢£¬0£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷±£´æ»á»°ÏûÏ¢ */
+        /* 0ï¼šæœ€å¤šå‘é€ä¸€æ¬¡ï¼Œ0ï¼šæœåŠ¡å™¨ä¸ä¼šä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ0ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨ä¿å­˜ä¼šè¯æ¶ˆæ¯ */
         case ATK_IDM750C_ALIYUN_ZERO_MODE1:
         {
             sprintf(cmd, "AT+ALICON=\"0\",\"0\",\"0\",\"300\"");
             break;
         }
-        /* 0£º×î¶à·¢ËÍÒ»´Î£¬0£º·þÎñÆ÷²»»á±£´æÒÅÖöÐÅÏ¢£¬1£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷×Ô¶¯´Ý»ÙËùÓÐÊý¾Ý £¨Ä¬ÈÏ£©*/
+        /* 0ï¼šæœ€å¤šå‘é€ä¸€æ¬¡ï¼Œ0ï¼šæœåŠ¡å™¨ä¸ä¼šä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ1ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨è‡ªåŠ¨æ‘§æ¯æ‰€æœ‰æ•°æ® ï¼ˆé»˜è®¤ï¼‰*/
         case ATK_IDM750C_ALIYUN_ZERO_MODE2:
         {
             sprintf(cmd, "AT+ALICON=\"0\",\"0\",\"1\",\"300\"");
             break;
         }
-        /* 0£º×î¶à·¢ËÍÒ»´Î£¬1£º·þÎñÆ÷±£´æÒÅÖöÐÅÏ¢£¬0£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷±£´æ»á»°ÏûÏ¢ */
+        /* 0ï¼šæœ€å¤šå‘é€ä¸€æ¬¡ï¼Œ1ï¼šæœåŠ¡å™¨ä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ0ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨ä¿å­˜ä¼šè¯æ¶ˆæ¯ */
         case ATK_IDM750C_ALIYUN_ZERO_MODE3:
         {
             sprintf(cmd, "AT+ALICON=\"0\",\"1\",\"0\",\"300\"");
             break;
         }
-        /* 0£º×î¶à·¢ËÍÒ»´Î£¬1£º·þÎñÆ÷±£´æÒÅÖöÐÅÏ¢£¬1£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷×Ô¶¯´Ý»ÙËùÓÐÊý¾Ý */
+        /* 0ï¼šæœ€å¤šå‘é€ä¸€æ¬¡ï¼Œ1ï¼šæœåŠ¡å™¨ä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ1ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨è‡ªåŠ¨æ‘§æ¯æ‰€æœ‰æ•°æ® */
         case ATK_IDM750C_ALIYUN_ZERO_MODE4:
         {
             sprintf(cmd, "AT+ALICON=\"0\",\"1\",\"1\",\"300\"");
             break;
         }
-        /* 1£ºÖÁÉÙ·¢ËÍÒ»´Î£¬0£º·þÎñÆ÷²»»á±£´æÒÅÖöÐÅÏ¢£¬0£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷±£´æ»á»°ÏûÏ¢ */
+        /* 1ï¼šè‡³å°‘å‘é€ä¸€æ¬¡ï¼Œ0ï¼šæœåŠ¡å™¨ä¸ä¼šä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ0ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨ä¿å­˜ä¼šè¯æ¶ˆæ¯ */
         case ATK_IDM750C_ALIYUN_ONE_MODE1:
         {
             sprintf(cmd, "AT+ALICON=\"1\",\"0\",\"0\",\"300\"");
             break;
         }
-        /* 1£ºÖÁÉÙ·¢ËÍÒ»´Î£¬0£º·þÎñÆ÷²»»á±£´æÒÅÖöÐÅÏ¢£¬1£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷×Ô¶¯´Ý»ÙËùÓÐÊý¾Ý */
+        /* 1ï¼šè‡³å°‘å‘é€ä¸€æ¬¡ï¼Œ0ï¼šæœåŠ¡å™¨ä¸ä¼šä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ1ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨è‡ªåŠ¨æ‘§æ¯æ‰€æœ‰æ•°æ® */
         case ATK_IDM750C_ALIYUN_ONE_MODE2:
         {
             sprintf(cmd, "AT+ALICON=\"1\",\"0\",\"1\",\"300\"");
             break;
         }
-        /* 1£ºÖÁÉÙ·¢ËÍÒ»´Î£¬1£º·þÎñÆ÷±£´æÒÅÖöÐÅÏ¢£¬0£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷±£´æ»á»°ÏûÏ¢ */
+        /* 1ï¼šè‡³å°‘å‘é€ä¸€æ¬¡ï¼Œ1ï¼šæœåŠ¡å™¨ä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ0ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨ä¿å­˜ä¼šè¯æ¶ˆæ¯ */
         case ATK_IDM750C_ALIYUN_ONE_MODE3:
         {
             sprintf(cmd, "AT+ALICON=\"1\",\"1\",\"0\",\"300\"");
             break;
         }
-        /* 1£ºÖÁÉÙ·¢ËÍÒ»´Î£¬1£º·þÎñÆ÷±£´æÒÅÖöÐÅÏ¢£¬1£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷×Ô¶¯´Ý»ÙËùÓÐÊý¾Ý */
+        /* 1ï¼šè‡³å°‘å‘é€ä¸€æ¬¡ï¼Œ1ï¼šæœåŠ¡å™¨ä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ1ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨è‡ªåŠ¨æ‘§æ¯æ‰€æœ‰æ•°æ® */
         case ATK_IDM750C_ALIYUN_ONE_MODE4:
         {
             sprintf(cmd, "AT+ALICON=\"1\",\"1\",\"1\",\"300\"");
             break;
         }
-        /* 2£ºÖ»·¢ËÍÒ»´Î£¬0£º·þÎñÆ÷²»»á±£´æÒÅÖöÐÅÏ¢£¬0£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷±£´æ»á»°ÏûÏ¢ */
+        /* 2ï¼šåªå‘é€ä¸€æ¬¡ï¼Œ0ï¼šæœåŠ¡å™¨ä¸ä¼šä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ0ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨ä¿å­˜ä¼šè¯æ¶ˆæ¯ */
         case ATK_IDM750C_ALIYUN_TWO_MODE1:
         {
             sprintf(cmd, "AT+ALICON=\"2\",\"0\",\"0\",\"300\"");
             break;
         }
-        /* 2£ºÖ»·¢ËÍÒ»´Î£¬0£º·þÎñÆ÷²»»á±£´æÒÅÖöÐÅÏ¢£¬1£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷×Ô¶¯´Ý»ÙËùÓÐÊý¾Ý */
+        /* 2ï¼šåªå‘é€ä¸€æ¬¡ï¼Œ0ï¼šæœåŠ¡å™¨ä¸ä¼šä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ1ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨è‡ªåŠ¨æ‘§æ¯æ‰€æœ‰æ•°æ® */
         case ATK_IDM750C_ALIYUN_TWO_MODE2:
         {
             sprintf(cmd, "AT+ALICON=\"2\",\"0\",\"1\",\"300\"");
             break;
         }
-        /* 2£ºÖ»·¢ËÍÒ»´Î£¬1£º·þÎñÆ÷±£´æÒÅÖöÐÅÏ¢£¬0£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷±£´æ»á»°ÏûÏ¢ */
+        /* 2ï¼šåªå‘é€ä¸€æ¬¡ï¼Œ1ï¼šæœåŠ¡å™¨ä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ0ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨ä¿å­˜ä¼šè¯æ¶ˆæ¯ */
         case ATK_IDM750C_ALIYUN_TWO_MODE3:
         {
             sprintf(cmd, "AT+ALICON=\"2\",\"1\",\"0\",\"300\"");
             break;
         }
-        /* 2£ºÖ»·¢ËÍÒ»´Î£¬1£º·þÎñÆ÷±£´æÒÅÖöÐÅÏ¢£¬1£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷×Ô¶¯´Ý»ÙËùÓÐÊý¾Ý */
+        /* 2ï¼šåªå‘é€ä¸€æ¬¡ï¼Œ1ï¼šæœåŠ¡å™¨ä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ1ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨è‡ªåŠ¨æ‘§æ¯æ‰€æœ‰æ•°æ® */
         case ATK_IDM750C_ALIYUN_TWO_MODE4:
         {
             sprintf(cmd, "AT+ALICON=\"2\",\"1\",\"1\",\"300\"");
@@ -2719,12 +2719,12 @@ uint8_t atk_idm750c_aliyun_para_information(atk_idm750c_aliyun_para_mode_t mode)
 }
 
 /**
- * @brief       ATK-IDM750C OneNET Éè±¸IDÐÅÏ¢
- * @param       ²ÎÊý£º
- *              di£º Éè±¸ ID ÐÅÏ¢£¬ÏÞÖÆ 20 ×Ö½Ú¡£
- *              Ä¬ÈÏ²ÎÊý: AT+ONEDI="12345"
- * @retval      ATK_IDM750C_EOK  : ÅäÖÃ³É¹¦
- *              ATK_IDM750C_ERROR: ÅäÖÃÊ§°Ü
+ * @brief       ATK-IDM750C OneNET è®¾å¤‡IDä¿¡æ¯
+ * @param       å‚æ•°ï¼š
+ *              diï¼š è®¾å¤‡ ID ä¿¡æ¯ï¼Œé™åˆ¶ 20 å­—èŠ‚ã€‚
+ *              é»˜è®¤å‚æ•°: AT+ONEDI="12345"
+ * @retval      ATK_IDM750C_EOK  : é…ç½®æˆåŠŸ
+ *              ATK_IDM750C_ERROR: é…ç½®å¤±è´¥
  */
 uint8_t atk_idm750c_onenet_device_id(char *id)
 {
@@ -2745,12 +2745,12 @@ uint8_t atk_idm750c_onenet_device_id(char *id)
 }
 
 /**
- * @brief       ATK-IDM750C OneNET ²úÆ·IDÐÅÏ¢
- * @param       ²ÎÊý£º
- *              pi£º ²úÆ· ID ÐÅÏ¢£¬ÏÞÖÆ 20 ×Ö½Ú¡£
- *              Ä¬ÈÏ²ÎÊý: AT+ONEPI="1234567890"
- * @retval      ATK_IDM750C_EOK  : ÅäÖÃ³É¹¦
- *              ATK_IDM750C_ERROR: ÅäÖÃÊ§°Ü
+ * @brief       ATK-IDM750C OneNET äº§å“IDä¿¡æ¯
+ * @param       å‚æ•°ï¼š
+ *              piï¼š äº§å“ ID ä¿¡æ¯ï¼Œé™åˆ¶ 20 å­—èŠ‚ã€‚
+ *              é»˜è®¤å‚æ•°: AT+ONEPI="1234567890"
+ * @retval      ATK_IDM750C_EOK  : é…ç½®æˆåŠŸ
+ *              ATK_IDM750C_ERROR: é…ç½®å¤±è´¥
  */
 uint8_t atk_idm750c_onenet_product_id(char *id)
 {
@@ -2771,12 +2771,12 @@ uint8_t atk_idm750c_onenet_product_id(char *id)
 }
 
 /**
- * @brief       ATK-IDM750C OneNET ¼øÈ¨ÐÅÏ¢
- * @param       ²ÎÊý£º
- *              ai£º ¼øÈ¨ÐÅÏ¢ÐÅÏ¢£¬ÏÞÖÆ 64 ×Ö½Ú¡£
- *              Ä¬ÈÏ²ÎÊý: AT+ONEAI="12345678901234567890"
- * @retval      ATK_IDM750C_EOK  : ÅäÖÃ³É¹¦
- *              ATK_IDM750C_ERROR: ÅäÖÃÊ§°Ü
+ * @brief       ATK-IDM750C OneNET é‰´æƒä¿¡æ¯
+ * @param       å‚æ•°ï¼š
+ *              aiï¼š é‰´æƒä¿¡æ¯ä¿¡æ¯ï¼Œé™åˆ¶ 64 å­—èŠ‚ã€‚
+ *              é»˜è®¤å‚æ•°: AT+ONEAI="12345678901234567890"
+ * @retval      ATK_IDM750C_EOK  : é…ç½®æˆåŠŸ
+ *              ATK_IDM750C_ERROR: é…ç½®å¤±è´¥
  */
 uint8_t atk_idm750c_onenet_authentication_information(char *ai)
 {
@@ -2797,13 +2797,13 @@ uint8_t atk_idm750c_onenet_authentication_information(char *ai)
 }
 
 /**
- * @brief       ATK-IDM750C OneNET ·þÎñÆ÷ÐÅÏ¢
- * @param       ²ÎÊý£º
- *              ip£º ·þÎñÆ÷µØÖ·£¬ ÏÞÖÆ 40 ×Ö½Ú¡£
- *              port£º ·þÎñÆ÷¶Ë¿ÚºÅ£¬ ·¶Î§£º 0-65535
- *              Ä¬ÈÏ²ÎÊý: AT+ONEIP="mqtt.heclouds.com","6002"
- * @retval      ATK_IDM750C_EOK  : ÅäÖÃ³É¹¦
- *              ATK_IDM750C_ERROR: ÅäÖÃÊ§°Ü
+ * @brief       ATK-IDM750C OneNET æœåŠ¡å™¨ä¿¡æ¯
+ * @param       å‚æ•°ï¼š
+ *              ipï¼š æœåŠ¡å™¨åœ°å€ï¼Œ é™åˆ¶ 40 å­—èŠ‚ã€‚
+ *              portï¼š æœåŠ¡å™¨ç«¯å£å·ï¼Œ èŒƒå›´ï¼š 0-65535
+ *              é»˜è®¤å‚æ•°: AT+ONEIP="mqtt.heclouds.com","6002"
+ * @retval      ATK_IDM750C_EOK  : é…ç½®æˆåŠŸ
+ *              ATK_IDM750C_ERROR: é…ç½®å¤±è´¥
  */
 uint8_t atk_idm750c_onenet_server_information(char *ip,char *port)
 {
@@ -2824,26 +2824,26 @@ uint8_t atk_idm750c_onenet_server_information(char *ip,char *port)
 }
 
 /**
- * @brief       ATK-IDM750C ONENET²ÎÊýÐÅÏ¢
- * @param       ²ÎÊý£º
- *              data_type:Êý¾ÝÀàÐÍ£¨×¢£º Çë²Î¿¼ OneNET Éè±¸¶Ë½ÓÈëÐ­Òé-MQTT ÎÄµµÖÐµÄÊý¾ÝÀàÐÍ¶¨Òå£©
- *              1£º Êý¾ÝÀàÐÍ 1
- *              3£º Êý¾ÝÀàÐÍ 3
- *              4£º Êý¾ÝÀàÐÍ 4
- *              qos£ºÏûÏ¢·þÎñµÈ¼¶
- *              0:×î¶à·¢ËÍÒ»´Î
- *              1:ÖÁÉÙ·¢ËÍÒ»´Î
- *              2:Ö»·¢ËÍÒ»´Î
- *              retain:ÒÅÖö±£Áô×´Ì¬
- *              0:·þÎñÆ÷²»»á±£´æÒÅÖöÐÅÏ¢
- *              1:·þÎñÆ÷±£´æÒÅÖöÐÅÏ¢
- *              clean_session:Çå³ý»á»°×´Ì¬
- *              0:¿Í»§¶ËÀëÏßºó£¬ ·þÎñÆ÷±£´æ»á»°ÏûÏ¢
- *              1:¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷×Ô¶¯´Ý»ÙËùÓÐÊý¾Ý
- *              keepalive:±£»îÊ±¼ä,·¶Î§£º 120-1800£¬µ¥Î»£ºÃë¡£
- *              Ä¬ÈÏ²ÎÊý: AT+ONECON="1","0","0","1","300"
- * @retval      ATK_IDM750C_EOK  : ÅäÖÃ³É¹¦
- *              ATK_IDM750C_ERROR: ÅäÖÃÊ§°Ü
+ * @brief       ATK-IDM750C ONENETå‚æ•°ä¿¡æ¯
+ * @param       å‚æ•°ï¼š
+ *              data_type:æ•°æ®ç±»åž‹ï¼ˆæ³¨ï¼š è¯·å‚è€ƒ OneNET è®¾å¤‡ç«¯æŽ¥å…¥åè®®-MQTT æ–‡æ¡£ä¸­çš„æ•°æ®ç±»åž‹å®šä¹‰ï¼‰
+ *              1ï¼š æ•°æ®ç±»åž‹ 1
+ *              3ï¼š æ•°æ®ç±»åž‹ 3
+ *              4ï¼š æ•°æ®ç±»åž‹ 4
+ *              qosï¼šæ¶ˆæ¯æœåŠ¡ç­‰çº§
+ *              0:æœ€å¤šå‘é€ä¸€æ¬¡
+ *              1:è‡³å°‘å‘é€ä¸€æ¬¡
+ *              2:åªå‘é€ä¸€æ¬¡
+ *              retain:é—å˜±ä¿ç•™çŠ¶æ€
+ *              0:æœåŠ¡å™¨ä¸ä¼šä¿å­˜é—å˜±ä¿¡æ¯
+ *              1:æœåŠ¡å™¨ä¿å­˜é—å˜±ä¿¡æ¯
+ *              clean_session:æ¸…é™¤ä¼šè¯çŠ¶æ€
+ *              0:å®¢æˆ·ç«¯ç¦»çº¿åŽï¼Œ æœåŠ¡å™¨ä¿å­˜ä¼šè¯æ¶ˆæ¯
+ *              1:å®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨è‡ªåŠ¨æ‘§æ¯æ‰€æœ‰æ•°æ®
+ *              keepalive:ä¿æ´»æ—¶é—´,èŒƒå›´ï¼š 120-1800ï¼Œå•ä½ï¼šç§’ã€‚
+ *              é»˜è®¤å‚æ•°: AT+ONECON="1","0","0","1","300"
+ * @retval      ATK_IDM750C_EOK  : é…ç½®æˆåŠŸ
+ *              ATK_IDM750C_ERROR: é…ç½®å¤±è´¥
  */
 uint8_t atk_idm750c_onenet_para_information(atk_idm750c_onenet_para_mode_t mode)
 {
@@ -2852,217 +2852,217 @@ uint8_t atk_idm750c_onenet_para_information(atk_idm750c_onenet_para_mode_t mode)
     
     switch (mode)
     {
-        /* 1:Êý¾ÝÀàÐÍ 1£¬0:×î¶à·¢ËÍÒ»´Î£¬0£º·þÎñÆ÷²»»á±£´æÒÅÖöÐÅÏ¢£¬0£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷±£´æ»á»°ÏûÏ¢ */
+        /* 1:æ•°æ®ç±»åž‹ 1ï¼Œ0:æœ€å¤šå‘é€ä¸€æ¬¡ï¼Œ0ï¼šæœåŠ¡å™¨ä¸ä¼šä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ0ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨ä¿å­˜ä¼šè¯æ¶ˆæ¯ */
         case ATK_IDM750C_ONENET_ZERO_MODE1:
         {
             sprintf(cmd, "AT+ONECON=\"1\",\"0\",\"0\",\"0\",\"300\"");
             break;
         }
-        /* 1:Êý¾ÝÀàÐÍ 1£¬0:×î¶à·¢ËÍÒ»´Î£¬0£º·þÎñÆ÷²»»á±£´æÒÅÖöÐÅÏ¢£¬1£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷×Ô¶¯´Ý»ÙËùÓÐÊý¾Ý£¨Ä¬ÈÏ£© */
+        /* 1:æ•°æ®ç±»åž‹ 1ï¼Œ0:æœ€å¤šå‘é€ä¸€æ¬¡ï¼Œ0ï¼šæœåŠ¡å™¨ä¸ä¼šä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ1ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨è‡ªåŠ¨æ‘§æ¯æ‰€æœ‰æ•°æ®ï¼ˆé»˜è®¤ï¼‰ */
         case ATK_IDM750C_ONENET_ZERO_MODE2:
         {
             sprintf(cmd, "AT+ONECON=\"1\",\"0\",\"0\",\"1\",\"300\"");
             break;
         }
-        /* 1:Êý¾ÝÀàÐÍ 1£¬0:×î¶à·¢ËÍÒ»´Î£¬1£º·þÎñÆ÷±£´æÒÅÖöÐÅÏ¢£¬0£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷±£´æ»á»°ÏûÏ¢ */
+        /* 1:æ•°æ®ç±»åž‹ 1ï¼Œ0:æœ€å¤šå‘é€ä¸€æ¬¡ï¼Œ1ï¼šæœåŠ¡å™¨ä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ0ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨ä¿å­˜ä¼šè¯æ¶ˆæ¯ */
         case ATK_IDM750C_ONENET_ZERO_MODE3:
         {
             sprintf(cmd, "AT+ONECON=\"1\",\"0\",\"1\",\"0\",\"300\"");
             break;
         }
-        /* 1:Êý¾ÝÀàÐÍ 1£¬0:×î¶à·¢ËÍÒ»´Î£¬1£º·þÎñÆ÷±£´æÒÅÖöÐÅÏ¢£¬1£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷×Ô¶¯´Ý»ÙËùÓÐÊý¾Ý */
+        /* 1:æ•°æ®ç±»åž‹ 1ï¼Œ0:æœ€å¤šå‘é€ä¸€æ¬¡ï¼Œ1ï¼šæœåŠ¡å™¨ä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ1ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨è‡ªåŠ¨æ‘§æ¯æ‰€æœ‰æ•°æ® */
         case ATK_IDM750C_ONENET_ZERO_MODE4:
         {
             sprintf(cmd, "AT+ONECON=\"1\",\"0\",\"1\",\"1\",\"300\"");
             break;
         }
-        /* 1:Êý¾ÝÀàÐÍ 1£¬1:ÖÁÉÙ·¢ËÍÒ»´Î£¬0£º·þÎñÆ÷²»»á±£´æÒÅÖöÐÅÏ¢£¬0£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷±£´æ»á»°ÏûÏ¢ */
+        /* 1:æ•°æ®ç±»åž‹ 1ï¼Œ1:è‡³å°‘å‘é€ä¸€æ¬¡ï¼Œ0ï¼šæœåŠ¡å™¨ä¸ä¼šä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ0ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨ä¿å­˜ä¼šè¯æ¶ˆæ¯ */
         case ATK_IDM750C_ONENET_ZERO_MODE5:
         {
             sprintf(cmd, "AT+ONECON=\"1\",\"1\",\"0\",\"0\",\"300\"");
             break;
         }
-        /* 1:Êý¾ÝÀàÐÍ 1£¬1:ÖÁÉÙ·¢ËÍÒ»´Î£¬0£º·þÎñÆ÷²»»á±£´æÒÅÖöÐÅÏ¢£¬1£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷×Ô¶¯´Ý»ÙËùÓÐÊý¾Ý */
+        /* 1:æ•°æ®ç±»åž‹ 1ï¼Œ1:è‡³å°‘å‘é€ä¸€æ¬¡ï¼Œ0ï¼šæœåŠ¡å™¨ä¸ä¼šä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ1ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨è‡ªåŠ¨æ‘§æ¯æ‰€æœ‰æ•°æ® */
         case ATK_IDM750C_ONENET_ZERO_MODE6:
         {
             sprintf(cmd, "AT+ONECON=\"1\",\"1\",\"0\",\"1\",\"300\"");
             break;
         }
-        /* 1:Êý¾ÝÀàÐÍ 1£¬1:ÖÁÉÙ·¢ËÍÒ»´Î£¬1£º·þÎñÆ÷±£´æÒÅÖöÐÅÏ¢£¬0£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷±£´æ»á»°ÏûÏ¢ */
+        /* 1:æ•°æ®ç±»åž‹ 1ï¼Œ1:è‡³å°‘å‘é€ä¸€æ¬¡ï¼Œ1ï¼šæœåŠ¡å™¨ä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ0ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨ä¿å­˜ä¼šè¯æ¶ˆæ¯ */
         case ATK_IDM750C_ONENET_ZERO_MODE7:
         {
             sprintf(cmd, "AT+ONECON=\"1\",\"1\",\"1\",\"0\",\"300\"");
             break;
         }
-        /* 1:Êý¾ÝÀàÐÍ 1£¬1:ÖÁÉÙ·¢ËÍÒ»´Î£¬1£º·þÎñÆ÷±£´æÒÅÖöÐÅÏ¢£¬1£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷×Ô¶¯´Ý»ÙËùÓÐÊý¾Ý */
+        /* 1:æ•°æ®ç±»åž‹ 1ï¼Œ1:è‡³å°‘å‘é€ä¸€æ¬¡ï¼Œ1ï¼šæœåŠ¡å™¨ä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ1ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨è‡ªåŠ¨æ‘§æ¯æ‰€æœ‰æ•°æ® */
         case ATK_IDM750C_ONENET_ZERO_MODE8:
         {
             sprintf(cmd, "AT+ONECON=\"1\",\"1\",\"1\",\"1\",\"300\"");
             break;
         }
-        /* 1:Êý¾ÝÀàÐÍ 1£¬2:Ö»·¢ËÍÒ»´Î£¬1£º·þÎñÆ÷±£´æÒÅÖöÐÅÏ¢£¬1£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷×Ô¶¯´Ý»ÙËùÓÐÊý¾Ý */
+        /* 1:æ•°æ®ç±»åž‹ 1ï¼Œ2:åªå‘é€ä¸€æ¬¡ï¼Œ1ï¼šæœåŠ¡å™¨ä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ1ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨è‡ªåŠ¨æ‘§æ¯æ‰€æœ‰æ•°æ® */
         case ATK_IDM750C_ONENET_ZERO_MODE9:
         {
             sprintf(cmd, "AT+ONECON=\"1\",\"2\",\"0\",\"0\",\"300\"");
             break;
         }
-        /* 1:Êý¾ÝÀàÐÍ 1£¬2:Ö»·¢ËÍÒ»´Î£¬1£º·þÎñÆ÷±£´æÒÅÖöÐÅÏ¢£¬1£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷×Ô¶¯´Ý»ÙËùÓÐÊý¾Ý */
+        /* 1:æ•°æ®ç±»åž‹ 1ï¼Œ2:åªå‘é€ä¸€æ¬¡ï¼Œ1ï¼šæœåŠ¡å™¨ä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ1ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨è‡ªåŠ¨æ‘§æ¯æ‰€æœ‰æ•°æ® */
         case ATK_IDM750C_ONENET_ZERO_MODE10:
         {
             sprintf(cmd, "AT+ONECON=\"1\",\"2\",\"0\",\"1\",\"300\"");
             break;
         }
-        /* 1:Êý¾ÝÀàÐÍ 1£¬2:Ö»·¢ËÍÒ»´Î£¬1£º·þÎñÆ÷±£´æÒÅÖöÐÅÏ¢£¬1£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷×Ô¶¯´Ý»ÙËùÓÐÊý¾Ý */
+        /* 1:æ•°æ®ç±»åž‹ 1ï¼Œ2:åªå‘é€ä¸€æ¬¡ï¼Œ1ï¼šæœåŠ¡å™¨ä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ1ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨è‡ªåŠ¨æ‘§æ¯æ‰€æœ‰æ•°æ® */
         case ATK_IDM750C_ONENET_ZERO_MODE11:
         {
             sprintf(cmd, "AT+ONECON=\"1\",\"2\",\"1\",\"0\",\"300\"");
             break;
         }
-        /* 1:Êý¾ÝÀàÐÍ 1£¬2:Ö»·¢ËÍÒ»´Î£¬1£º·þÎñÆ÷±£´æÒÅÖöÐÅÏ¢£¬1£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷×Ô¶¯´Ý»ÙËùÓÐÊý¾Ý */
+        /* 1:æ•°æ®ç±»åž‹ 1ï¼Œ2:åªå‘é€ä¸€æ¬¡ï¼Œ1ï¼šæœåŠ¡å™¨ä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ1ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨è‡ªåŠ¨æ‘§æ¯æ‰€æœ‰æ•°æ® */
         case ATK_IDM750C_ONENET_ZERO_MODE12:
         {
             sprintf(cmd, "AT+ONECON=\"1\",\"2\",\"1\",\"1\",\"300\"");
             break;
         }
-        /* 3£ºÊý¾ÝÀàÐÍ 3£¬0:×î¶à·¢ËÍÒ»´Î£¬0£º·þÎñÆ÷²»»á±£´æÒÅÖöÐÅÏ¢£¬0£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷±£´æ»á»°ÏûÏ¢ */
+        /* 3ï¼šæ•°æ®ç±»åž‹ 3ï¼Œ0:æœ€å¤šå‘é€ä¸€æ¬¡ï¼Œ0ï¼šæœåŠ¡å™¨ä¸ä¼šä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ0ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨ä¿å­˜ä¼šè¯æ¶ˆæ¯ */
         case ATK_IDM750C_ONENET_ONE_MODE1:
         {
             sprintf(cmd, "AT+ONECON=\"3\",\"0\",\"0\",\"0\",\"300\"");
             break;
         }
-        /* 3£ºÊý¾ÝÀàÐÍ 3£¬0:×î¶à·¢ËÍÒ»´Î£¬0£º·þÎñÆ÷²»»á±£´æÒÅÖöÐÅÏ¢£¬1£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷×Ô¶¯´Ý»ÙËùÓÐÊý¾Ý */
+        /* 3ï¼šæ•°æ®ç±»åž‹ 3ï¼Œ0:æœ€å¤šå‘é€ä¸€æ¬¡ï¼Œ0ï¼šæœåŠ¡å™¨ä¸ä¼šä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ1ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨è‡ªåŠ¨æ‘§æ¯æ‰€æœ‰æ•°æ® */
         case ATK_IDM750C_ONENET_ONE_MODE2:
         {
             sprintf(cmd, "AT+ONECON=\"3\",\"0\",\"0\",\"1\",\"300\"");
             break;
         }
-        /* 3£ºÊý¾ÝÀàÐÍ 3£¬0:×î¶à·¢ËÍÒ»´Î£¬1£º·þÎñÆ÷±£´æÒÅÖöÐÅÏ¢£¬0£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷±£´æ»á»°ÏûÏ¢ */
+        /* 3ï¼šæ•°æ®ç±»åž‹ 3ï¼Œ0:æœ€å¤šå‘é€ä¸€æ¬¡ï¼Œ1ï¼šæœåŠ¡å™¨ä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ0ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨ä¿å­˜ä¼šè¯æ¶ˆæ¯ */
         case ATK_IDM750C_ONENET_ONE_MODE3:
         {
             sprintf(cmd, "AT+ONECON=\"3\",\"0\",\"1\",\"0\",\"300\"");
             break;
         }
-        /* 3£ºÊý¾ÝÀàÐÍ 3£¬0:×î¶à·¢ËÍÒ»´Î£¬1£º·þÎñÆ÷±£´æÒÅÖöÐÅÏ¢£¬1£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷×Ô¶¯´Ý»ÙËùÓÐÊý¾Ý */
+        /* 3ï¼šæ•°æ®ç±»åž‹ 3ï¼Œ0:æœ€å¤šå‘é€ä¸€æ¬¡ï¼Œ1ï¼šæœåŠ¡å™¨ä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ1ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨è‡ªåŠ¨æ‘§æ¯æ‰€æœ‰æ•°æ® */
         case ATK_IDM750C_ONENET_ONE_MODE4:
         {
             sprintf(cmd, "AT+ONECON=\"3\",\"0\",\"1\",\"1\",\"300\"");
             break;
         }
-        /* 3£ºÊý¾ÝÀàÐÍ 3£¬1:ÖÁÉÙ·¢ËÍÒ»´Î£¬0£º·þÎñÆ÷²»»á±£´æÒÅÖöÐÅÏ¢£¬0£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷±£´æ»á»°ÏûÏ¢ */
+        /* 3ï¼šæ•°æ®ç±»åž‹ 3ï¼Œ1:è‡³å°‘å‘é€ä¸€æ¬¡ï¼Œ0ï¼šæœåŠ¡å™¨ä¸ä¼šä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ0ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨ä¿å­˜ä¼šè¯æ¶ˆæ¯ */
         case ATK_IDM750C_ONENET_ONE_MODE5:
         {
             sprintf(cmd, "AT+ONECON=\"3\",\"1\",\"0\",\"0\",\"300\"");
             break;
         }
-        /* 3£ºÊý¾ÝÀàÐÍ 3£¬1:ÖÁÉÙ·¢ËÍÒ»´Î£¬0£º·þÎñÆ÷²»»á±£´æÒÅÖöÐÅÏ¢£¬1£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷×Ô¶¯´Ý»ÙËùÓÐÊý¾Ý */
+        /* 3ï¼šæ•°æ®ç±»åž‹ 3ï¼Œ1:è‡³å°‘å‘é€ä¸€æ¬¡ï¼Œ0ï¼šæœåŠ¡å™¨ä¸ä¼šä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ1ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨è‡ªåŠ¨æ‘§æ¯æ‰€æœ‰æ•°æ® */
         case ATK_IDM750C_ONENET_ONE_MODE6:
         {
             sprintf(cmd, "AT+ONECON=\"3\",\"1\",\"0\",\"1\",\"300\"");
             break;
         }
-        /* 3£ºÊý¾ÝÀàÐÍ 3£¬1:ÖÁÉÙ·¢ËÍÒ»´Î£¬1£º·þÎñÆ÷±£´æÒÅÖöÐÅÏ¢£¬0£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷±£´æ»á»°ÏûÏ¢ */
+        /* 3ï¼šæ•°æ®ç±»åž‹ 3ï¼Œ1:è‡³å°‘å‘é€ä¸€æ¬¡ï¼Œ1ï¼šæœåŠ¡å™¨ä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ0ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨ä¿å­˜ä¼šè¯æ¶ˆæ¯ */
         case ATK_IDM750C_ONENET_ONE_MODE7:
         {
             sprintf(cmd, "AT+ONECON=\"3\",\"1\",\"1\",\"0\",\"300\"");
             break;
         }
-        /* 3£ºÊý¾ÝÀàÐÍ 3£¬1:ÖÁÉÙ·¢ËÍÒ»´Î£¬1£º·þÎñÆ÷±£´æÒÅÖöÐÅÏ¢£¬1£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷×Ô¶¯´Ý»ÙËùÓÐÊý¾Ý */
+        /* 3ï¼šæ•°æ®ç±»åž‹ 3ï¼Œ1:è‡³å°‘å‘é€ä¸€æ¬¡ï¼Œ1ï¼šæœåŠ¡å™¨ä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ1ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨è‡ªåŠ¨æ‘§æ¯æ‰€æœ‰æ•°æ® */
         case ATK_IDM750C_ONENET_ONE_MODE8:
         {
             sprintf(cmd, "AT+ONECON=\"3\",\"1\",\"1\",\"1\",\"300\"");
             break;
         }
-        /* 3£ºÊý¾ÝÀàÐÍ 3£¬2:Ö»·¢ËÍÒ»´Î£¬1£º·þÎñÆ÷±£´æÒÅÖöÐÅÏ¢£¬1£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷×Ô¶¯´Ý»ÙËùÓÐÊý¾Ý */
+        /* 3ï¼šæ•°æ®ç±»åž‹ 3ï¼Œ2:åªå‘é€ä¸€æ¬¡ï¼Œ1ï¼šæœåŠ¡å™¨ä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ1ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨è‡ªåŠ¨æ‘§æ¯æ‰€æœ‰æ•°æ® */
         case ATK_IDM750C_ONENET_ONE_MODE9:
         {
             sprintf(cmd, "AT+ONECON=\"3\",\"2\",\"0\",\"0\",\"300\"");
             break;
         }
-        /* 3£ºÊý¾ÝÀàÐÍ 3£¬2:Ö»·¢ËÍÒ»´Î£¬1£º·þÎñÆ÷±£´æÒÅÖöÐÅÏ¢£¬1£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷×Ô¶¯´Ý»ÙËùÓÐÊý¾Ý */
+        /* 3ï¼šæ•°æ®ç±»åž‹ 3ï¼Œ2:åªå‘é€ä¸€æ¬¡ï¼Œ1ï¼šæœåŠ¡å™¨ä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ1ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨è‡ªåŠ¨æ‘§æ¯æ‰€æœ‰æ•°æ® */
         case ATK_IDM750C_ONENET_ONE_MODE10:
         {
             sprintf(cmd, "AT+ONECON=\"3\",\"2\",\"0\",\"1\",\"300\"");
             break;
         }
-        /* 3£ºÊý¾ÝÀàÐÍ 3£¬2:Ö»·¢ËÍÒ»´Î£¬1£º·þÎñÆ÷±£´æÒÅÖöÐÅÏ¢£¬1£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷×Ô¶¯´Ý»ÙËùÓÐÊý¾Ý */
+        /* 3ï¼šæ•°æ®ç±»åž‹ 3ï¼Œ2:åªå‘é€ä¸€æ¬¡ï¼Œ1ï¼šæœåŠ¡å™¨ä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ1ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨è‡ªåŠ¨æ‘§æ¯æ‰€æœ‰æ•°æ® */
         case ATK_IDM750C_ONENET_ONE_MODE11:
         {
             sprintf(cmd, "AT+ONECON=\"3\",\"2\",\"1\",\"0\",\"300\"");
             break;
         }
-        /* 3£ºÊý¾ÝÀàÐÍ 3£¬2:Ö»·¢ËÍÒ»´Î£¬1£º·þÎñÆ÷±£´æÒÅÖöÐÅÏ¢£¬1£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷×Ô¶¯´Ý»ÙËùÓÐÊý¾Ý */
+        /* 3ï¼šæ•°æ®ç±»åž‹ 3ï¼Œ2:åªå‘é€ä¸€æ¬¡ï¼Œ1ï¼šæœåŠ¡å™¨ä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ1ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨è‡ªåŠ¨æ‘§æ¯æ‰€æœ‰æ•°æ® */
         case ATK_IDM750C_ONENET_ONE_MODE12:
         {
             sprintf(cmd, "AT+ONECON=\"3\",\"2\",\"1\",\"1\",\"300\"");
             break;
         }
-        /* 4£ºÊý¾ÝÀàÐÍ 4£¬0:×î¶à·¢ËÍÒ»´Î£¬0£º·þÎñÆ÷²»»á±£´æÒÅÖöÐÅÏ¢£¬0£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷±£´æ»á»°ÏûÏ¢ */
+        /* 4ï¼šæ•°æ®ç±»åž‹ 4ï¼Œ0:æœ€å¤šå‘é€ä¸€æ¬¡ï¼Œ0ï¼šæœåŠ¡å™¨ä¸ä¼šä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ0ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨ä¿å­˜ä¼šè¯æ¶ˆæ¯ */
         case ATK_IDM750C_ONENET_TWO_MODE1:
         {
             sprintf(cmd, "AT+ONECON=\"4\",\"0\",\"0\",\"0\",\"300\"");
             break;
         }
-        /* 4£ºÊý¾ÝÀàÐÍ 4£¬0:×î¶à·¢ËÍÒ»´Î£¬0£º·þÎñÆ÷²»»á±£´æÒÅÖöÐÅÏ¢£¬1£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷×Ô¶¯´Ý»ÙËùÓÐÊý¾Ý */
+        /* 4ï¼šæ•°æ®ç±»åž‹ 4ï¼Œ0:æœ€å¤šå‘é€ä¸€æ¬¡ï¼Œ0ï¼šæœåŠ¡å™¨ä¸ä¼šä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ1ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨è‡ªåŠ¨æ‘§æ¯æ‰€æœ‰æ•°æ® */
         case ATK_IDM750C_ONENET_TWO_MODE2:
         {
             sprintf(cmd, "AT+ONECON=\"4\",\"0\",\"0\",\"1\",\"300\"");
             break;
         }
-        /* 4£ºÊý¾ÝÀàÐÍ 4£¬0:×î¶à·¢ËÍÒ»´Î£¬1£º·þÎñÆ÷±£´æÒÅÖöÐÅÏ¢£¬0£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷±£´æ»á»°ÏûÏ¢ */
+        /* 4ï¼šæ•°æ®ç±»åž‹ 4ï¼Œ0:æœ€å¤šå‘é€ä¸€æ¬¡ï¼Œ1ï¼šæœåŠ¡å™¨ä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ0ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨ä¿å­˜ä¼šè¯æ¶ˆæ¯ */
         case ATK_IDM750C_ONENET_TWO_MODE3:
         {
             sprintf(cmd, "AT+ONECON=\"4\",\"0\",\"1\",\"0\",\"300\"");
             break;
         }
-        /* 4£ºÊý¾ÝÀàÐÍ 4£¬0:×î¶à·¢ËÍÒ»´Î£¬1£º·þÎñÆ÷±£´æÒÅÖöÐÅÏ¢£¬1£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷×Ô¶¯´Ý»ÙËùÓÐÊý¾Ý */
+        /* 4ï¼šæ•°æ®ç±»åž‹ 4ï¼Œ0:æœ€å¤šå‘é€ä¸€æ¬¡ï¼Œ1ï¼šæœåŠ¡å™¨ä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ1ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨è‡ªåŠ¨æ‘§æ¯æ‰€æœ‰æ•°æ® */
         case ATK_IDM750C_ONENET_TWO_MODE4:
         {
             sprintf(cmd, "AT+ONECON=\"4\",\"0\",\"1\",\"1\",\"300\"");
             break;
         }
-        /* 4£ºÊý¾ÝÀàÐÍ 4£¬1:ÖÁÉÙ·¢ËÍÒ»´Î£¬0£º·þÎñÆ÷²»»á±£´æÒÅÖöÐÅÏ¢£¬0£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷±£´æ»á»°ÏûÏ¢ */
+        /* 4ï¼šæ•°æ®ç±»åž‹ 4ï¼Œ1:è‡³å°‘å‘é€ä¸€æ¬¡ï¼Œ0ï¼šæœåŠ¡å™¨ä¸ä¼šä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ0ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨ä¿å­˜ä¼šè¯æ¶ˆæ¯ */
         case ATK_IDM750C_ONENET_TWO_MODE5:
         {
             sprintf(cmd, "AT+ONECON=\"4\",\"1\",\"0\",\"0\",\"300\"");
             break;
         }
-        /* 4£ºÊý¾ÝÀàÐÍ 4£¬1:ÖÁÉÙ·¢ËÍÒ»´Î£¬0£º·þÎñÆ÷²»»á±£´æÒÅÖöÐÅÏ¢£¬1£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷×Ô¶¯´Ý»ÙËùÓÐÊý¾Ý */
+        /* 4ï¼šæ•°æ®ç±»åž‹ 4ï¼Œ1:è‡³å°‘å‘é€ä¸€æ¬¡ï¼Œ0ï¼šæœåŠ¡å™¨ä¸ä¼šä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ1ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨è‡ªåŠ¨æ‘§æ¯æ‰€æœ‰æ•°æ® */
         case ATK_IDM750C_ONENET_TWO_MODE6:
         {
             sprintf(cmd, "AT+ONECON=\"4\",\"1\",\"0\",\"1\",\"300\"");
             break;
         }
-        /* 4£ºÊý¾ÝÀàÐÍ 4£¬1:ÖÁÉÙ·¢ËÍÒ»´Î£¬1£º·þÎñÆ÷±£´æÒÅÖöÐÅÏ¢£¬0£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷±£´æ»á»°ÏûÏ¢ */
+        /* 4ï¼šæ•°æ®ç±»åž‹ 4ï¼Œ1:è‡³å°‘å‘é€ä¸€æ¬¡ï¼Œ1ï¼šæœåŠ¡å™¨ä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ0ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨ä¿å­˜ä¼šè¯æ¶ˆæ¯ */
         case ATK_IDM750C_ONENET_TWO_MODE7:
         {
             sprintf(cmd, "AT+ONECON=\"4\",\"1\",\"1\",\"0\",\"300\"");
             break;
         }
-        /* 4£ºÊý¾ÝÀàÐÍ 4£¬1:ÖÁÉÙ·¢ËÍÒ»´Î£¬1£º·þÎñÆ÷±£´æÒÅÖöÐÅÏ¢£¬1£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷×Ô¶¯´Ý»ÙËùÓÐÊý¾Ý */
+        /* 4ï¼šæ•°æ®ç±»åž‹ 4ï¼Œ1:è‡³å°‘å‘é€ä¸€æ¬¡ï¼Œ1ï¼šæœåŠ¡å™¨ä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ1ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨è‡ªåŠ¨æ‘§æ¯æ‰€æœ‰æ•°æ® */
         case ATK_IDM750C_ONENET_TWO_MODE8:
         {
             sprintf(cmd, "AT+ONECON=\"4\",\"1\",\"1\",\"1\",\"300\"");
             break;
         }
-        /* 4£ºÊý¾ÝÀàÐÍ 4£¬2:Ö»·¢ËÍÒ»´Î£¬0£º·þÎñÆ÷²»»á±£´æÒÅÖöÐÅÏ¢£¬0£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷±£´æ»á»°ÏûÏ¢ */
+        /* 4ï¼šæ•°æ®ç±»åž‹ 4ï¼Œ2:åªå‘é€ä¸€æ¬¡ï¼Œ0ï¼šæœåŠ¡å™¨ä¸ä¼šä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ0ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨ä¿å­˜ä¼šè¯æ¶ˆæ¯ */
         case ATK_IDM750C_ONENET_TWO_MODE9:
         {
             sprintf(cmd, "AT+ONECON=\"4\",\"2\",\"0\",\"0\",\"300\"");
             break;
         }
-        /* 4£ºÊý¾ÝÀàÐÍ 4£¬2:Ö»·¢ËÍÒ»´Î£¬0£º·þÎñÆ÷²»»á±£´æÒÅÖöÐÅÏ¢£¬1£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷×Ô¶¯´Ý»ÙËùÓÐÊý¾Ý */
+        /* 4ï¼šæ•°æ®ç±»åž‹ 4ï¼Œ2:åªå‘é€ä¸€æ¬¡ï¼Œ0ï¼šæœåŠ¡å™¨ä¸ä¼šä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ1ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨è‡ªåŠ¨æ‘§æ¯æ‰€æœ‰æ•°æ® */
         case ATK_IDM750C_ONENET_TWO_MODE10:
         {
             sprintf(cmd, "AT+ONECON=\"4\",\"2\",\"0\",\"1\",\"300\"");
             break;
         }
-        /* 4£ºÊý¾ÝÀàÐÍ 4£¬2:Ö»·¢ËÍÒ»´Î£¬1£º·þÎñÆ÷±£´æÒÅÖöÐÅÏ¢£¬0£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷±£´æ»á»°ÏûÏ¢ */
+        /* 4ï¼šæ•°æ®ç±»åž‹ 4ï¼Œ2:åªå‘é€ä¸€æ¬¡ï¼Œ1ï¼šæœåŠ¡å™¨ä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ0ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨ä¿å­˜ä¼šè¯æ¶ˆæ¯ */
         case ATK_IDM750C_ONENET_TWO_MODE11:
         {
             sprintf(cmd, "AT+ONECON=\"4\",\"2\",\"1\",\"0\",\"300\"");
             break;
         }
-        /* 4£ºÊý¾ÝÀàÐÍ 4£¬2:Ö»·¢ËÍÒ»´Î£¬1£º·þÎñÆ÷±£´æÒÅÖöÐÅÏ¢£¬1£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷×Ô¶¯´Ý»ÙËùÓÐÊý¾Ý */
+        /* 4ï¼šæ•°æ®ç±»åž‹ 4ï¼Œ2:åªå‘é€ä¸€æ¬¡ï¼Œ1ï¼šæœåŠ¡å™¨ä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ1ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨è‡ªåŠ¨æ‘§æ¯æ‰€æœ‰æ•°æ® */
         case ATK_IDM750C_ONENET_TWO_MODE12:
         {
             sprintf(cmd, "AT+ONECON=\"4\",\"2\",\"1\",\"1\",\"300\"");
@@ -3087,12 +3087,12 @@ uint8_t atk_idm750c_onenet_para_information(atk_idm750c_onenet_para_mode_t mode)
 }
 
 /**
- * @brief       ATK-IDM750C °Ù¶ÈÔÆ EndpointÐÅÏ¢
- * @param       ²ÎÊý£º
- *              data£º Endpoint ÐÅÏ¢£¬ÏÞÖÆ 32 ×Ö½Ú¡£
- *              Ä¬ÈÏ²ÎÊý: AT+BAIEP="alientek"
- * @retval      ATK_IDM750C_EOK  : ÅäÖÃ³É¹¦
- *              ATK_IDM750C_ERROR: ÅäÖÃÊ§°Ü
+ * @brief       ATK-IDM750C ç™¾åº¦äº‘ Endpointä¿¡æ¯
+ * @param       å‚æ•°ï¼š
+ *              dataï¼š Endpoint ä¿¡æ¯ï¼Œé™åˆ¶ 32 å­—èŠ‚ã€‚
+ *              é»˜è®¤å‚æ•°: AT+BAIEP="alientek"
+ * @retval      ATK_IDM750C_EOK  : é…ç½®æˆåŠŸ
+ *              ATK_IDM750C_ERROR: é…ç½®å¤±è´¥
  */
 uint8_t atk_idm750c_baiduyun_endpoint(char *data)
 {
@@ -3113,12 +3113,12 @@ uint8_t atk_idm750c_baiduyun_endpoint(char *data)
 }
 
 /**
- * @brief       ATK-IDM750C °Ù¶ÈÔÆ nameÐÅÏ¢
- * @param       ²ÎÊý£º
- *              name£º name ÐÅÏ¢£¬ÏÞÖÆ 32 ×Ö½Ú¡£
- *              Ä¬ÈÏ²ÎÊý: AT+BAINM="name"
- * @retval      ATK_IDM750C_EOK  : ÅäÖÃ³É¹¦
- *              ATK_IDM750C_ERROR: ÅäÖÃÊ§°Ü
+ * @brief       ATK-IDM750C ç™¾åº¦äº‘ nameä¿¡æ¯
+ * @param       å‚æ•°ï¼š
+ *              nameï¼š name ä¿¡æ¯ï¼Œé™åˆ¶ 32 å­—èŠ‚ã€‚
+ *              é»˜è®¤å‚æ•°: AT+BAINM="name"
+ * @retval      ATK_IDM750C_EOK  : é…ç½®æˆåŠŸ
+ *              ATK_IDM750C_ERROR: é…ç½®å¤±è´¥
  */
 uint8_t atk_idm750c_baiduyun_name(char *name)
 {
@@ -3139,12 +3139,12 @@ uint8_t atk_idm750c_baiduyun_name(char *name)
 }
 
 /**
- * @brief       ATK-IDM750C °Ù¶ÈÔÆ keyÐÅÏ¢
- * @param       ²ÎÊý£º
- *              key£º key ÐÅÏ¢£¬ÏÞÖÆ 32 ×Ö½Ú¡£
- *              Ä¬ÈÏ²ÎÊý: AT+BAIKEY="key"
- * @retval      ATK_IDM750C_EOK  : ÅäÖÃ³É¹¦
- *              ATK_IDM750C_ERROR: ÅäÖÃÊ§°Ü
+ * @brief       ATK-IDM750C ç™¾åº¦äº‘ keyä¿¡æ¯
+ * @param       å‚æ•°ï¼š
+ *              keyï¼š key ä¿¡æ¯ï¼Œé™åˆ¶ 32 å­—èŠ‚ã€‚
+ *              é»˜è®¤å‚æ•°: AT+BAIKEY="key"
+ * @retval      ATK_IDM750C_EOK  : é…ç½®æˆåŠŸ
+ *              ATK_IDM750C_ERROR: é…ç½®å¤±è´¥
  */
 uint8_t atk_idm750c_baiduyun_key(char *key)
 {
@@ -3165,14 +3165,14 @@ uint8_t atk_idm750c_baiduyun_key(char *key)
 }
 
 /**
- * @brief       ATK-IDM750C °Ù¶ÈÔÆµØÓòÐÅÏ¢
- * @param       ²ÎÊý£º
- *              region£º µØÓòÐÅÏ¢£¬ ÏÞÖÆ 32 ×Ö½Ú¡£ 
- *              °Ù¶ÈÔÆÓÐÒ»¸öµØÓòÎ»ÖÃ£¬ÀýÈç ¡°»ªÄÏ-¹ãÖÝ¡± ¶ÔÓ¦¡°gz¡±,
- *              ¡°»ª±±-±±¾©¡±¶ÔÓ¦¡°bj¡± ¡£
- *              Ä¬ÈÏ²ÎÊý: AT+BAIRI="gz"
- * @retval      ATK_IDM750C_EOK  : ÅäÖÃ³É¹¦
- *              ATK_IDM750C_ERROR: ÅäÖÃÊ§°Ü
+ * @brief       ATK-IDM750C ç™¾åº¦äº‘åœ°åŸŸä¿¡æ¯
+ * @param       å‚æ•°ï¼š
+ *              regionï¼š åœ°åŸŸä¿¡æ¯ï¼Œ é™åˆ¶ 32 å­—èŠ‚ã€‚ 
+ *              ç™¾åº¦äº‘æœ‰ä¸€ä¸ªåœ°åŸŸä½ç½®ï¼Œä¾‹å¦‚ â€œåŽå—-å¹¿å·žâ€ å¯¹åº”â€œgzâ€,
+ *              â€œåŽåŒ—-åŒ—äº¬â€å¯¹åº”â€œbjâ€ ã€‚
+ *              é»˜è®¤å‚æ•°: AT+BAIRI="gz"
+ * @retval      ATK_IDM750C_EOK  : é…ç½®æˆåŠŸ
+ *              ATK_IDM750C_ERROR: é…ç½®å¤±è´¥
  */
 uint8_t atk_idm750c_baiduyun_region(char *reg)
 {
@@ -3193,12 +3193,12 @@ uint8_t atk_idm750c_baiduyun_region(char *reg)
 }
 
 /**
- * @brief       ATK-IDM750C °Ù¶ÈÔÆ¶©ÔÄÖ÷ÌâÐÅÏ¢
- * @param       ²ÎÊý£º
- *              sub:¶©ÔÄÖ÷ÌâÐÅÏ¢£¬ ÏÞÖÆ´óÐ¡ 100 ×Ö½Ú¡£
- *              Ä¬ÈÏ²ÎÊý: AT+BAISUB="atk/sub"
- * @retval      ATK_IDM750C_EOK  : ÅäÖÃ³É¹¦
- *              ATK_IDM750C_ERROR: ÅäÖÃÊ§°Ü
+ * @brief       ATK-IDM750C ç™¾åº¦äº‘è®¢é˜…ä¸»é¢˜ä¿¡æ¯
+ * @param       å‚æ•°ï¼š
+ *              sub:è®¢é˜…ä¸»é¢˜ä¿¡æ¯ï¼Œ é™åˆ¶å¤§å° 100 å­—èŠ‚ã€‚
+ *              é»˜è®¤å‚æ•°: AT+BAISUB="atk/sub"
+ * @retval      ATK_IDM750C_EOK  : é…ç½®æˆåŠŸ
+ *              ATK_IDM750C_ERROR: é…ç½®å¤±è´¥
  */
 uint8_t atk_idm750c_baiduyun_sub_title(char *title)
 {
@@ -3219,12 +3219,12 @@ uint8_t atk_idm750c_baiduyun_sub_title(char *title)
 }
 
 /**
- * @brief       ATK-IDM750C °Ù¶ÈÔÆ·¢²¼Ö÷ÌâÐÅÏ¢
- * @param       ²ÎÊý£º
- *              pub:·¢²¼Ö÷ÌâÐÅÏ¢£¬ ÏÞÖÆ´óÐ¡ 100 ×Ö½Ú¡£
- *              Ä¬ÈÏ²ÎÊý: AT+BAIPUB="atk/spub"
- * @retval      ATK_IDM750C_EOK  : ÅäÖÃ³É¹¦
- *              ATK_IDM750C_ERROR: ÅäÖÃÊ§°Ü
+ * @brief       ATK-IDM750C ç™¾åº¦äº‘å‘å¸ƒä¸»é¢˜ä¿¡æ¯
+ * @param       å‚æ•°ï¼š
+ *              pub:å‘å¸ƒä¸»é¢˜ä¿¡æ¯ï¼Œ é™åˆ¶å¤§å° 100 å­—èŠ‚ã€‚
+ *              é»˜è®¤å‚æ•°: AT+BAIPUB="atk/spub"
+ * @retval      ATK_IDM750C_EOK  : é…ç½®æˆåŠŸ
+ *              ATK_IDM750C_ERROR: é…ç½®å¤±è´¥
  */
 uint8_t atk_idm750c_baiduyun_pub_title(char *title)
 {
@@ -3245,25 +3245,25 @@ uint8_t atk_idm750c_baiduyun_pub_title(char *title)
 }
 
 /**
- * @brief       ATK-IDM750C ONENET²ÎÊýÐÅÏ¢
- * @param       ²ÎÊý£º
- *              type:Éè±¸ÀàÐÍ
- *              0£ºÉè±¸ÐÍ
- *              1£ºÊý¾ÝÐÍ
- *              qos£ºÏûÏ¢·þÎñµÈ¼¶
- *              0:×î¶à·¢ËÍÒ»´Î
- *              1:ÖÁÉÙ·¢ËÍÒ»´Î
- *              2:Ö»·¢ËÍÒ»´Î
- *              retain:ÒÅÖö±£Áô×´Ì¬
- *              0:·þÎñÆ÷²»»á±£´æÒÅÖöÐÅÏ¢
- *              1:·þÎñÆ÷±£´æÒÅÖöÐÅÏ¢
- *              clean_session:Çå³ý»á»°×´Ì¬
- *              0: ¿Í»§¶ËÀëÏßºó£¬ ·þÎñÆ÷±£´æ»á»°ÏûÏ¢
- *              1: ¿Í»§¶ËÀëÏßºó£¬ ·þÎñÆ÷×Ô¶¯´Ý»ÙËùÓÐÊý¾Ý
- *              keepalive:±£»îÊ±¼ä,·¶Î§£º 30-1200£¬µ¥Î»£ºÃë¡£
- *              Ä¬ÈÏ²ÎÊý: AT+BAICON="0","0","0","1","300"
- * @retval      ATK_IDM750C_EOK  : ÅäÖÃ³É¹¦
- *              ATK_IDM750C_ERROR: ÅäÖÃÊ§°Ü
+ * @brief       ATK-IDM750C ONENETå‚æ•°ä¿¡æ¯
+ * @param       å‚æ•°ï¼š
+ *              type:è®¾å¤‡ç±»åž‹
+ *              0ï¼šè®¾å¤‡åž‹
+ *              1ï¼šæ•°æ®åž‹
+ *              qosï¼šæ¶ˆæ¯æœåŠ¡ç­‰çº§
+ *              0:æœ€å¤šå‘é€ä¸€æ¬¡
+ *              1:è‡³å°‘å‘é€ä¸€æ¬¡
+ *              2:åªå‘é€ä¸€æ¬¡
+ *              retain:é—å˜±ä¿ç•™çŠ¶æ€
+ *              0:æœåŠ¡å™¨ä¸ä¼šä¿å­˜é—å˜±ä¿¡æ¯
+ *              1:æœåŠ¡å™¨ä¿å­˜é—å˜±ä¿¡æ¯
+ *              clean_session:æ¸…é™¤ä¼šè¯çŠ¶æ€
+ *              0: å®¢æˆ·ç«¯ç¦»çº¿åŽï¼Œ æœåŠ¡å™¨ä¿å­˜ä¼šè¯æ¶ˆæ¯
+ *              1: å®¢æˆ·ç«¯ç¦»çº¿åŽï¼Œ æœåŠ¡å™¨è‡ªåŠ¨æ‘§æ¯æ‰€æœ‰æ•°æ®
+ *              keepalive:ä¿æ´»æ—¶é—´,èŒƒå›´ï¼š 30-1200ï¼Œå•ä½ï¼šç§’ã€‚
+ *              é»˜è®¤å‚æ•°: AT+BAICON="0","0","0","1","300"
+ * @retval      ATK_IDM750C_EOK  : é…ç½®æˆåŠŸ
+ *              ATK_IDM750C_ERROR: é…ç½®å¤±è´¥
  */
 uint8_t atk_idm750c_baiduyun_para_information(atk_idm750c_baiduyun_para_mode_t mode)
 {
@@ -3272,145 +3272,145 @@ uint8_t atk_idm750c_baiduyun_para_information(atk_idm750c_baiduyun_para_mode_t m
     
     switch (mode)
     {
-        /* 0£ºÉè±¸ÐÍ£¬0:×î¶à·¢ËÍÒ»´Î£¬0£º·þÎñÆ÷²»»á±£´æÒÅÖöÐÅÏ¢£¬0£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷±£´æ»á»°ÏûÏ¢ */
+        /* 0ï¼šè®¾å¤‡åž‹ï¼Œ0:æœ€å¤šå‘é€ä¸€æ¬¡ï¼Œ0ï¼šæœåŠ¡å™¨ä¸ä¼šä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ0ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨ä¿å­˜ä¼šè¯æ¶ˆæ¯ */
         case ATK_IDM750C_BAIDUYUN_ZERO_MODE1:
         {
             sprintf(cmd, "AT+BAICON=\"0\",\"0\",\"0\",\"0\",\"300\"");
             break;
         }
-        /* 0£ºÉè±¸ÐÍ£¬0:×î¶à·¢ËÍÒ»´Î£¬0£º·þÎñÆ÷²»»á±£´æÒÅÖöÐÅÏ¢£¬1£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷×Ô¶¯´Ý»ÙËùÓÐÊý¾Ý£¨Ä¬ÈÏ£© */
+        /* 0ï¼šè®¾å¤‡åž‹ï¼Œ0:æœ€å¤šå‘é€ä¸€æ¬¡ï¼Œ0ï¼šæœåŠ¡å™¨ä¸ä¼šä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ1ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨è‡ªåŠ¨æ‘§æ¯æ‰€æœ‰æ•°æ®ï¼ˆé»˜è®¤ï¼‰ */
         case ATK_IDM750C_BAIDUYUN_ZERO_MODE2:
         {
             sprintf(cmd, "AT+BAICON=\"0\",\"0\",\"0\",\"1\",\"300\"");
             break;
         }
-        /* 0£ºÉè±¸ÐÍ£¬0:×î¶à·¢ËÍÒ»´Î£¬1£º·þÎñÆ÷±£´æÒÅÖöÐÅÏ¢£¬0£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷±£´æ»á»°ÏûÏ¢ */
+        /* 0ï¼šè®¾å¤‡åž‹ï¼Œ0:æœ€å¤šå‘é€ä¸€æ¬¡ï¼Œ1ï¼šæœåŠ¡å™¨ä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ0ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨ä¿å­˜ä¼šè¯æ¶ˆæ¯ */
         case ATK_IDM750C_BAIDUYUN_ZERO_MODE3:
         {
             sprintf(cmd, "AT+BAICON=\"0\",\"0\",\"1\",\"0\",\"300\"");
             break;
         }
-        /* 0£ºÉè±¸ÐÍ£¬0:×î¶à·¢ËÍÒ»´Î£¬1£º·þÎñÆ÷±£´æÒÅÖöÐÅÏ¢£¬1£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷×Ô¶¯´Ý»ÙËùÓÐÊý¾Ý */
+        /* 0ï¼šè®¾å¤‡åž‹ï¼Œ0:æœ€å¤šå‘é€ä¸€æ¬¡ï¼Œ1ï¼šæœåŠ¡å™¨ä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ1ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨è‡ªåŠ¨æ‘§æ¯æ‰€æœ‰æ•°æ® */
         case ATK_IDM750C_BAIDUYUN_ZERO_MODE4:
         {
             sprintf(cmd, "AT+BAICON=\"0\",\"0\",\"1\",\"1\",\"300\"");
             break;
         }
-        /* 0£ºÉè±¸ÐÍ£¬1:ÖÁÉÙ·¢ËÍÒ»´Î£¬0£º·þÎñÆ÷²»»á±£´æÒÅÖöÐÅÏ¢£¬0£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷±£´æ»á»°ÏûÏ¢ */
+        /* 0ï¼šè®¾å¤‡åž‹ï¼Œ1:è‡³å°‘å‘é€ä¸€æ¬¡ï¼Œ0ï¼šæœåŠ¡å™¨ä¸ä¼šä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ0ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨ä¿å­˜ä¼šè¯æ¶ˆæ¯ */
         case ATK_IDM750C_BAIDUYUN_ZERO_MODE5:
         {
             sprintf(cmd, "AT+BAICON=\"0\",\"1\",\"0\",\"0\",\"300\"");
             break;
         }
-        /* 0£ºÉè±¸ÐÍ£¬1:ÖÁÉÙ·¢ËÍÒ»´Î£¬0£º·þÎñÆ÷²»»á±£´æÒÅÖöÐÅÏ¢£¬1£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷×Ô¶¯´Ý»ÙËùÓÐÊý¾Ý */
+        /* 0ï¼šè®¾å¤‡åž‹ï¼Œ1:è‡³å°‘å‘é€ä¸€æ¬¡ï¼Œ0ï¼šæœåŠ¡å™¨ä¸ä¼šä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ1ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨è‡ªåŠ¨æ‘§æ¯æ‰€æœ‰æ•°æ® */
         case ATK_IDM750C_BAIDUYUN_ZERO_MODE6:
         {
             sprintf(cmd, "AT+BAICON=\"0\",\"1\",\"0\",\"1\",\"300\"");
             break;
         }
-        /* 0£ºÉè±¸ÐÍ£¬1:ÖÁÉÙ·¢ËÍÒ»´Î£¬1£º·þÎñÆ÷±£´æÒÅÖöÐÅÏ¢£¬0£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷±£´æ»á»°ÏûÏ¢ */
+        /* 0ï¼šè®¾å¤‡åž‹ï¼Œ1:è‡³å°‘å‘é€ä¸€æ¬¡ï¼Œ1ï¼šæœåŠ¡å™¨ä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ0ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨ä¿å­˜ä¼šè¯æ¶ˆæ¯ */
         case ATK_IDM750C_BAIDUYUN_ZERO_MODE7:
         {
             sprintf(cmd, "AT+BAICON=\"0\",\"1\",\"1\",\"0\",\"300\"");
             break;
         }
-        /* 0£ºÉè±¸ÐÍ£¬1:ÖÁÉÙ·¢ËÍÒ»´Î£¬1£º·þÎñÆ÷±£´æÒÅÖöÐÅÏ¢£¬1£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷×Ô¶¯´Ý»ÙËùÓÐÊý¾Ý */
+        /* 0ï¼šè®¾å¤‡åž‹ï¼Œ1:è‡³å°‘å‘é€ä¸€æ¬¡ï¼Œ1ï¼šæœåŠ¡å™¨ä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ1ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨è‡ªåŠ¨æ‘§æ¯æ‰€æœ‰æ•°æ® */
         case ATK_IDM750C_BAIDUYUN_ZERO_MODE8:
         {
             sprintf(cmd, "AT+BAICON=\"0\",\"1\",\"1\",\"1\",\"300\"");
             break;
         }
-        /* 0£ºÉè±¸ÐÍ£¬2:Ö»·¢ËÍÒ»´Î£¬0£º·þÎñÆ÷²»»á±£´æÒÅÖöÐÅÏ¢£¬0£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷±£´æ»á»°ÏûÏ¢ */
+        /* 0ï¼šè®¾å¤‡åž‹ï¼Œ2:åªå‘é€ä¸€æ¬¡ï¼Œ0ï¼šæœåŠ¡å™¨ä¸ä¼šä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ0ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨ä¿å­˜ä¼šè¯æ¶ˆæ¯ */
         case ATK_IDM750C_BAIDUYUN_ZERO_MODE9:
         {
             sprintf(cmd, "AT+BAICON=\"0\",\"2\",\"0\",\"0\",\"300\"");
             break;
         }
-        /* 0£ºÉè±¸ÐÍ£¬2:Ö»·¢ËÍÒ»´Î£¬0£º·þÎñÆ÷²»»á±£´æÒÅÖöÐÅÏ¢£¬1£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷×Ô¶¯´Ý»ÙËùÓÐÊý¾Ý */
+        /* 0ï¼šè®¾å¤‡åž‹ï¼Œ2:åªå‘é€ä¸€æ¬¡ï¼Œ0ï¼šæœåŠ¡å™¨ä¸ä¼šä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ1ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨è‡ªåŠ¨æ‘§æ¯æ‰€æœ‰æ•°æ® */
         case ATK_IDM750C_BAIDUYUN_ZERO_MODE10:
         {
             sprintf(cmd, "AT+BAICON=\"0\",\"2\",\"0\",\"1\",\"300\"");
             break;
         }
-        /* 0£ºÉè±¸ÐÍ£¬2:Ö»·¢ËÍÒ»´Î£¬1£º·þÎñÆ÷±£´æÒÅÖöÐÅÏ¢£¬0£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷±£´æ»á»°ÏûÏ¢  */
+        /* 0ï¼šè®¾å¤‡åž‹ï¼Œ2:åªå‘é€ä¸€æ¬¡ï¼Œ1ï¼šæœåŠ¡å™¨ä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ0ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨ä¿å­˜ä¼šè¯æ¶ˆæ¯  */
         case ATK_IDM750C_BAIDUYUN_ZERO_MODE11:
         {
             sprintf(cmd, "AT+BAICON=\"0\",\"2\",\"1\",\"0\",\"300\"");
             break;
         }
-        /* 0£ºÉè±¸ÐÍ£¬2:Ö»·¢ËÍÒ»´Î£¬1£º·þÎñÆ÷±£´æÒÅÖöÐÅÏ¢£¬1£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷×Ô¶¯´Ý»ÙËùÓÐÊý¾Ý */
+        /* 0ï¼šè®¾å¤‡åž‹ï¼Œ2:åªå‘é€ä¸€æ¬¡ï¼Œ1ï¼šæœåŠ¡å™¨ä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ1ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨è‡ªåŠ¨æ‘§æ¯æ‰€æœ‰æ•°æ® */
         case ATK_IDM750C_BAIDUYUN_ZERO_MODE12:
         {
             sprintf(cmd, "AT+BAICON=\"0\",\"2\",\"1\",\"1\",\"300\"");
             break;
         }
-        /* 1£ºÊý¾ÝÐÍ£¬0:×î¶à·¢ËÍÒ»´Î£¬0£º·þÎñÆ÷²»»á±£´æÒÅÖöÐÅÏ¢£¬0£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷±£´æ»á»°ÏûÏ¢ */
+        /* 1ï¼šæ•°æ®åž‹ï¼Œ0:æœ€å¤šå‘é€ä¸€æ¬¡ï¼Œ0ï¼šæœåŠ¡å™¨ä¸ä¼šä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ0ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨ä¿å­˜ä¼šè¯æ¶ˆæ¯ */
         case ATK_IDM750C_BAIDUYUN_ONE_MODE1:
         {
             sprintf(cmd, "AT+BAICON=\"1\",\"0\",\"0\",\"0\",\"300\"");
             break;
         }
-        /* 1£ºÊý¾ÝÐÍ£¬0:×î¶à·¢ËÍÒ»´Î£¬0£º·þÎñÆ÷²»»á±£´æÒÅÖöÐÅÏ¢£¬1£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷×Ô¶¯´Ý»ÙËùÓÐÊý¾Ý */
+        /* 1ï¼šæ•°æ®åž‹ï¼Œ0:æœ€å¤šå‘é€ä¸€æ¬¡ï¼Œ0ï¼šæœåŠ¡å™¨ä¸ä¼šä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ1ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨è‡ªåŠ¨æ‘§æ¯æ‰€æœ‰æ•°æ® */
         case ATK_IDM750C_BAIDUYUN_ONE_MODE2:
         {
             sprintf(cmd, "AT+BAICON=\"1\",\"0\",\"0\",\"1\",\"300\"");
             break;
         }
-        /* 1£ºÊý¾ÝÐÍ£¬0:×î¶à·¢ËÍÒ»´Î£¬1£º·þÎñÆ÷±£´æÒÅÖöÐÅÏ¢£¬0£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷±£´æ»á»°ÏûÏ¢ */
+        /* 1ï¼šæ•°æ®åž‹ï¼Œ0:æœ€å¤šå‘é€ä¸€æ¬¡ï¼Œ1ï¼šæœåŠ¡å™¨ä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ0ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨ä¿å­˜ä¼šè¯æ¶ˆæ¯ */
         case ATK_IDM750C_BAIDUYUN_ONE_MODE3:
         {
             sprintf(cmd, "AT+BAICON=\"1\",\"0\",\"1\",\"0\",\"300\"");
             break;
         }
-        /* 1£ºÊý¾ÝÐÍ£¬0:×î¶à·¢ËÍÒ»´Î£¬1£º·þÎñÆ÷±£´æÒÅÖöÐÅÏ¢£¬1£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷×Ô¶¯´Ý»ÙËùÓÐÊý¾Ý */
+        /* 1ï¼šæ•°æ®åž‹ï¼Œ0:æœ€å¤šå‘é€ä¸€æ¬¡ï¼Œ1ï¼šæœåŠ¡å™¨ä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ1ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨è‡ªåŠ¨æ‘§æ¯æ‰€æœ‰æ•°æ® */
         case ATK_IDM750C_BAIDUYUN_ONE_MODE4:
         {
             sprintf(cmd, "AT+BAICON=\"1\",\"0\",\"1\",\"1\",\"300\"");
             break;
         }
-        /* 1£ºÊý¾ÝÐÍ£¬1:ÖÁÉÙ·¢ËÍÒ»´Î£¬0£º·þÎñÆ÷²»»á±£´æÒÅÖöÐÅÏ¢£¬0£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷±£´æ»á»°ÏûÏ¢ */
+        /* 1ï¼šæ•°æ®åž‹ï¼Œ1:è‡³å°‘å‘é€ä¸€æ¬¡ï¼Œ0ï¼šæœåŠ¡å™¨ä¸ä¼šä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ0ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨ä¿å­˜ä¼šè¯æ¶ˆæ¯ */
         case ATK_IDM750C_BAIDUYUN_ONE_MODE5:
         {
             sprintf(cmd, "AT+BAICON=\"1\",\"1\",\"0\",\"0\",\"300\"");
             break;
         }
-        /* 1£ºÊý¾ÝÐÍ£¬1:ÖÁÉÙ·¢ËÍÒ»´Î£¬0£º·þÎñÆ÷²»»á±£´æÒÅÖöÐÅÏ¢£¬1£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷×Ô¶¯´Ý»ÙËùÓÐÊý¾Ý */
+        /* 1ï¼šæ•°æ®åž‹ï¼Œ1:è‡³å°‘å‘é€ä¸€æ¬¡ï¼Œ0ï¼šæœåŠ¡å™¨ä¸ä¼šä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ1ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨è‡ªåŠ¨æ‘§æ¯æ‰€æœ‰æ•°æ® */
         case ATK_IDM750C_BAIDUYUN_ONE_MODE6:
         {
             sprintf(cmd, "AT+BAICON=\"1\",\"1\",\"0\",\"1\",\"300\"");
             break;
         }
-        /* 1£ºÊý¾ÝÐÍ£¬1:ÖÁÉÙ·¢ËÍÒ»´Î£¬1£º·þÎñÆ÷±£´æÒÅÖöÐÅÏ¢£¬0£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷±£´æ»á»°ÏûÏ¢ */
+        /* 1ï¼šæ•°æ®åž‹ï¼Œ1:è‡³å°‘å‘é€ä¸€æ¬¡ï¼Œ1ï¼šæœåŠ¡å™¨ä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ0ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨ä¿å­˜ä¼šè¯æ¶ˆæ¯ */
         case ATK_IDM750C_BAIDUYUN_ONE_MODE7:
         {
             sprintf(cmd, "AT+BAICON=\"1\",\"1\",\"1\",\"0\",\"300\"");
             break;
         }
-        /* 1£ºÊý¾ÝÐÍ£¬1:ÖÁÉÙ·¢ËÍÒ»´Î£¬1£º·þÎñÆ÷±£´æÒÅÖöÐÅÏ¢£¬1£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷×Ô¶¯´Ý»ÙËùÓÐÊý¾Ý */
+        /* 1ï¼šæ•°æ®åž‹ï¼Œ1:è‡³å°‘å‘é€ä¸€æ¬¡ï¼Œ1ï¼šæœåŠ¡å™¨ä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ1ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨è‡ªåŠ¨æ‘§æ¯æ‰€æœ‰æ•°æ® */
         case ATK_IDM750C_BAIDUYUN_ONE_MODE8:
         {
             sprintf(cmd, "AT+BAICON=\"1\",\"1\",\"1\",\"1\",\"300\"");
             break;
         }
-        /* 1£ºÊý¾ÝÐÍ£¬2:Ö»·¢ËÍÒ»´Î£¬0£º·þÎñÆ÷²»»á±£´æÒÅÖöÐÅÏ¢£¬0£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷±£´æ»á»°ÏûÏ¢ */
+        /* 1ï¼šæ•°æ®åž‹ï¼Œ2:åªå‘é€ä¸€æ¬¡ï¼Œ0ï¼šæœåŠ¡å™¨ä¸ä¼šä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ0ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨ä¿å­˜ä¼šè¯æ¶ˆæ¯ */
         case ATK_IDM750C_BAIDUYUN_ONE_MODE9:
         {
             sprintf(cmd, "AT+BAICON=\"1\",\"2\",\"0\",\"0\",\"300\"");
             break;
         }
-        /* 1£ºÊý¾ÝÐÍ£¬2:Ö»·¢ËÍÒ»´Î£¬0£º·þÎñÆ÷²»»á±£´æÒÅÖöÐÅÏ¢£¬1£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷×Ô¶¯´Ý»ÙËùÓÐÊý¾Ý */
+        /* 1ï¼šæ•°æ®åž‹ï¼Œ2:åªå‘é€ä¸€æ¬¡ï¼Œ0ï¼šæœåŠ¡å™¨ä¸ä¼šä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ1ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨è‡ªåŠ¨æ‘§æ¯æ‰€æœ‰æ•°æ® */
         case ATK_IDM750C_BAIDUYUN_ONE_MODE10:
         {
             sprintf(cmd, "AT+BAICON=\"1\",\"2\",\"0\",\"1\",\"300\"");
             break;
         }
-        /* 1£ºÊý¾ÝÐÍ£¬2:Ö»·¢ËÍÒ»´Î£¬1£º·þÎñÆ÷±£´æÒÅÖöÐÅÏ¢£¬0£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷±£´æ»á»°ÏûÏ¢ */
+        /* 1ï¼šæ•°æ®åž‹ï¼Œ2:åªå‘é€ä¸€æ¬¡ï¼Œ1ï¼šæœåŠ¡å™¨ä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ0ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨ä¿å­˜ä¼šè¯æ¶ˆæ¯ */
         case ATK_IDM750C_BAIDUYUN_ONE_MODE11:
         {
             sprintf(cmd, "AT+BAICON=\"1\",\"2\",\"1\",\"0\",\"300\"");
             break;
         }
-        /* 1£ºÊý¾ÝÐÍ£¬2:Ö»·¢ËÍÒ»´Î£¬1£º·þÎñÆ÷±£´æÒÅÖöÐÅÏ¢£¬1£º¿Í»§¶ËÀëÏßºó£¬·þÎñÆ÷×Ô¶¯´Ý»ÙËùÓÐÊý¾Ý */
+        /* 1ï¼šæ•°æ®åž‹ï¼Œ2:åªå‘é€ä¸€æ¬¡ï¼Œ1ï¼šæœåŠ¡å™¨ä¿å­˜é—å˜±ä¿¡æ¯ï¼Œ1ï¼šå®¢æˆ·ç«¯ç¦»çº¿åŽï¼ŒæœåŠ¡å™¨è‡ªåŠ¨æ‘§æ¯æ‰€æœ‰æ•°æ® */
         case ATK_IDM750C_BAIDUYUN_ONE_MODE12:
         {
             sprintf(cmd, "AT+BAICON=\"1\",\"2\",\"1\",\"1\",\"300\"");

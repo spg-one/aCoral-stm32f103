@@ -1,23 +1,40 @@
+外接电源模块：
+5V      ------> 单片机5V引脚
+GND     ------> 单片机GND引脚
+
+串口1：
 PA9     ------> USART1_TX
 PA10    ------> USART1_RX
+
+4G模块：
+V1      ------> 外接电源DC-In
+GND1    ------> 外接电源GND
+GND2    ------> 单片机上GND引脚
+TX      ------> PD2
+RC      ------> PX12
+
+LoRa模块：
+两个电源 ------>单片机3.3V 单片机GND引脚
 PB12    ------> SPI2_NSS
 PB13    ------> SPI2_SCK
 PB14    ------> SPI2_MISO
 PB15    ------> SPI2_MOSI
 PB9     ------> LORA_RESET
-PA4     ------> DHT_GPIO_PIN
-PB8     ------> LED0
-PD2     ------> LED1
-PA0     ------> LightSensor
-PC6
-PC7
-PC8
-PC9
-PB0
-PB1
-PB2
-PB3
-PB4
-PB5
-PB6
-PB7     ------> OLED
+
+DHT11模块：
+DHT_GPIO_PIN  ------> PA_10
+两个电源       ------> 单片机3.3V 单片机GND引脚
+
+ADXL345模块：
+5V      ------> 5V
+GND     ------> GND 
+SCL     ------> PB6(复用I2C1_SCL)
+SDA     ------> PB7(复用I2C1_SDA)
+
+HCSR04模块：
+Trig    ------> PC0(推挽输出，默认低电平)
+Echo    ------> PA6(复用TIM3_CH1模式，下拉输入)
+VCC     ------> V3.3
+GND     ------> GND
+
+

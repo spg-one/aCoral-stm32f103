@@ -67,6 +67,7 @@ void daem(void *args)
 			tmp = tmp1;
 			if (thread->state == ACORAL_THREAD_STATE_RELEASE)
 			{
+				acoral_print("+++++++release thread %s+++++++++\r\n",thread->name);
 				acoral_release_thread((acoral_res_t *)thread);
 			}
 			else
@@ -94,15 +95,15 @@ void init(void *args)
 	data.prio = ACORAL_DAEMON_PRIO;
 	data.prio_type = ACORAL_HARD_PRIO;
 	daemon_id = acoral_create_thread(daem, DAEM_STACK_SIZE, NULL, "daemon", NULL, ACORAL_SCHED_POLICY_COMM, &data);
+	// acoral_print("--------daemon_id:%d--------/r/n",daemon_id);
 	if (daemon_id == -1)
-		while (1)
-			;
+		while (1);
 			/*应用级相关服务初始化,应用级不要使用延时函数，没有效果的*/
 #ifdef CFG_SHELL
 	//acoral_shell_init();
 #endif
 	user_main();//SPG先不要？
-	acoral_print("init done\r\n");
+	acoral_print("init done\r\n\r\n");
 }
 
 void acoral_start()
@@ -118,12 +119,13 @@ void acoral_start()
 
 void acoral_core_cpu_start()
 {
-	acoral_comm_policy_data_t data;
+	acoral_comm_policy_data_t data1;
 	/*创建空闲线程*/
 	acoral_start_sched = false;
-	data.prio = ACORAL_IDLE_PRIO;
-	data.prio_type = ACORAL_HARD_PRIO;
-	idle_id = acoral_create_thread(idle, IDLE_STACK_SIZE, NULL, "idle", NULL, ACORAL_SCHED_POLICY_COMM, &data);
+	data1.prio = ACORAL_IDLE_PRIO;
+	data1.prio_type = ACORAL_HARD_PRIO;
+	idle_id = acoral_create_thread(idle, IDLE_STACK_SIZE, NULL, "idle", NULL, ACORAL_SCHED_POLICY_COMM, &data1);
+	// acoral_print("--------idle_id:%d--------/r/n",idle_id);
 	if (idle_id == -1)
 	{
 		while (1)
@@ -131,9 +133,12 @@ void acoral_core_cpu_start()
 		}
 	}
 	/*创建初始化线程,这个调用层次比较多，需要多谢堆栈*/
-	data.prio = ACORAL_INIT_PRIO;
+	acoral_comm_policy_data_t data2;
+	data2.prio = ACORAL_INIT_PRIO;
+	data2.prio_type = ACORAL_HARD_PRIO;
 	/*动态堆栈*/
-	init_id = acoral_create_thread(init, 1536, "in init", "init", NULL, ACORAL_SCHED_POLICY_COMM, &data);
+	init_id = acoral_create_thread(init, 1516, "in init", "init", NULL, ACORAL_SCHED_POLICY_COMM, &data2);
+	// acoral_print("--------init_id:%d--------/r/n",init_id);
 	if (init_id == -1)
 	{
 		while (1)
@@ -156,23 +161,23 @@ void acoral_module_init()
 {
 	/*中断系统初始化*/
 	acoral_intr_sys_init();
-	acoral_print("intr_sys_init done\n");
+	acoral_print("intr_sys_init done\r\n");
 
 	/*内存管理系统初始化*/
 	acoral_mem_sys_init();
-	acoral_print("mem_sys_init done\n");
+	acoral_print("mem_sys_init done\r\n");
 
 	/*线程管理系统初始化*/
 	acoral_thread_sys_init();
-	acoral_print("thread_sys_init done\n");
+	acoral_print("thread_sys_init done\r\n");
 
 	/*时钟管理系统初始化*/
 	acoral_time_sys_init();
-	acoral_print("time_sys_init done\n");
+	acoral_print("time_sys_init done\r\n");
 
 	/*事件管理系统初始化*/
 	acoral_evt_sys_init();
-	acoral_print("evt_sys_init done\n");
+	acoral_print("evt_sys_init done\r\n");
 #ifdef CFG_DRIVER
 	/*驱动管理系统初始化*/
 	// acoral_drv_sys_init();

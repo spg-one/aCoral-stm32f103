@@ -221,9 +221,17 @@ void get_distance_thread()
     HcSr04_DistanceTypeDef data;
     if(HcSr04_GetDistance(&data) == HAL_OK) 
     {
-        // acoral_print("Distance: %d cm\r\n", (int)data.Distance);
         Buffer.distance = data.Distance;
         Buffer.distance_period = (((period_private_data_t *)acoral_cur_thread->private_data)->time)/1000;
+        acoral_exit_critical();
+        // Buffer.distance_collect_time.w_year = calendar.w_year;
+        // Buffer.distance_collect_time.w_month = calendar.w_month;
+        // Buffer.distance_collect_time.w_date = calendar.w_date;
+        // Buffer.distance_collect_time.hour = calendar.hour;
+        // Buffer.distance_collect_time.min = calendar.min;
+        // Buffer.distance_collect_time.sec = calendar.sec;
+        Buffer.distance_collect_time = timestap;
+        acoral_exit_critical();
         data_ready|=1;
     } 
     else 

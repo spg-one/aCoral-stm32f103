@@ -79,7 +79,7 @@ typedef struct{//SPG加注释
 	unsigned int *stack;	///<指示线程的堆栈，线程被抢占切换时会保存cpu堆栈寄存器sp的值
 	unsigned int *stack_buttom;	///<栈底
 	unsigned int stack_size;	///<堆栈大小
-	int delay;				///<指定线程延时时间，单位是Ticks，调用acoral_delay_self时会把时间参数转换成Ticks后赋值给delay
+	int delay;				///<指定线程延时时间，单位是Ticks，调用acoral_delay_self时会把时间参数转换成Ticks后赋值给delay，剩余等待时间
 	char *name;				///<线程名字
 	int console_id;			///<线程控制台ID号
 	void*	private_data;	///<长久备用数据指针

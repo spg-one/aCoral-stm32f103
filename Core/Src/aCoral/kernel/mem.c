@@ -553,8 +553,8 @@ acoral_res_t *acoral_get_res(acoral_pool_ctrl_t *pool_ctrl)
 	acoral_res_t *res;
 	acoral_pool_t *pool;
 	acoral_enter_critical();
-	first = pool_ctrl->free_pools->next;
-	if (acoral_list_empty(first))
+	first = pool_ctrl->free_pools->next; //从空闲资源池链表上取下一个pool
+	if (acoral_list_empty(first)) //结点等于表头，无空闲资源池，需要获取一个资源池并挂载到空闲链表上
 	{
 		if (acoral_create_pool(pool_ctrl))
 		{
@@ -566,10 +566,10 @@ acoral_res_t *acoral_get_res(acoral_pool_ctrl_t *pool_ctrl)
 			first = pool_ctrl->free_pools->next;
 		}
 	}
-	pool = list_entry(first, acoral_pool_t, free_list);
+	pool = list_entry(first, acoral_pool_t, free_list); //获取空闲资源池结点(first)的结构地址
 	res = (acoral_res_t *)pool->res_free;
-	pool->res_free = (void *)((unsigned char *)pool->base_adr + res->next_id * pool->size);
-	res->id = (res->id >> (ACORAL_RES_INDEX_INIT_BIT - ACORAL_RES_INDEX_BIT)) & ACORAL_RES_INDEX_MASK | pool->id;
+	pool->res_free = (void *)((unsigned char *)pool->base_adr + res->next_id * pool->size); //获取资源对象
+	res->id = (res->id >> (ACORAL_RES_INDEX_INIT_BIT - ACORAL_RES_INDEX_BIT)) & ACORAL_RES_INDEX_MASK | pool->id; //修改资源id
 	pool->free_num--;
 	if (!pool->free_num)
 	{
@@ -656,18 +656,21 @@ void acoral_pool_res_init(acoral_pool_t *pool)
 	unsigned int i;
 	unsigned char *pblk;
 	unsigned int blks;
-	blks = pool->num;
+	blks = pool->num; //线程控制块资源26个
 	res = (acoral_res_t *)pool->base_adr;
 	pblk = (unsigned char *)pool->base_adr + pool->size;
 	for (i = 0; i < (blks - 1); i++)
 	{
 		res->id = i << ACORAL_RES_INDEX_INIT_BIT;
 		res->next_id = i + 1;
+
 		res = (acoral_res_t *)pblk;
 		pblk += pool->size;
+
 	}
 	res->id = blks - 1 << ACORAL_RES_INDEX_INIT_BIT;
 	res->next_id = 0;
+
 }
 
 void acoral_pool_ctrl_init(acoral_pool_ctrl_t *pool_ctrl)

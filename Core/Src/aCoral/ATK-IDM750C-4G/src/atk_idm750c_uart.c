@@ -6,19 +6,19 @@
 static UART_HandleTypeDef g_uart_handle;                    /* ATK-IDM750C UART */
 static struct
 {
-    uint8_t buf[ATK_IDM750C_UART_RX_BUF_SIZE];              /* ÷°Ω” ’ª∫≥Â */
+    uint8_t buf[ATK_IDM750C_UART_RX_BUF_SIZE];              /* Â∏ßÊé•Êî∂ÁºìÂÜ≤ */
     struct
     {
-        uint16_t len    : 15;                               /* ÷°Ω” ’≥§∂»£¨sta[14:0] */
-        uint16_t finsh  : 1;                                /* ÷°Ω” ’ÕÍ≥…±Í÷æ£¨sta[15] */
-    } sta;                                                  /* ÷°◊¥Ã¨–≈œ¢ */
-} g_uart_rx_frame = {0};                                    /* ATK-IDM750C UARTΩ” ’÷°ª∫≥Â–≈œ¢Ω·ππÃÂ */
-uint8_t g_uart_tx_buf[ATK_IDM750C_UART_TX_BUF_SIZE]; /* ATK-IDM750C UART∑¢ÀÕª∫≥Â */
+        uint16_t len    : 15;                               /* Â∏ßÊé•Êî∂ÈïøÂ∫¶Ôºåsta[14:0] */
+        uint16_t finsh  : 1;                                /* Â∏ßÊé•Êî∂ÂÆåÊàêÊ†áÂøóÔºåsta[15] */
+    } sta;                                                  /* Â∏ßÁä∂ÊÄÅ‰ø°ÊÅØ */
+} g_uart_rx_frame = {0};                                    /* ATK-IDM750C UARTÊé•Êî∂Â∏ßÁºìÂÜ≤‰ø°ÊÅØÁªìÊûÑ‰Ωì */
+uint8_t g_uart_tx_buf[ATK_IDM750C_UART_TX_BUF_SIZE]; /* ATK-IDM750C UARTÂèëÈÄÅÁºìÂÜ≤ */
 
 /**
  * @brief       ATK-IDM750C UART printf
- * @param       fmt: ¥˝¥Ú”°µƒ ˝æ›
- * @retval      Œﬁ
+ * @param       fmt: ÂæÖÊâìÂç∞ÁöÑÊï∞ÊçÆ
+ * @retval      Êó†
  */
 void atk_idm750c_uart_printf(char *fmt, ...)
 {
@@ -34,9 +34,9 @@ void atk_idm750c_uart_printf(char *fmt, ...)
 }
 
 /**
- * @brief       ATK-IDM750C UART÷ÿ–¬ø™ ºΩ” ’ ˝æ›
- * @param       Œﬁ
- * @retval      Œﬁ
+ * @brief       ATK-IDM750C UARTÈáçÊñ∞ÂºÄÂßãÊé•Êî∂Êï∞ÊçÆ
+ * @param       Êó†
+ * @retval      Êó†
  */
 void atk_idm750c_uart_rx_restart(void)
 {
@@ -45,10 +45,10 @@ void atk_idm750c_uart_rx_restart(void)
 }
 
 /**
- * @brief       ªÒ»°ATK-IDM750C UARTΩ” ’µΩµƒ“ª÷° ˝æ›
- * @param       Œﬁ
- * @retval      NULL: Œ¥Ω” ’µΩ“ª÷° ˝æ›
- *              ∆‰À˚: Ω” ’µΩµƒ“ª÷° ˝æ›
+ * @brief       Ëé∑ÂèñATK-IDM750C UARTÊé•Êî∂Âà∞ÁöÑ‰∏ÄÂ∏ßÊï∞ÊçÆ
+ * @param       Êó†
+ * @retval      NULL: Êú™Êé•Êî∂Âà∞‰∏ÄÂ∏ßÊï∞ÊçÆ
+ *              ÂÖ∂‰ªñ: Êé•Êî∂Âà∞ÁöÑ‰∏ÄÂ∏ßÊï∞ÊçÆ
  */
 uint8_t *atk_idm750c_uart_rx_get_frame(void)
 {
@@ -70,10 +70,10 @@ uint8_t *atk_idm750c_uart_rx_get_frame1(void)
 }
 
 /**
- * @brief       ªÒ»°ATK-IDM750C UARTΩ” ’µΩµƒ“ª÷° ˝æ›µƒ≥§∂»
- * @param       Œﬁ
- * @retval      0   : Œ¥Ω” ’µΩ“ª÷° ˝æ›
- *              ∆‰À˚: Ω” ’µΩµƒ“ª÷° ˝æ›µƒ≥§∂»
+ * @brief       Ëé∑ÂèñATK-IDM750C UARTÊé•Êî∂Âà∞ÁöÑ‰∏ÄÂ∏ßÊï∞ÊçÆÁöÑÈïøÂ∫¶
+ * @param       Êó†
+ * @retval      0   : Êú™Êé•Êî∂Âà∞‰∏ÄÂ∏ßÊï∞ÊçÆ
+ *              ÂÖ∂‰ªñ: Êé•Êî∂Âà∞ÁöÑ‰∏ÄÂ∏ßÊï∞ÊçÆÁöÑÈïøÂ∫¶
  */
 uint16_t atk_idm750c_uart_rx_get_frame_len(void)
 {
@@ -88,67 +88,67 @@ uint16_t atk_idm750c_uart_rx_get_frame_len(void)
 }
 
 /**
- * @brief       ATK-IDM750C UART≥ı ºªØ
- * @param       baudrate: UARTÕ®—∂≤®Ãÿ¬ 
- * @retval      Œﬁ
+ * @brief       ATK-IDM750C UARTÂàùÂßãÂåñ
+ * @param       baudrate: UARTÈÄöËÆØÊ≥¢ÁâπÁéá
+ * @retval      Êó†
  */
 void atk_idm750c_uart_init(uint32_t baudrate)
 {
     g_uart_handle.Instance          = ATK_IDM750C_UART_INTERFACE;     /* ATK-IDM750C UART */
-    g_uart_handle.Init.BaudRate     = baudrate;                     /* ≤®Ãÿ¬  */
-    g_uart_handle.Init.WordLength   = UART_WORDLENGTH_8B;           /*  ˝æ›Œª */
-    g_uart_handle.Init.StopBits     = UART_STOPBITS_1;              /* Õ£÷πŒª */
-    g_uart_handle.Init.Parity       = UART_PARITY_NONE;             /* –£—ÈŒª */
-    g_uart_handle.Init.Mode         = UART_MODE_TX_RX;              /*  ’∑¢ƒ£ Ω */
-    g_uart_handle.Init.HwFlowCtl    = UART_HWCONTROL_NONE;          /* Œﬁ”≤º˛¡˜øÿ */
-    g_uart_handle.Init.OverSampling = UART_OVERSAMPLING_16;         /* π˝≤…—˘ */
-    HAL_UART_Init(&g_uart_handle);                                  /*  πƒ‹ATK-IDM750C UART
-                                                                     * HAL_UART_Init()ª·µ˜”√∫Ø ˝HAL_UART_MspInit()
-                                                                     * ∏√∫Ø ˝∂®“Â‘⁄Œƒº˛usart.c÷–
+    g_uart_handle.Init.BaudRate     = baudrate;                     /* Ê≥¢ÁâπÁéá */
+    g_uart_handle.Init.WordLength   = UART_WORDLENGTH_8B;           /* Êï∞ÊçÆ‰Ωç */
+    g_uart_handle.Init.StopBits     = UART_STOPBITS_1;              /* ÂÅúÊ≠¢‰Ωç */
+    g_uart_handle.Init.Parity       = UART_PARITY_NONE;             /* Ê†°È™å‰Ωç */
+    g_uart_handle.Init.Mode         = UART_MODE_TX_RX;              /* Êî∂ÂèëÊ®°Âºè */
+    g_uart_handle.Init.HwFlowCtl    = UART_HWCONTROL_NONE;          /* Êó†Á°¨‰ª∂ÊµÅÊéß */
+    g_uart_handle.Init.OverSampling = UART_OVERSAMPLING_16;         /* ËøáÈááÊ†∑ */
+    HAL_UART_Init(&g_uart_handle);                                  /* ‰ΩøËÉΩATK-IDM750C UART
+                                                                     * HAL_UART_Init()‰ºöË∞ÉÁî®ÂáΩÊï∞HAL_UART_MspInit()
+                                                                     * ËØ•ÂáΩÊï∞ÂÆö‰πâÂú®Êñá‰ª∂usart.c‰∏≠
                                                                      */
 }
 
 /**
- * @brief       ATK-IDM750C UART÷–∂œªÿµ˜∫Ø ˝
- * @param       Œﬁ
- * @retval      Œﬁ
+ * @brief       ATK-IDM750C UART‰∏≠Êñ≠ÂõûË∞ÉÂáΩÊï∞
+ * @param       Êó†
+ * @retval      Êó†
  */
 void ATK_IDM750C_UART_IRQHandler(void)
 {
     uint8_t tmp;
     
-    if (__HAL_UART_GET_FLAG(&g_uart_handle, UART_FLAG_ORE) != RESET)        /* UARTΩ” ’π˝‘ÿ¥ÌŒÛ÷–∂œ */
+    if (__HAL_UART_GET_FLAG(&g_uart_handle, UART_FLAG_ORE) != RESET)        /* UARTÊé•Êî∂ËøáËΩΩÈîôËØØ‰∏≠Êñ≠ */
     {
-        __HAL_UART_CLEAR_OREFLAG(&g_uart_handle);                           /* «Â≥˝Ω” ’π˝‘ÿ¥ÌŒÛ÷–∂œ±Í÷æ */
-        (void)g_uart_handle.Instance->SR;                                   /* œ»∂¡SRºƒ¥Ê∆˜£¨‘Ÿ∂¡DRºƒ¥Ê∆˜ */
+        __HAL_UART_CLEAR_OREFLAG(&g_uart_handle);                           /* Ê∏ÖÈô§Êé•Êî∂ËøáËΩΩÈîôËØØ‰∏≠Êñ≠Ê†áÂøó */
+        (void)g_uart_handle.Instance->SR;                                   /* ÂÖàËØªSRÂØÑÂ≠òÂô®ÔºåÂÜçËØªDRÂØÑÂ≠òÂô® */
         (void)g_uart_handle.Instance->DR;
     }
     
-    if (__HAL_UART_GET_FLAG(&g_uart_handle, UART_FLAG_RXNE) != RESET)       /* UARTΩ” ’÷–∂œ */
+    if (__HAL_UART_GET_FLAG(&g_uart_handle, UART_FLAG_RXNE) != RESET)       /* UARTÊé•Êî∂‰∏≠Êñ≠ */
     {
-        HAL_UART_Receive(&g_uart_handle, &tmp, 1, HAL_MAX_DELAY);           /* UARTΩ” ’ ˝æ› */
+        HAL_UART_Receive(&g_uart_handle, &tmp, 1, HAL_MAX_DELAY);           /* UARTÊé•Êî∂Êï∞ÊçÆ */
         
-        if (g_uart_rx_frame.sta.len < (ATK_IDM750C_UART_RX_BUF_SIZE - 1))     /* ≈–∂œUARTΩ” ’ª∫≥Â «∑Ò“Á≥ˆ
-                                                                             * ¡Ù≥ˆ“ªŒª∏¯Ω· ¯∑˚'\0'
+        if (g_uart_rx_frame.sta.len < (ATK_IDM750C_UART_RX_BUF_SIZE - 1))     /* Âà§Êñ≠UARTÊé•Êî∂ÁºìÂÜ≤ÊòØÂê¶Ê∫¢Âá∫
+                                                                             * ÁïôÂá∫‰∏Ä‰ΩçÁªôÁªìÊùüÁ¨¶'\0'
                                                                              */
         {
-            g_uart_rx_frame.buf[g_uart_rx_frame.sta.len] = tmp;             /* Ω´Ω” ’µΩµƒ ˝æ›–¥»Îª∫≥Â */
-            g_uart_rx_frame.sta.len++;                                      /* ∏¸–¬Ω” ’µΩµƒ ˝æ›≥§∂» */
+            g_uart_rx_frame.buf[g_uart_rx_frame.sta.len] = tmp;             /* Â∞ÜÊé•Êî∂Âà∞ÁöÑÊï∞ÊçÆÂÜôÂÖ•ÁºìÂÜ≤ */
+            g_uart_rx_frame.sta.len++;                                      /* Êõ¥Êñ∞Êé•Êî∂Âà∞ÁöÑÊï∞ÊçÆÈïøÂ∫¶ */
         }
-        else                                                                /* UARTΩ” ’ª∫≥Â“Á≥ˆ */
+        else                                                                /* UARTÊé•Êî∂ÁºìÂÜ≤Ê∫¢Âá∫ */
         {
-            g_uart_rx_frame.sta.len = 0;                                    /* ∏≤∏«÷Æ«∞ ’µΩµƒ ˝æ› */
-            g_uart_rx_frame.buf[g_uart_rx_frame.sta.len] = tmp;             /* Ω´Ω” ’µΩµƒ ˝æ›–¥»Îª∫≥Â */
-            g_uart_rx_frame.sta.len++;                                      /* ∏¸–¬Ω” ’µΩµƒ ˝æ›≥§∂» */
+            g_uart_rx_frame.sta.len = 0;                                    /* Ë¶ÜÁõñ‰πãÂâçÊî∂Âà∞ÁöÑÊï∞ÊçÆ */
+            g_uart_rx_frame.buf[g_uart_rx_frame.sta.len] = tmp;             /* Â∞ÜÊé•Êî∂Âà∞ÁöÑÊï∞ÊçÆÂÜôÂÖ•ÁºìÂÜ≤ */
+            g_uart_rx_frame.sta.len++;                                      /* Êõ¥Êñ∞Êé•Êî∂Âà∞ÁöÑÊï∞ÊçÆÈïøÂ∫¶ */
         }
     }
     
-    if (__HAL_UART_GET_FLAG(&g_uart_handle, UART_FLAG_IDLE) != RESET)       /* UART◊‹œﬂø’œ–÷–∂œ */
+    if (__HAL_UART_GET_FLAG(&g_uart_handle, UART_FLAG_IDLE) != RESET)       /* UARTÊÄªÁ∫øÁ©∫Èó≤‰∏≠Êñ≠ */
     {
-        g_uart_rx_frame.sta.finsh = 1;                                      /* ±Íº«÷°Ω” ’ÕÍ≥… */
+        g_uart_rx_frame.sta.finsh = 1;                                      /* Ê†áËÆ∞Â∏ßÊé•Êî∂ÂÆåÊàê */
 
         
         
-        __HAL_UART_CLEAR_IDLEFLAG(&g_uart_handle);                          /* «Â≥˝UART◊‹œﬂø’œ–÷–∂œ */
+        __HAL_UART_CLEAR_IDLEFLAG(&g_uart_handle);                          /* Ê∏ÖÈô§UARTÊÄªÁ∫øÁ©∫Èó≤‰∏≠Êñ≠ */
     }
 }

@@ -1,20 +1,27 @@
 #include "string.h"
 #include "run_4g.h"
 #include "lora.h"
+// #include "math.h"
  
 #define DEMO_DTU_TEST_DATA                      "ALIENTEK ATK-IDM750C TEST"
 #define DEMO_DTU_NETDATA_RX_BUF                 (1024)
-#define DEMO_DTU_TCP_SERVER_DOMAIN_NAME         "cloud.alientek.com"
-#define DEMO_DTU_TCP_SERVER_PORT_NUMBER         "59666"
-#define DEMO_DTU_TCP_YUANZI_DEVICE_NUMEBER      "08454275304740178768"
-#define DEMO_DTU_TCP_YUANZI_DEVICE_PASSWORD     "12345678"
 
+#define DEMO_DTU_TCP_SERVER_DOMAIN_NAME         "shenzhen.typologi.top"
+#define DEMO_DTU_TCP_SERVER_PORT_NUMBER         "1883"
+
+#define CLIENT_ID "alientek"
+#define SUB_TOPIC "telemetry/response"
+#define PUB_TOPIC "telemetry/request"
+
+
+// #define DEMO_DTU_TCP_YUANZI_DEVICE_NUMEBER      "73190870637111929102"
+// #define DEMO_DTU_TCP_YUANZI_DEVICE_PASSWORD     "12345678"
 uint8_t *buf_4g = 0;
 uint8_t data_4g = 0; 
 /**
- * @brief       ³õÊ¼»¯4gÄ£¿é
- * @param       ÎŞ
- * @retval      ÎŞ
+ * @brief       åˆå§‹åŒ–4gæ¨¡å—
+ * @param       æ— 
+ * @retval      æ— 
  */
 void init_4g(void)
 {
@@ -22,7 +29,7 @@ void init_4g(void)
   
 
     
-    /* ³õÊ¼»¯ATK-IDM750C */
+    /* åˆå§‹åŒ–ATK-IDM750C */
     ret = atk_idm750c_init(115200);
     if (ret != 0)
     {
@@ -33,56 +40,77 @@ void init_4g(void)
         }
     }
     acoral_print("Wait for Cat1 DTU to start, wait 10s....\r\n");
-    /* ATK-IDM750C ATÖ¸Áî²âÊÔ */
-    ret  = atk_idm750c_at_test();
-    /* ATK-IDM750C ¹¤×÷Ä£Ê½ÉèÖÃ */
-    ret += atk_idm750c_query_workmode(ATK_IDM750C_WORKMODE_NET);
-    /* ATK-IDM750C µÚÒ»Â·Á¬½ÓÊ¹ÄÜ×´Ì¬£ºON */
-    ret += atk_idm750c_link1en(ATK_IDM750C_LINK1EN_ON);
-    /* ATK-IDM750C µÚÒ»Â·Á¬½Ó²ÎÊı */
-    ret += atk_idm750c_link1(ATK_IDM750C_LINK1MODE_TCP,DEMO_DTU_TCP_SERVER_DOMAIN_NAME,DEMO_DTU_TCP_SERVER_PORT_NUMBER);
-    /* ATK-IDM750C µÚÒ»Â·Á¬½ÓÄ£Ê½£ºLONG */
-    ret += atk_idm750c_link1md(ATK_IDM750C_LINK1MD_LONG);
-    /* ATK-IDM750C µÚÒ»Â·³¬Ê±ÖØÁ¬Ê±¼ä */
-    ret +=atk_idm750c_link1_timeout();
-    /* ATK-IDM750C µÚ¶şÂ·Á¬½ÓÊ¹ÄÜ×´Ì¬£ºOFF */
-    ret += atk_idm750c_link2en(ATK_IDM750C_LINK2EN_OFF);
-    /* ATK-IDM750C µÚÈıÂ·Á¬½ÓÊ¹ÄÜ×´Ì¬£ºOFF */
-    ret += atk_idm750c_link3en(ATK_IDM750C_LINK3EN_OFF);
-    /* ATK-IDM750C µÚËÄÂ·Á¬½ÓÊ¹ÄÜ×´Ì¬£ºOFF */
-    ret += atk_idm750c_link4en(ATK_IDM750C_LINK4EN_OFF);
-    /* ATK-IDM750C ÆôÓÃÔ­×ÓÔÆ */
-    ret += atk_idm750c_set_yuanziyun(ATK_IDM750C_SET_YUANZIYUN_ON);
-    /* ATK-IDM750C Ô­×ÓÔÆÉè±¸±àºÅ */
-    ret += atk_idm750c_device_num(DEMO_DTU_TCP_YUANZI_DEVICE_NUMEBER);
-    /* ATK-IDM750C Ô­×ÓÔÆÉè±¸ÃÜÂë */
-    ret += atk_idm750c_device_password(DEMO_DTU_TCP_YUANZI_DEVICE_PASSWORD);
-    /* ATK-IDM750C ¿ªÆôĞÄÌø°ü */
-    ret += atk_idm750c_heartbeat_package(ATK_IDM750C_HRTEN_ON);
-    /* ATK-IDM750C ĞÄÌø°üÊı¾İ */
-    ret += atk_idm750c_heartbeat_package_data();
-    /* ATK-IDM750C ĞÄÌø°üÊ±¼ä¼ä¸ô */
-    ret += atk_idm750c_heartbeat_package_interval();
-    /* ATK-IDM750C ×¢²á°üÄ¬ÈÏ¹Ø±Õ */
-    ret += atk_idm750c_registration_package(ATK_IDM750C_SET_REGEN_OFF);
-    /* ATK-IDM750C ×¢²á°üÊı¾İ */
-    ret += atk_idm750c_registration_package_data();
-    /* ATK-IDM750C ×¢²á°ü·¢ËÍ·½Ê½ */
-    ret += atk_idm750c_registration_package_send_method();
-    /* ATK-IDM750C ×¢²á°üÊı¾İÀàĞÍ */
-    ret += atk_idm750c_registration_package_data_type();
-    /* ATK-IDM750C ½øÈëÍ¸´«×´Ì¬ */
+
+    /* ATK-IDM750C ATæŒ‡ä»¤æµ‹è¯• */
+    ret = atk_idm750c_at_test();
+    /*å·¥ä½œæ¨¡å¼è®¾ç½®*/
+    ret += atk_idm750c_query_workmode(ATK_IDM750C_WORKMODE_MQTT);
+    acoral_print("1:ret:%d\r\n",ret);
+    /*æœåŠ¡å™¨ä¿¡æ¯*/
+    ret += atk_idm750c_server_address(DEMO_DTU_TCP_SERVER_DOMAIN_NAME,DEMO_DTU_TCP_SERVER_PORT_NUMBER);
+    acoral_print("2:ret:%d\r\n",ret);
+    /*clientid ä¿¡æ¯*/
+    ret += atk_idm750c_mqtt_clientid(CLIENT_ID);
+    acoral_print("3:ret:%d\r\n",ret);
+    /*å‚æ•°ä¿¡æ¯*/
+    ret += atk_idm750c_mqtt_para_information(ATK_IDM750C_MQTT_ONE_MODE2);
+    /*è®¢é˜…ä¸»é¢˜ä¿¡æ¯*/
+    ret += atk_idm750c_mqtt_sub_title(SUB_TOPIC);
+    /*å‘å¸ƒä¸»é¢˜ä¿¡æ¯*/
+    ret += atk_idm750c_mqtt_pub_title(PUB_TOPIC);
+    /*è¿›å…¥é€ä¼ çŠ¶æ€ */
     ret += atk_idm750c_enter_transfermode();
+
+    // /* ATK-IDM750C ATæŒ‡ä»¤æµ‹è¯• */
+    // ret  = atk_idm750c_at_test();
+    // /* ATK-IDM750C å·¥ä½œæ¨¡å¼è®¾ç½® */
+    // ret += atk_idm750c_query_workmode(ATK_IDM750C_WORKMODE_NET);
+    // /* ATK-IDM750C ç¬¬ä¸€è·¯è¿æ¥ä½¿èƒ½çŠ¶æ€ï¼šON */
+    // ret += atk_idm750c_link1en(ATK_IDM750C_LINK1EN_ON);
+    // /* ATK-IDM750C ç¬¬ä¸€è·¯è¿æ¥å‚æ•° */
+    // ret += atk_idm750c_link1(ATK_IDM750C_LINK1MODE_TCP,DEMO_DTU_TCP_SERVER_DOMAIN_NAME,DEMO_DTU_TCP_SERVER_PORT_NUMBER);
+    // /* ATK-IDM750C ç¬¬ä¸€è·¯è¿æ¥æ¨¡å¼ï¼šLONG */
+    // ret += atk_idm750c_link1md(ATK_IDM750C_LINK1MD_LONG);
+    // /* ATK-IDM750C ç¬¬ä¸€è·¯è¶…æ—¶é‡è¿æ—¶é—´ */
+    // ret +=atk_idm750c_link1_timeout();
+    // /* ATK-IDM750C ç¬¬äºŒè·¯è¿æ¥ä½¿èƒ½çŠ¶æ€ï¼šOFF */
+    // ret += atk_idm750c_link2en(ATK_IDM750C_LINK2EN_OFF);
+    // /* ATK-IDM750C ç¬¬ä¸‰è·¯è¿æ¥ä½¿èƒ½çŠ¶æ€ï¼šOFF */
+    // ret += atk_idm750c_link3en(ATK_IDM750C_LINK3EN_OFF);
+    // /* ATK-IDM750C ç¬¬å››è·¯è¿æ¥ä½¿èƒ½çŠ¶æ€ï¼šOFF */
+    // ret += atk_idm750c_link4en(ATK_IDM750C_LINK4EN_OFF);
+    // /* ATK-IDM750C å¯ç”¨åŸå­äº‘ */
+    // ret += atk_idm750c_set_yuanziyun(ATK_IDM750C_SET_YUANZIYUN_ON);
+    // /* ATK-IDM750C åŸå­äº‘è®¾å¤‡ç¼–å· */
+    // ret += atk_idm750c_device_num(DEMO_DTU_TCP_YUANZI_DEVICE_NUMEBER);
+    // /* ATK-IDM750C åŸå­äº‘è®¾å¤‡å¯†ç  */
+    // ret += atk_idm750c_device_password(DEMO_DTU_TCP_YUANZI_DEVICE_PASSWORD);
+    // /* ATK-IDM750C å¼€å¯å¿ƒè·³åŒ… */
+    // ret += atk_idm750c_heartbeat_package(ATK_IDM750C_HRTEN_ON);
+    // /* ATK-IDM750C å¿ƒè·³åŒ…æ•°æ® */
+    // ret += atk_idm750c_heartbeat_package_data();
+    // /* ATK-IDM750C å¿ƒè·³åŒ…æ—¶é—´é—´éš” */
+    // ret += atk_idm750c_heartbeat_package_interval();
+    // /* ATK-IDM750C æ³¨å†ŒåŒ…é»˜è®¤å…³é—­ */
+    // ret += atk_idm750c_registration_package(ATK_IDM750C_SET_REGEN_OFF);
+    // /* ATK-IDM750C æ³¨å†ŒåŒ…æ•°æ® */
+    // ret += atk_idm750c_registration_package_data();
+    // /* ATK-IDM750C æ³¨å†ŒåŒ…å‘é€æ–¹å¼ */
+    // ret += atk_idm750c_registration_package_send_method();
+    // /* ATK-IDM750C æ³¨å†ŒåŒ…æ•°æ®ç±»å‹ */
+    // ret += atk_idm750c_registration_package_data_type();
+    // /* ATK-IDM750C è¿›å…¥é€ä¼ çŠ¶æ€ */
+    // ret += atk_idm750c_enter_transfermode();
     
     if (ret != 0)
     {
         acoral_print("**************************************************************************\r\n");
         acoral_print("ATK-IDM750C Configuration Failed ...\r\n");
-        acoral_print("Çë°´ÕÕÒÔÏÂ²½Öè½øĞĞ¼ì²é:\r\n");
-        acoral_print("1.Ê¹ÓÃµçÄÔÉÏÎ»»úÅäÖÃÈí¼ş¼ì²éDTUÄÜ·ñµ¥¶ÀÕı³£¹¤×÷\r\n");
-        acoral_print("2.¼ì²éDTU´®¿Ú²ÎÊıÓëSTM32Í¨Ñ¶µÄ´®¿Ú²ÎÊıÊÇ·ñÒ»ÖÂ\r\n");
-        acoral_print("3.¼ì²éDTUÓëSTM32´®¿ÚµÄ½ÓÏßÊÇ·ñÕıÈ·\r\n");
-        acoral_print("4.¼ì²éDTU¹©µçÊÇ·ñÕı³££¬DTUÍÆ¼öÊ¹ÓÃ12V/1AµçÔ´¹©µç£¬²»ÒªÊ¹ÓÃUSBµÄ5V¸øÄ£¿é¹©µç£¡£¡\r\n");
+        acoral_print("è¯·æŒ‰ç…§ä»¥ä¸‹æ­¥éª¤è¿›è¡Œæ£€æŸ¥:\r\n");
+        acoral_print("1.ä½¿ç”¨ç”µè„‘ä¸Šä½æœºé…ç½®è½¯ä»¶æ£€æŸ¥DTUèƒ½å¦å•ç‹¬æ­£å¸¸å·¥ä½œ\r\n");
+        acoral_print("2.æ£€æŸ¥DTUä¸²å£å‚æ•°ä¸STM32é€šè®¯çš„ä¸²å£å‚æ•°æ˜¯å¦ä¸€è‡´\r\n");
+        acoral_print("3.æ£€æŸ¥DTUä¸STM32ä¸²å£çš„æ¥çº¿æ˜¯å¦æ­£ç¡®\r\n");
+        acoral_print("4.æ£€æŸ¥DTUä¾›ç”µæ˜¯å¦æ­£å¸¸ï¼ŒDTUæ¨èä½¿ç”¨12V/1Aç”µæºä¾›ç”µï¼Œä¸è¦ä½¿ç”¨USBçš„5Vç»™æ¨¡å—ä¾›ç”µï¼ï¼\r\n");
         acoral_print("**************************************************************************\r\n\r\n");
         
         while (1)
@@ -96,54 +124,115 @@ void init_4g(void)
     }
     
 }
-
 /**
-* @author: ÍõÈôÓî
-* @brief: 4g½Ó·¢Êı¾İ
-* @version: 1.0
-* @date: 2023-08-09
+* @author: è´¾è‹¹
+* @brief: æ ¼å¼åŒ–4gå‘é€æ•°æ®
+* @version: 2.0
+* @date: 2023-09-08
 */
 
+
+/**
+* @author: è´¾è‹¹
+* @brief: 4gå‘é€æ•°æ®
+* @version: 2.0
+* @date: 2023-09-08
+*/
 void tx_4g(void)
 {
     acoral_enter_critical();
-    if(master_data)
+    if(master_data)//ä¸­å¿ƒç«™ä»ç»ˆç«¯æ¥æ”¶åˆ°çš„æ•°æ®åŒ…æ ¡éªŒå’Œä¸€è‡´ï¼Œå°±ä¼ è¾“
     {   
-        // atk_idm750c_uart_printf("Master id: %d Slave id: %d \r\nDistance: %d cm\r\nTemp:%d.%d    Humi:%d.%d\r\nsignificant bit:%d",slave_Data[0], slave_Data[1], slave_Data[2],slave_Data[5],slave_Data[6],slave_Data[3],slave_Data[4],slave_Data[7]);
-        atk_idm750c_uart_printf("master_id:%d slave_device_id:%d \r\nsignificant bit:%d\r\nTemp:%d.%d    Humi:%d.%d period:%ds\r\n", 
-                                slave_Data.master_id,
-                                slave_Data.slave_device_id,
-                                slave_Data.data_significant,
+        acoral_print("4G slave send data\r\n");
+        atk_idm750c_uart_printf("{\"master_id\":%x,\"slave_device_id\":%x,\"data_significant\":%x,",slave_Data.master_id,slave_Data.slave_device_id,slave_Data.data_significant);
+        atk_idm750c_uart_printf("\"temp\":%d.%d,\"humi\":%d.%d,\"distance\":%d,\"acceleration_x\":%d,\"acceleration_y\":%d,\"acceleration_z\":%d,",
                                 slave_Data.temp_int,
                                 slave_Data.temp_dec,
                                 slave_Data.humi_int,
                                 slave_Data.humi_dec,
-                                slave_Data.temp_humi_period);
-        atk_idm750c_uart_printf("Distance: %d cm   period:%ds\r\n", (int)(slave_Data.distance),slave_Data.distance_period);
-        atk_idm750c_uart_printf("Acceleration X-Axis: %d mg\r\n", (int)(slave_Data.acceleration_x));
-        atk_idm750c_uart_printf("Acceleration Y-Axis: %d mg\r\n", (int)(slave_Data.acceleration_y));
-        atk_idm750c_uart_printf("Acceleration Z-Axis: %d mg period:%ds\r\n", (int)(slave_Data.acceleration_z),slave_Data.acceleration_period);
-        atk_idm750c_uart_printf("\r\n");
+                                (int)slave_Data.distance,
+                                (int)slave_Data.acceleration_x,
+                                (int)slave_Data.acceleration_y,
+                                (int)slave_Data.acceleration_z);
+        atk_idm750c_uart_printf("\"temp_humi_period\":%d,\"distance_period\":%d,\"acceleration_period\":%d,",
+                                slave_Data.temp_humi_period,slave_Data.distance_period,slave_Data.acceleration_period);
+        // atk_idm750c_uart_printf("\"temp_collect_time\":\"%d-%d-%d %d:%d:%d\",",
+        //                         slave_Data.temp_collect_time.w_year,
+        //                         slave_Data.temp_collect_time.w_month,
+        //                         slave_Data.temp_collect_time.w_date,
+        //                         slave_Data.temp_collect_time.hour,
+        //                         slave_Data.temp_collect_time.min,
+        //                         slave_Data.temp_collect_time.sec);
+        // atk_idm750c_uart_printf("\"distance_collect_time\":\"%d-%d-%d %d:%d:%d\",",
+        //                         slave_Data.distance_collect_time.w_year,
+        //                         slave_Data.distance_collect_time.w_month,
+        //                         slave_Data.distance_collect_time.w_date,
+        //                         slave_Data.distance_collect_time.hour,
+        //                         slave_Data.distance_collect_time.min,
+        //                         slave_Data.distance_collect_time.sec);
+        // atk_idm750c_uart_printf("\"acceleration_collect_time\":\"%d-%d-%d %d:%d:%d\",",
+        //                         slave_Data.acceleration_collect_time.w_year,
+        //                         slave_Data.acceleration_collect_time.w_month,
+        //                         slave_Data.acceleration_collect_time.w_date,
+        //                         slave_Data.acceleration_collect_time.hour,
+        //                         slave_Data.acceleration_collect_time.min,
+        //                         slave_Data.acceleration_collect_time.sec);
+        atk_idm750c_uart_printf("\"temp_collect_time\":%d,",slave_Data.temp_collect_time);
+        atk_idm750c_uart_printf("\"distance_collect_time\":%d,",slave_Data.distance_collect_time);
+        atk_idm750c_uart_printf("\"acceleration_collect_time\":%d,",slave_Data.acceleration_collect_time);
+
+        atk_idm750c_uart_printf("\"check_value\":%d}",slave_Data.check_value);
         master_data=0;
     }
     else if (data_ready)
     {
-        Buffer.master_id = master_device_id;//ÖĞĞÄÕ¾id
-        Buffer.data_significant = data_ready;//´«¸ĞÆ÷Êı¾İÓĞĞ§Î»
-        atk_idm750c_uart_printf("master_id:%d significant bit:%d\r\nTemp:%d.%d    Humi:%d.%d period:%ds\r\n", 
-                                Buffer.master_id,
-                                Buffer.data_significant,
+        acoral_print("4G master send data\r\n");
+        Buffer.master_id = master_device_id;//ä¸­å¿ƒç«™id
+        Buffer.slave_device_id = master_device_id;
+        Buffer.data_significant = data_ready;//ä¼ æ„Ÿå™¨æ•°æ®æœ‰æ•ˆä½
+        Buffer.check_value = compute_check_value(Buffer);
+        
+        atk_idm750c_uart_printf("{\"master_id\":%x,\"slave_device_id\":%x,\"data_significant\":%x,",Buffer.master_id,Buffer.master_id,Buffer.data_significant);
+        atk_idm750c_uart_printf("\"temp\":%d.%d,\"humi\":%d.%d,\"distance\":%d,\"acceleration_x\":%d,\"acceleration_y\":%d,\"acceleration_z\":%d,",
                                 Buffer.temp_int,
                                 Buffer.temp_dec,
                                 Buffer.humi_int,
                                 Buffer.humi_dec,
-                                Buffer.temp_humi_period);
-        atk_idm750c_uart_printf("Distance: %d cm   period:%ds\r\n", (int)(Buffer.distance),Buffer.distance_period);
-        atk_idm750c_uart_printf("Acceleration X-Axis: %d mg\r\n", (int)(Buffer.acceleration_x));
-        atk_idm750c_uart_printf("Acceleration Y-Axis: %d mg\r\n", (int)(Buffer.acceleration_y));
-        atk_idm750c_uart_printf("Acceleration Z-Axis: %d mg period:%ds\r\n", (int)(Buffer.acceleration_z),Buffer.acceleration_period);
-        atk_idm750c_uart_printf("\r\n");
-        tx_done = 0;
+                                (int)Buffer.distance,
+                                (int)Buffer.acceleration_x,
+                                (int)Buffer.acceleration_y,
+                                (int)Buffer.acceleration_z);
+        atk_idm750c_uart_printf("\"temp_humi_period\":%d,\"distance_period\":%d,\"acceleration_period\":%d,",
+                                Buffer.temp_humi_period,Buffer.distance_period,Buffer.acceleration_period);
+        // atk_idm750c_uart_printf("\"temp_collect_time\":\"%d-%d-%d %d:%d:%d\",",
+        //                         Buffer.temp_collect_time.w_year,
+        //                         Buffer.temp_collect_time.w_month,
+        //                         Buffer.temp_collect_time.w_date,
+        //                         Buffer.temp_collect_time.hour,
+        //                         Buffer.temp_collect_time.min,
+        //                         Buffer.temp_collect_time.sec);
+        // atk_idm750c_uart_printf("\"distance_collect_time\":\"%d-%d-%d %d:%d:%d\",",
+        //                         Buffer.distance_collect_time.w_year,
+        //                         Buffer.distance_collect_time.w_month,
+        //                         Buffer.distance_collect_time.w_date,
+        //                         Buffer.distance_collect_time.hour,
+        //                         Buffer.distance_collect_time.min,
+        //                         Buffer.distance_collect_time.sec);
+        // atk_idm750c_uart_printf("\"acceleration_collect_time\":\"%d-%d-%d %d:%d:%d\",",
+        //                         Buffer.acceleration_collect_time.w_year,
+        //                         Buffer.acceleration_collect_time.w_month,
+        //                         Buffer.acceleration_collect_time.w_date,
+        //                         Buffer.acceleration_collect_time.hour,
+        //                         Buffer.acceleration_collect_time.min,
+        //                         Buffer.acceleration_collect_time.sec);
+        atk_idm750c_uart_printf("\"temp_collect_time\":%d,",Buffer.temp_collect_time);
+        atk_idm750c_uart_printf("\"distance_collect_time\":%d,",Buffer.distance_collect_time);
+        atk_idm750c_uart_printf("\"acceleration_collect_time\":%d,",Buffer.acceleration_collect_time);
+
+        atk_idm750c_uart_printf("\"check_value\":%d}",Buffer.check_value);
+
+        tx_done = 0; //loraæ¯æ¬¡å‘é€å®Œä¼šè‡ªåŠ¨ç½®1ï¼Œéœ€è¦æ‰‹åŠ¨æ¸…é›¶ã€‚
+        memset(&Buffer,0,sizeof(Buffer)); 
         data_ready = 0;
     }
     acoral_exit_critical();
@@ -151,28 +240,72 @@ void tx_4g(void)
     
 }
 
+
 /**
-* @author: ÍõÈôÓî
-* @brief: 4g½Ó·¢Êı¾İ
-* @version: 1.0
-* @date: 2023-08-09
+* @author: è´¾è‹¹
+* @brief: ä¸­å¿ƒç«™åŒæ­¥Syn_Tickçš„ä»»åŠ¡
+* @version: 2.0
+* @date: 2023-09-09
+*/
+
+
+/**
+* @author: è´¾è‹¹
+* @brief: 4gæ¥å‘æ•°æ®
+* @version: 2.0
+* @date: 2023-09-06
 */
 void rx_4g(void)
 {
-        buf_4g = atk_idm750c_uart_rx_get_frame();
-        acoral_enter_critical();
-        if (buf_4g != NULL)
+    //05 00 40 07 1F 1F 1F å‘½ä»¤ ä¸­å¿ƒèŠ‚ç‚¹id ç»ˆç«¯èŠ‚ç‚¹id æ›´æ”¹å‘¨æœŸä½æ•° æ›´æ”¹çš„å‘¨æœŸx3
+    //0500FF00000000
+    buf_4g = atk_idm750c_uart_rx_get_frame();
+    acoral_enter_critical();
+    if (buf_4g != NULL)
+    {
+        acoral_print("4G receving....rx_done:%d-%d-%d\r\n",buf_4g[0],buf_4g[1],buf_4g[2]);
+        if(buf_4g[1] == master_device_id)
         {
-            data_4g = 1;
-            rx_cmd.data_type = (uint8_t)0x02u;
-            rx_cmd.master_id = buf_4g[0];
-            rx_cmd.slave_device_id = buf_4g[1];
-            rx_cmd.command_significant = buf_4g[2];
-            rx_cmd.update_distance_period = buf_4g[3];
-            rx_cmd.update_temp_humi_period = buf_4g[4];
-            rx_cmd.update_acceleration_period = buf_4g[5];
+            //å‘ç»™ä¸­å¿ƒç«™ï¼Œè¡¨ç¤ºä¸éœ€è¦ä¸‹å‘ç»™ç»ˆç«¯
+            if(buf_4g[2] == master_device_id)
+            {
+                if (buf_4g[3] != 0)
+                {
+                    cur_period.significant = buf_4g[3];
+                    cur_period.distance = buf_4g[4];
+                    cur_period.temp_humi = buf_4g[5];
+                    cur_period.acceleration = buf_4g[6];
+                    data_4g = 0;
+                    period_change();
+                    acoral_print("master change period\r\n");
+                }
+            }
+            else //å‘ç»™ç»ˆç«¯çš„ï¼Œ7Fè¡¨ç¤ºå‘ç»™æ‰€æœ‰ç»ˆç«¯(å®é™…ä¸Šä¹Ÿæ˜¯æ¥æ”¶åˆ°å¯¹åº”ç»ˆç«¯çš„æ•°æ®åŒ…åå•ä¸ªå‘é€ç»™ç»ˆç«¯)ï¼Œå…¶ä½™è¡¨ç¤ºå‘ç»™å•ä¸ªç»ˆç«¯ï¼ŒæœåŠ¡å™¨å‘é€åŒæ­¥å‘½ä»¤éœ€è¦æŒ‡å®šç»ˆç«¯id
+            {
+                acoral_print("rec 4g data!\r\n");
+                rx_cmd.master_id = buf_4g[1];
+                rx_cmd.slave_device_id = buf_4g[2];
+                rx_cmd.change_period_significant = buf_4g[3];
+                rx_cmd.update_distance_period = buf_4g[4];
+                rx_cmd.update_temp_humi_period = buf_4g[5];
+                rx_cmd.update_acceleration_period = buf_4g[6];
+                data_4g = 1;           // æ ‡è¯†æ”¶åˆ°äº†4Gæ•°æ®ï¼Œå¹¶ä¸”éœ€è¦å‘é€
+                if (buf_4g[0] == 0x05) // æ¥æ”¶åˆ°åŒæ­¥å‘½ä»¤ï¼Œå°†æœ¬åœ°sync_tickæ¸…é›¶ï¼ŒåŒæ—¶sync_flagç½®1ï¼Œæ ‡è¯†åŒæ­¥ä¸­
+                {
+                    sync_tick = 0;
+                    sync_flag = 1;
+                    
+                    //å”¤é†’ä¸­å¿ƒç«™åŒæ­¥ä»»åŠ¡çº¿ç¨‹
+                    acoral_thread_t *master_sync_thread;
+                    master_sync_thread = (acoral_thread_t *)acoral_get_res_by_id(master_sync_thread_id);
+                    acoral_rdy_thread(master_sync_thread);
+                }
+                
+            }    
             
-            atk_idm750c_uart_rx_restart();
         }
-        acoral_exit_critical();
+        
+    }
+    atk_idm750c_uart_rx_restart();
+    acoral_exit_critical();
 }

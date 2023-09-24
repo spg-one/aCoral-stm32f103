@@ -96,14 +96,20 @@ void getXYZAxisAccelerationsThread() {
     acceleration_data.YAxisAcceleration = 0;
     acceleration_data.ZAxisAcceleration = 0;
     Adxl345_GetAccelerations(&acceleration_data);
-    Buffer.acceleration_period = (((period_private_data_t *)acoral_cur_thread->private_data)->time)/1000;
-    data_ready|=(1<<2);
     Buffer.acceleration_x = acceleration_data.XAxisAcceleration;
     Buffer.acceleration_y = acceleration_data.YAxisAcceleration;
     Buffer.acceleration_z = acceleration_data.ZAxisAcceleration;
-    // acoral_print("The acceleration of X-Axis：%d", (int)acceleration_data.XAxisAcceleration);
-    // acoral_print("The acceleration of Y-Axis：%d", (int)acceleration_data.YAxisAcceleration);
-    // acoral_print("The acceleration of Z-Axis：%d", (int)acceleration_data.ZAxisAcceleration);
+    Buffer.acceleration_period = (((period_private_data_t *)acoral_cur_thread->private_data)->time)/1000;
+    acoral_enter_critical();
+    // Buffer.acceleration_collect_time.w_year = calendar.w_year;
+    // Buffer.acceleration_collect_time.w_month = calendar.w_month;
+    // Buffer.acceleration_collect_time.w_date = calendar.w_date;
+    // Buffer.acceleration_collect_time.hour = calendar.hour;
+    // Buffer.acceleration_collect_time.min = calendar.min;
+    // Buffer.acceleration_collect_time.sec = calendar.sec;
+    Buffer.acceleration_collect_time = timestap;
+    acoral_exit_critical();
+    data_ready|=(1<<2);
 }
 
 

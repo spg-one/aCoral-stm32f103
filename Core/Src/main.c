@@ -55,6 +55,8 @@ I2C_HandleTypeDef hi2c1;
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
+
+
 static void MX_GPIO_Init(void);
 static void MX_USART1_UART_Init(void);
 static void MX_SPI2_Init(void);
@@ -100,8 +102,10 @@ int main(void)
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
+
   MX_GPIO_Init();
   MX_USART1_UART_Init();
+  RTC_Init();
   MX_SPI2_Init();
   /* USER CODE BEGIN 2 */
   PC0_GPIO_Init();

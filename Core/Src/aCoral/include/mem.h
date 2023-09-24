@@ -188,7 +188,7 @@ typedef enum{
 
 #define ACORAL_RES_TYPE(id) ((id&ACORAL_RES_TYPE_MASK)>>ACORAL_RES_TYPE_BIT) ///<根据资源ID获取某一资源数据块
 
-typedef union {
+typedef struct {
    int id;
    int next_id;
 }acoral_res_t;

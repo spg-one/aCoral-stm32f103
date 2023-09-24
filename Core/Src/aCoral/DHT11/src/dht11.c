@@ -1,7 +1,7 @@
 /*
  * @Author: jp
  * @Date: 2023-06-13 08:01:43
- * @LastEditTime: 2023-06-14 16:07:09
+ * @LastEditTime: 2023-09-24 08:39:15
  * @LastEditors: jp
  * @Description: 
  * @FilePath: \aCoral-stm32f103-master\Core\Src\aCoral\DHT11\src\dht11.c
@@ -143,13 +143,20 @@ void get_temp_humi_thread()
 {
   if(DHT_Get_Temp_Humi_Data(DHT_Buffer))
   {
-    // acoral_print("Temp:%d.%d    ",DHT_Buffer[2],DHT_Buffer[3]);
-    // acoral_print("Humi:%d.%d\r\n",DHT_Buffer[0],DHT_Buffer[1]);
     Buffer.humi_int = DHT_Buffer[0];
     Buffer.humi_dec= DHT_Buffer[1];
     Buffer.temp_int = DHT_Buffer[2];
     Buffer.temp_dec = DHT_Buffer[3];
     Buffer.temp_humi_period = (((period_private_data_t *)acoral_cur_thread->private_data)->time)/1000;
+    acoral_enter_critical();
+    // Buffer.temp_collect_time.w_year = calendar.w_year;
+    // Buffer.temp_collect_time.w_month = calendar.w_month;
+    // Buffer.temp_collect_time.w_date = calendar.w_date;
+    // Buffer.temp_collect_time.hour = calendar.hour;
+    // Buffer.temp_collect_time.min = calendar.min;
+    // Buffer.temp_collect_time.sec = calendar.sec;
+    Buffer.temp_collect_time = timestap;
+    acoral_exit_critical();
     data_ready|=(1<<1);
   }
   else

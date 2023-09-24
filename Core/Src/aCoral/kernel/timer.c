@@ -29,6 +29,8 @@
 #include "lsched.h"
 #include "list.h"
 #include "stm32f1xx_hal.h"
+#include "user.h"
+#include "lora.h"
 #include <stdbool.h>
 
 
@@ -63,9 +65,10 @@ void acoral_ticks_init(){
 	HAL_SYSTICK_Config(SystemCoreClock / (1000U / uwTickFreq)); //SPG 用这个
 }
 
+
 void acoral_ticks_entry(int vector){
 
-        ticks++;
+    ticks++;
 	if(acoral_start_sched==true){
 		time_delay_deal();
 		acoral_policy_delay_deal();
@@ -74,6 +77,31 @@ void acoral_ticks_entry(int vector){
 		/* pegasus  0719*/
 		/*--------------------*/
 		timeout_delay_deal();
+	}
+	/*周期同步*/
+	if(sync_flag == 1 || sync_flag == 2)
+	{
+		sync_tick++; //同步Tick
+		#if defined( MASTER )
+		if (sync_tick == sync_start)
+		{
+			//唤醒中心站重装载线程
+			acoral_thread_t *master_reload_thread;		
+			master_reload_thread=(acoral_thread_t *)acoral_get_res_by_id(master_reload_thread_id);
+			acoral_rdy_thread(master_reload_thread);
+		}
+		#endif
+
+		#if defined( SLAVE )
+			uint8_t num = slave_device_id & 0x01;
+			if (sync_tick == (sync_start + (num*interval_period)))
+			{
+				//唤醒终端重装载线程
+				acoral_thread_t *slave_reload_thread;		
+				slave_reload_thread=(acoral_thread_t *)acoral_get_res_by_id(slave_reload_thread_id);
+				acoral_rdy_thread(slave_reload_thread);
+			}
+		#endif
 	}
 }
 
@@ -194,3 +222,4 @@ void timeout_delay_deal()
 		acoral_rdy_thread(thread);
 	}
 }
+

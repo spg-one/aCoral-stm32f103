@@ -24,8 +24,8 @@
 
 acoral_list_t period_delay_queue; ///<周期线程专用延时队列，只要是周期线程，就会被挂载到这个队列上，延时时间就是周期，每次周期过后重新挂载
 int period_policy_thread_init(acoral_thread_t *thread,void (*route)(void *args),void *args,void *data){
-	unsigned int prio;
-	acoral_period_policy_data_t *policy_data;
+	unsigned int prio;//
+	acoral_period_policy_data_t *policy_data;//
 	period_private_data_t *private_data;
 	if(thread->policy==ACORAL_SCHED_POLICY_PERIOD){
 		policy_data=(acoral_period_policy_data_t *)data;
@@ -58,7 +58,7 @@ int period_policy_thread_init(acoral_thread_t *thread,void (*route)(void *args),
 		thread->private_data=private_data;
 	}
 	if(acoral_thread_init(thread,route,period_thread_exit,args)!=0){
-		acoral_print("No thread stack:%s\n",thread->name);
+		acoral_print("No period thread stack:%s\r\n",thread->name);
 		acoral_enter_critical();
 		acoral_release_res((acoral_res_t *)thread);
 		acoral_exit_critical();
@@ -76,6 +76,7 @@ void period_policy_thread_release(acoral_thread_t *thread){
 	acoral_free(thread->private_data);	
 }
 
+//差分队列添加
 void acoral_periodqueue_add(acoral_thread_t *new){
 	acoral_list_t   *tmp,*head;
 	acoral_thread_t *thread;
@@ -98,6 +99,39 @@ void acoral_periodqueue_add(acoral_thread_t *new){
 	}
 }
 
+/**
+* @author: 贾苹
+* @brief: 差分队列删除一个线程
+* @version: 1.0
+* @date: 2023-09-12
+*/
+void acoral_periodqueue_remove(acoral_thread_t *thread_to_remove)
+{
+	acoral_list_t *tmp;
+    acoral_thread_t *thread;
+    int delay_to_remove = thread_to_remove->delay;
+
+	for (tmp = period_delay_queue.next; tmp != &period_delay_queue; tmp = tmp->next) {
+        thread = list_entry(tmp, acoral_thread_t, waiting);
+
+		//找到要删除的TCB
+		if (thread == thread_to_remove) {
+			// 更新后继任务的延迟时间
+            if (tmp->next != &period_delay_queue) {
+                acoral_thread_t *next_thread = list_entry(tmp->next, acoral_thread_t, waiting);
+                next_thread->delay += delay_to_remove;
+            }
+			// acoral_list_del(tmp); // 从队列中删除
+			acoral_list_del(&thread->waiting);
+			//thread->state &= ~ACORAL_THREAD_STATE_DELAY; // 更新任务状态
+            break;
+		}
+	}
+}
+
+
+
+//重新挂载周期
 void period_thread_delay(acoral_thread_t* thread,unsigned int time){
 	thread->delay=TIME_TO_TICKS(time);
 	acoral_periodqueue_add(thread);
@@ -121,7 +155,7 @@ void period_delay_deal(){
 		tmp1=tmp->next;
 		acoral_list_del(&thread->waiting);
 		tmp=tmp1;
-		if(thread->state&ACORAL_THREAD_STATE_SUSPEND){
+		if(thread->state&ACORAL_THREAD_STATE_SUSPEND){ //如果此时是就绪状态，则不用重新挂载到就绪链表上。
 			thread->stack=(unsigned int *)((char *)thread->stack_buttom+thread->stack_size-4);
 			HAL_STACK_INIT(&thread->stack,private_data->route,period_thread_exit,private_data->args);
 			acoral_rdy_thread(thread);

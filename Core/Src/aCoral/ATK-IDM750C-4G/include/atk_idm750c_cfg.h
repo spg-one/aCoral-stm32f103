@@ -216,25 +216,25 @@ typedef enum
 
 typedef enum
 {
-    DTU_WORKMODE_NET = 0,  /*网络透传模式*/
-    DTU_WORKMODE_HTTP,     /*http透传模式*/
-    DTU_WORKMODE_MQTT,     /*mqtt透传模式*/
-    DTU_WORKMODE_ALIYUN,   /*阿里云透传模式*/
-    DTU_WORKMODE_ONENET,   /*OneNET透传模式*/
-    DTU_WORKMODE_BAIDUYUN, /*百度云透传模式*/
+    DTU_WORKMODE_NET = 0,  /*缃戠粶閫忎紶妯″紡*/
+    DTU_WORKMODE_HTTP,     /*http閫忎紶妯″紡*/
+    DTU_WORKMODE_MQTT,     /*mqtt閫忎紶妯″紡*/
+    DTU_WORKMODE_ALIYUN,   /*闃块噷浜戦�忎紶妯″紡*/
+    DTU_WORKMODE_ONENET,   /*OneNET閫忎紶妯″紡*/
+    DTU_WORKMODE_BAIDUYUN, /*鐧惧害浜戦�忎紶妯″紡*/
 } _dtu_work_mode_eu;
 
 typedef struct
 {
-    uint32_t timeout; /*指令等待超时时间，单位：100ms*/
-    char *read_cmd;   /*查询参数指令      请参考DTU AT用户手册说明进行填写*/
-    char *write_cmd;  /*配置参数指令      请参考DTU AT用户手册说明进行填写*/
+    uint32_t timeout; /*鎸囦护绛夊緟瓒呮椂鏃堕棿锛屽崟浣嶏細100ms*/
+    char *read_cmd;   /*鏌ヨ鍙傛暟鎸囦护      璇峰弬鑰僁TU AT鐢ㄦ埛鎵嬪唽璇存槑杩涜濉啓*/
+    char *write_cmd;  /*閰嶇疆鍙傛暟鎸囦护      璇峰弬鑰僁TU AT鐢ㄦ埛鎵嬪唽璇存槑杩涜濉啓*/
 } _dtu_atcmd_st;
 
 typedef struct
 {
-    const char *urc_info;                         /*DTU自动上报的URC信息*/
-    void (*func)(const char *data, uint32_t len); /*回调处理函数*/
+    const char *urc_info;                         /*DTU鑷姩涓婃姤鐨刄RC淇℃伅*/
+    void (*func)(const char *data, uint32_t len); /*鍥炶皟澶勭悊鍑芥暟*/
 } _dtu_urc_st;
 
 typedef enum

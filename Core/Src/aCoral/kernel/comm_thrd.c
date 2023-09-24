@@ -45,7 +45,7 @@ int comm_policy_thread_init(acoral_thread_t *thread, void (*route)(void *args), 
 	thread->prio = prio;
 	if (acoral_thread_init(thread, route, acoral_thread_exit, args) != 0)
 	{
-		acoral_print("No thread stack:%s\n", thread->name);
+		acoral_print("No comm thread stack:%s\r\n", thread->name);
 		acoral_enter_critical();
 		acoral_release_res((acoral_res_t *)thread);
 		acoral_exit_critical();
@@ -54,6 +54,7 @@ int comm_policy_thread_init(acoral_thread_t *thread, void (*route)(void *args), 
 	/*将线程就绪，并重新调度*/
 	acoral_resume_thread(thread);
 	return thread->res.id;
+	// return thread;
 }
 
 void comm_policy_init()

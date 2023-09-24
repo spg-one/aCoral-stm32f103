@@ -144,6 +144,7 @@ void acoral_shell_enter(void *args){
 	while(1){
 		acoral_print("\r\n");
 		acoral_print("aCoral:>\n");
+		acoral_print("shell is used\r\n");
 		gets(cmd_buf);
 		if(cmd_buf[0])
 			cmd_exe(cmd_buf);

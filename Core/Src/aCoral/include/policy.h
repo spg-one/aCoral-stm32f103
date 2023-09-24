@@ -29,7 +29,7 @@ typedef enum{
  * 
  */
 typedef struct{
-	acoral_list_t list; 	///<用于把各个调度策略串到一个链表上，创建线程找策略的时候就去这个链表上，根据策略名找
+	acoral_list_t list; 	///<用于把各个调度策略串到一个链表上，创建线程找策略的时候就去这个链表上，根据策略名找，有几个策略就有几个结点
 	unsigned char type; 		///<策略名
 	int (*policy_thread_init)(acoral_thread_t *,void (*route)(void *args),void *,void *); ///<某种策略的初始化函数，用于线程创建时调用
 	void (*policy_thread_release)(acoral_thread_t *); 	///<某种策略的释放函数，用于消灭线程时调用

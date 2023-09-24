@@ -1,9 +1,17 @@
 {
     "files.associations": {
+        "adc.h": "c",
         "acoral.h": "c",
         "user.h": "c",
         "thread.h": "c",
         "policy.h": "c",
-        "hal.h": "c"
+        "hal.h": "c",
+        "lora.h": "c",
+        "sx1276lora.h": "c",
+        "sx1276.h": "c",
+        "hcsr04.h": "c",
+        "main.h": "c",
+        "rtc.h": "c",
+        "sx1276loramisc.h": "c"
     }
 }
