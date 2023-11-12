@@ -136,16 +136,16 @@ void user_main(void)
 {
 	slave_num = 2;	
 
-	uint32_t send_period = 16000;		// 终端发送周期 = 最小采集周期(所有终端)
-	uint32_t recv_period = (16000 / slave_num) - window_diff; // 中心站接受周期 =间隔周期 -误差值(待定)
+	uint32_t send_period = 4000;		// 终端发送周期 = 最小采集周期(所有终端)
+	uint32_t recv_period = (4000 / slave_num) - window_diff; // 中心站接受周期 =间隔周期 -误差值(待定)
 	
-	interval_period = (16000 / slave_num);
+	interval_period = (4000 / slave_num);
 
 	acoral_period_policy_data_t* get_distance_thread_data;
 	get_distance_thread_data = acoral_malloc(sizeof(acoral_period_policy_data_t));
 	get_distance_thread_data->prio = 10;
 	get_distance_thread_data->prio_type = ACORAL_HARD_PRIO;
-	get_distance_thread_data->time = 16000; //ms为单位
+	get_distance_thread_data->time = 1000; //ms为单位
 	cur_period.distance = (get_distance_thread_data->time)/1000; //以s为单位，记录所有传感器的当前周期
 	cur_threads.distance_thread = acoral_create_thread(get_distance_thread, 512, NULL, "get_distance_thread", NULL, ACORAL_SCHED_POLICY_PERIOD, get_distance_thread_data); //超声波测距 记录当前线程的ID
 
@@ -153,7 +153,7 @@ void user_main(void)
 	tmp_humi_thread_data = acoral_malloc(sizeof(acoral_period_policy_data_t));
 	tmp_humi_thread_data->prio = 10;
 	tmp_humi_thread_data->prio_type = ACORAL_HARD_PRIO;
-	tmp_humi_thread_data->time = 32000;
+	tmp_humi_thread_data->time = 1000;
 	cur_period.temp_humi = (tmp_humi_thread_data->time)/1000;
 	cur_threads.temp_humi_thread = acoral_create_thread(get_temp_humi_thread,512,NULL,"tmp_humi_thread",NULL,ACORAL_SCHED_POLICY_PERIOD,tmp_humi_thread_data); //温湿度线程+OLED显示
 
@@ -162,7 +162,7 @@ void user_main(void)
 	getXYZAxisAccelerationsThread_data = acoral_malloc(sizeof(acoral_period_policy_data_t));
 	getXYZAxisAccelerationsThread_data->prio = 10;
 	getXYZAxisAccelerationsThread_data->prio_type = ACORAL_HARD_PRIO;
-	getXYZAxisAccelerationsThread_data->time = 16000;
+	getXYZAxisAccelerationsThread_data->time = 1000;
 	cur_period.acceleration = (getXYZAxisAccelerationsThread_data->time)/1000;
 	cur_threads.acceleration_thread = acoral_create_thread(getXYZAxisAccelerationsThread, 1536, NULL, "getXYZAxisAccelerationsThread", NULL, ACORAL_SCHED_POLICY_PERIOD, getXYZAxisAccelerationsThread_data); //超声波测距
 
@@ -181,7 +181,7 @@ void user_main(void)
 	rx_4g_data = acoral_malloc(sizeof(acoral_period_policy_data_t));
 	rx_4g_data->prio = 10;
 	rx_4g_data->prio_type = ACORAL_HARD_PRIO;
-	rx_4g_data->time = 20000;
+	rx_4g_data->time = 2000;
 	acoral_create_thread(rx_4g,512,NULL,"rx_4g",NULL,ACORAL_SCHED_POLICY_PERIOD,rx_4g_data);
 
 	/*中心站4g发送线程*/
