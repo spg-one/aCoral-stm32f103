@@ -30,6 +30,7 @@ ADXL345模块：
 GND     ------> GND 
 SCL     ------> PB6(复用I2C1_SCL)
 SDA     ------> PB7(复用I2C1_SDA)
+INT1    ------> PB2
 
 HCSR04模块：
 Trig    ------> PC0(推挽输出，默认低电平)

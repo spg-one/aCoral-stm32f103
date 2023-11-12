@@ -63,6 +63,7 @@ static void MX_SPI2_Init(void);
 void MX_TIM3_Init(void);
 void MX_TIM6_Init(void);
 void PC0_GPIO_Init(void);
+void PB2_GPIO_Init(void);
 void MX_I2C1_Init(void);
 
 void MX_TIM7_Init(void);
@@ -109,6 +110,7 @@ int main(void)
   MX_SPI2_Init();
   /* USER CODE BEGIN 2 */
   PC0_GPIO_Init();
+  PB2_GPIO_Init();
   MX_TIM6_Init();
   MX_TIM3_Init();
   MX_TIM7_Init();
@@ -259,6 +261,7 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOD_CLK_ENABLE();
   __HAL_RCC_GPIOC_CLK_ENABLE();
 /* USER CODE BEGIN MX_GPIO_Init_2 */
+  __HAL_RCC_AFIO_CLK_ENABLE();
 /* USER CODE END MX_GPIO_Init_2 */
 }
 
@@ -427,7 +430,15 @@ void PC0_GPIO_Init(void)
     HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 }
 
-
+void PB2_GPIO_Init(void) {
+    GPIO_InitTypeDef GPIO_InitStruct = {0};
+    GPIO_InitStruct.Pin = GPIO_PIN_2;
+    GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+    GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+    HAL_NVIC_SetPriority(EXTI2_IRQn, 1, 0);
+    HAL_NVIC_DisableIRQ(EXTI2_IRQn);
+}
 /* I2C1 init function */
 void MX_I2C1_Init(void)
 {

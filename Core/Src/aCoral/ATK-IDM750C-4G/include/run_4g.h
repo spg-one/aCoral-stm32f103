@@ -10,7 +10,6 @@ typedef struct
     uint8_t master_id;                  //中心站id 0x00(0000 0000)共八位，前两位表示设备类型，00表示中心站，01表示终端，后六位代表地址
     uint8_t slave_device_id;            //终端id 0x40(0100 0000) 0x41(0100 0001)
     uint8_t package_serial;             //当前升级包序号
-    uint8_t check_value;                //升级包校验值
     uint8_t data_size;                  //具体内容大小
     uint8_t data[200];                  //升级包具体内容   
 } upgrade_buffer;

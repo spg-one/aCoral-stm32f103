@@ -189,8 +189,8 @@ typedef enum{
 #define ACORAL_RES_TYPE(id) ((id&ACORAL_RES_TYPE_MASK)>>ACORAL_RES_TYPE_BIT) ///<根据资源ID获取某一资源数据块
 
 typedef struct {
-   int id;
-   int next_id;
+   unsigned int id;
+   unsigned short next_id;
 }acoral_res_t;
 
 /**
@@ -198,7 +198,7 @@ typedef struct {
  * 
  */
 typedef struct {
-  unsigned int type;
+  unsigned int type;             //资源类型
   unsigned int size;            ///<size of one single resource eg.size of TCB
   unsigned int num_per_pool;    ///<the amount of resource in one pool eg.there are 20 TCBs in one TCB pool
   unsigned int num;             ///<the amount of pools which contain a certain type of resource(maybe TCB) in system at present will be added once one pool created; restrict by max_pools below;

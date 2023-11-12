@@ -69,6 +69,11 @@ void acoral_ticks_init(){
 void acoral_ticks_entry(int vector){
 
     ticks++;
+	//暂时一直递增
+	// if(sync_flag == 3)
+	// {
+	// 	sync_tick++;
+	// }
 	if(acoral_start_sched==true){
 		time_delay_deal();
 		acoral_policy_delay_deal();
