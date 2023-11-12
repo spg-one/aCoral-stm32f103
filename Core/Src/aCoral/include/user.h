@@ -6,7 +6,6 @@
 #include "rtc.h"
 #include "lora.h"
 #include "dht11.h"
-#include "light.h"
 #include "run_4g.h"
 #include "HcSr04.h"
 #include "Adxl345.h"
@@ -29,7 +28,7 @@ typedef struct
 /*现有线程周期*/
 typedef struct
 {
-    uint8_t significant;
+    uint8_t period_significant;
     uint8_t temp_humi;
     uint8_t distance;
     uint8_t acceleration;

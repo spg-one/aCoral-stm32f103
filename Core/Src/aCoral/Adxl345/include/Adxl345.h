@@ -133,8 +133,10 @@ typedef struct
 
 HAL_StatusTypeDef Adxl345_Init(void);
 
-HAL_StatusTypeDef Adxl345_GetAccelerations(Adxl345_AccelerationTypeDef *data);
+HAL_StatusTypeDef Adxl345_GetAccelerations(Adxl345_AccelerationTypeDef *data, uint8_t times);
 
 void getXYZAxisAccelerationsThread();
+
+extern uint8_t intr_flag;  //发生
 
 #endif

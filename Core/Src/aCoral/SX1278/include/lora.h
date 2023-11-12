@@ -25,7 +25,7 @@
 typedef struct 
 {
     //17字节
-    uint8_t data_type;                  //0x01表示数据，0x02表示数据正确，0x03表示数据错误，0x04表示升级命令，0x05表示同步命令
+    uint8_t data_type;                  //0x01表示数据，0x02表示数据正确，0x03表示数据错误，0x04表示升级命令，0x05表示同步命令，0x06表示更改采集周期命令
     uint8_t master_id;                  //中心站id 0x00(0000 0000)共八位，前两位表示设备类型，00表示中心站，01表示终端，后六位代表地址
     uint8_t slave_device_id;            //终端id 0x40(0100 0000) 0x41(0100 0001)
     uint8_t data_significant;           //数据有效位，每一位代表当前数据是否有效，从低到高位依次是：超声波传感器、温湿度传感器、加速度传感器
@@ -43,8 +43,6 @@ typedef struct
     uint8_t temp_humi_period;           //当前传感器采集周期
     uint8_t distance_period;
     uint8_t acceleration_period;
-    
-    uint8_t check_value;                //数据包校验和
 
     uint8_t package_num;                //升级包总数
 
@@ -57,10 +55,6 @@ typedef struct
     float acceleration_y;
     float acceleration_z;
 
-    //21字节
-    // calendar_obj_t temp_collect_time;
-    // calendar_obj_t distance_collect_time;
-    // calendar_obj_t acceleration_collect_time; 
     uint32_t temp_collect_time;
     uint32_t distance_collect_time;
     uint32_t acceleration_collect_time;
@@ -89,9 +83,9 @@ void lora_init();                           //Radio初始化
 uint8_t master_tx();                        //中心站发送服务函数
 void master_rx(void *args);                 //中心站接收服务函数
 void slave_tx(void *args);                  //终端发送服务函数    
-uint8_t slave_rx();                         //终端接收服务函数    
+uint8_t slave_rx_resend();                  //终端接收并重传
+uint8_t slave_rx();                         //终端接收不重传
 void period_change();                       //线程周期更改函数
-uint8_t compute_check_value(data_buffer  Buffer); //计算check_value
 
 #if defined(SLAVE)
     extern uint8_t slave_device_id;         //用于时钟同步时计算是几号终端设备

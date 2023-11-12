@@ -262,4 +262,8 @@ void I2C1_ER_IRQHandler(void)
   /* USER CODE END I2C1_ER_IRQn 1 */
 }
 
+void EXTI2_IRQHandler(void) {
+    acoral_print("enter intr\r\n!!!!");
+    HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_2);
+}
 /* USER CODE END 1 */

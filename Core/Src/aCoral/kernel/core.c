@@ -67,7 +67,7 @@ void daem(void *args)
 			tmp = tmp1;
 			if (thread->state == ACORAL_THREAD_STATE_RELEASE)
 			{
-				acoral_print("+++++++release thread %s+++++++++\r\n",thread->name);
+				// acoral_print("+++++++release thread %s+++++++++\r\n",thread->name);
 				acoral_release_thread((acoral_res_t *)thread);
 			}
 			else

@@ -218,26 +218,32 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 void get_distance_thread()
 {
-    HcSr04_DistanceTypeDef data;
-    if(HcSr04_GetDistance(&data) == HAL_OK) 
-    {
-        Buffer.distance = data.Distance;
-        Buffer.distance_period = (((period_private_data_t *)acoral_cur_thread->private_data)->time)/1000;
-        acoral_exit_critical();
-        // Buffer.distance_collect_time.w_year = calendar.w_year;
-        // Buffer.distance_collect_time.w_month = calendar.w_month;
-        // Buffer.distance_collect_time.w_date = calendar.w_date;
-        // Buffer.distance_collect_time.hour = calendar.hour;
-        // Buffer.distance_collect_time.min = calendar.min;
-        // Buffer.distance_collect_time.sec = calendar.sec;
-        Buffer.distance_collect_time = timestap;
-        acoral_exit_critical();
-        data_ready|=1;
-    } 
-    else 
-    {
-        acoral_print("Disctance Measure Failure -----");
-    }
+    /*有超声波传感器*/
+    // HcSr04_DistanceTypeDef data;
+    // if(HcSr04_GetDistance(&data) == HAL_OK) 
+    // {
+    //     Buffer.distance = data.Distance;
+    //     Buffer.distance_period = (((period_private_data_t *)acoral_cur_thread->private_data)->time)/1000;
+    //     acoral_exit_critical();
+    //     // Buffer.distance_collect_time.w_year = calendar.w_year;
+    //     // Buffer.distance_collect_time.w_month = calendar.w_month;
+    //     // Buffer.distance_collect_time.w_date = calendar.w_date;
+    //     // Buffer.distance_collect_time.hour = calendar.hour;
+    //     // Buffer.distance_collect_time.min = calendar.min;
+    //     // Buffer.distance_collect_time.sec = calendar.sec;
+    //     Buffer.distance_collect_time = timestap;
+    //     acoral_exit_critical();
+    //     data_ready|=1;
+    // } 
+    // else 
+    // {
+    //     acoral_print("Disctance Measure Failure -----");
+    // }
+
+    /*无超声波传感器*/
+    Buffer.distance = 0;
+    Buffer.distance_period = 0;
+    data_ready |= 1;
 }
     
 
