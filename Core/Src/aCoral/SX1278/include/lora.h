@@ -19,8 +19,8 @@
 #include "sx1276LoRaMisc.h"
 
 /*中心站终端标识符*/
-#define MASTER
-// #define SLAVE 
+// #define MASTER
+#define SLAVE 
 
 typedef struct 
 {
@@ -44,7 +44,7 @@ typedef struct
     uint8_t distance_period;
     uint8_t acceleration_period;
 
-    uint8_t package_num;                //升级包总数
+    uint8_t package_sum;                //升级包总数
 
     //4字节
     uint32_t sync_tick;                 //同步tick
