@@ -44,7 +44,8 @@ typedef struct
     uint8_t distance_period;
     uint8_t acceleration_period;
 
-    uint8_t package_sum;                //升级包总数
+    uint8_t package_sum;                //升级包个数
+    uint32_t package_size;              //升级包大小
 
     //4字节
     uint32_t sync_tick;                 //同步tick

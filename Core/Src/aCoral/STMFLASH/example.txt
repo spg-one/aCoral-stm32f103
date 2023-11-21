@@ -1,0 +1,34 @@
+#include "stmflash.h"
+
+/* 要写入到STM32 FLASH的字符串数组 */
+const uint8_t g_text_buf[] = {"STM32F103 FLASH TEST"};
+
+#define TEXT_LENTH sizeof(g_text_buf) /* 数组长度 */
+
+/* SIZE表示半字长(2字节), 大小必须是2的整数倍, 如果不是的话, 强制对齐到2的整数倍 */
+#define SIZE TEXT_LENTH / 2 + ((TEXT_LENTH % 2) ? 1 : 0)
+
+#define FLASH_SAVE_ADDR 0X08030000  /* 设置FLASH 保存地址(必须为偶数，且其值要大于本代码所占用FLASH的大小 + 0X08000000) */
+
+int main(void)
+{
+    while (1)
+    {
+        key = key_scan(0);
+
+        if (key == KEY1_PRES) /* KEY1按下,写入STM32 FLASH */
+        {
+      
+            stmflash_write(FLASH_SAVE_ADDR, (uint16_t *)g_text_buf, SIZE);
+             /* 提示传送完成 */
+        
+        }
+
+        if (key == KEY0_PRES) /* KEY0按下,读取字符串并显示 */
+        {
+            stmflash_read(FLASH_SAVE_ADDR, (uint16_t *)datatemp, SIZE);
+//            lcd_show_string(30, 170, 200, 16, 16, (char *)datatemp, BLUE);       /* 显示读到的字符串 */
+        }
+
+    }
+}

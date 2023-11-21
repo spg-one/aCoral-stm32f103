@@ -39,6 +39,14 @@ ENTRY(Reset_Handler)
 /* Highest address of the user mode stack */
 _estack = ORIGIN(RAM) + LENGTH(RAM); /* end of "RAM" Ram type memory */
 
+/*
+  堆大小40KB，
+  栈大小根据Psp_size   =  0x0;    Msp_size   =  0x800;，所以栈大小为2k
+  Psp_stack = heap_end + Psp_size;
+  Msp_stack = Psp_stack + Msp_size; 栈顶指针紧跟着堆结束的位置
+
+*/
+
 _Min_Heap_Size = 0xA000; /* required amount of heap */
 _Min_Stack_Size = 0x00; /* required amount of stack */
 
