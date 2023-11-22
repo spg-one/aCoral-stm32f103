@@ -12,6 +12,8 @@
         "hcsr04.h": "c",
         "main.h": "c",
         "rtc.h": "c",
-        "sx1276loramisc.h": "c"
+        "sx1276loramisc.h": "c",
+        "iap.h": "c",
+        "stm32f1xx.h": "c"
     }
 }

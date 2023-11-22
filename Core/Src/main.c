@@ -84,7 +84,7 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
   #ifdef IAP
-    sys_nvic_set_vector_table(FLASH_BASE, UPDATE_DIFF1);
+    sys_nvic_set_vector_table(FLASH_BASE, FLASH_APP1_DIFF);
   #endif
   
   /* USER CODE END 1 */
