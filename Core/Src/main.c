@@ -83,7 +83,10 @@ void MX_TIM7_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-
+  #ifdef IAP
+    sys_nvic_set_vector_table(FLASH_BASE, UPDATE_DIFF1);
+  #endif
+  
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/

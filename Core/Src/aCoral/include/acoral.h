@@ -20,5 +20,8 @@
 #include "hal.h"
 #include "lib.h"
 #include "user.h"
+#ifdef IAP
+    #include "sys.h"    
+#endif
 
 #endif
