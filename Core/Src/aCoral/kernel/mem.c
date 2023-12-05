@@ -23,27 +23,50 @@
 #include "list.h"
 #include <stdio.h>
 #include "bitops.h"
+#include "tlsf.h"
 
 extern int heap_start; ///< 堆内存起始地址，定义于链接脚本
 extern int heap_end;	///< 堆内存结束地址，定义于链接脚本
 extern int Msp_stack;
 extern int Psp_stack;
+extern int _Min_Heap_Size;
 
-
+tlsf_t tlsf;
 void acoral_mem_sys_init()
 {	
-	// volatile unsigned int a =  buddy_sub((unsigned int)&_sdata,(unsigned int)&_edata);//188
-	// volatile unsigned int b =  buddy_sub((unsigned int)&_sbss,(unsigned int)&_ebss);//3636
-	int a = (unsigned int)&Msp_stack + (unsigned int)&Psp_stack;	
-	acoral_mem_init((unsigned int)&heap_start, (unsigned int)&heap_end); // 伙伴系统初始化
-#ifdef CFG_MEM2
-	acoral_mem_init2(); // 任意大小内存分配系统初始化
-#endif
+	/*
+		系统分析（堆内存总大小，栈大小）
+		acoral_print("head_start:%x,heap_end:%x\r\n",&heap_start,&heap_end);
+			head_start:0x20001548,heap_end:0x2000b548
+			heap_end - heap_start = 0xA000(十进制40KB)
+		acoral_print("Psp_stack:%x\r\n",&Psp_stack);
+			Psp_size = 0; Psp_stack = 0x2000b548（紧跟着堆）
+		acoral_print("Msp_stack:%x\r\n",&Msp_stack);
+			Msp_stack = 0x800; Msp_stack = 2000bd48;
+		int size = (unsigned int)&heap_end - (unsigned int)&heap_start;   acoral_print("size:%d",size);   ===>  等同于  acoral_print("%d",(unsigned int)&_Min_Heap_Size);
+			size=40960
+	*/
+	#ifdef BUDDY
+		/* 伙伴系统初始化 */
+		acoral_mem_init((unsigned int)&heap_start, (unsigned int)&heap_end); 
+		
+	#endif
+	#ifdef TLSF
+		/* TLSF初始化 */
+		uint32_t size = (unsigned int)&_Min_Heap_Size; // 40960
+		void* memory_pool = malloc(size);
+		if(!memory_pool)
+			acoral_print("malloc failed\r\n");
+    	tlsf = acoral_mem_init(memory_pool, size);
+	#endif
+	
 	acoral_res_sys_init(); // 资源池系统初始化
 }
 
-/*伙伴系统部分*/
-
+/**
+ * 伙伴系统部分
+*/
+#ifdef BUDDY
 acoral_block_ctr_t *acoral_mem_ctrl; ///< 内存控制块,只有一个
 acoral_block_t *acoral_mem_blocks;	 ///< 这是一个数组，每个基本内存块对应一个
 
@@ -496,6 +519,8 @@ void buddy_free(void *ptr)
 #endif
 }
 
+#endif
+
 /*资源池部分*/
 
 /// aCoral资源池数组，总共有ACORAL_MAX_POOLS=40个
@@ -712,241 +737,5 @@ void acoral_res_sys_init()
 	}
 	pool->base_adr = (void *)0;
 	acoral_free_res_pool = &acoral_pools[0];
-}
-
-//SPG原malloc.c
-
-/**
- * @file malloc.c
- * @author 王彬浩 (SPGGOGOGO@outlook.com)
- * @brief kernel层，内存malloc
- * @version 1.0
- * @date 2023-04-21
- * @copyright Copyright (c) 2023
- * @revisionHistory
- *  <table>
- *   <tr><th> 版本 <th>作者 <th>日期 <th>修改内容
- *   <tr><td> 0.1 <td>jivin <td>2010-03-08 <td>Created
- *   <tr><td> 1.0 <td>王彬浩 <td> 2023-04-21 <td>Standardized
- *  </table>
- */
-
-#include "mutex.h"
-#include "mem.h"
-#include "thread.h"
-#include <stdio.h>
-
-struct mem2_ctrl_t
-{
-	acoral_evt_t mutex;
-	char *top_p;
-	char *down_p;
-	unsigned int *freep_p;
-	unsigned char mem_state;
-} mem_ctrl;
-
-static void *real_malloc(int size)
-{
-	unsigned int *tp;
-	char *ctp;
-	unsigned int b_size;
-	size = size + 4;
-	while (acoral_mutex_pend(&mem_ctrl.mutex, 0) != MUTEX_SUCCED)
-		acoral_suspend_self();
-
-	tp = mem_ctrl.freep_p;
-	ctp = (char *)tp;
-	while (ctp < mem_ctrl.top_p)
-	{
-		b_size = BLOCK_SIZE(*tp);
-		if (b_size == 0)
-		{
-			acoral_print("Err address is 0x%x,size should not be 0", (unsigned int)tp);
-			acoral_mutex_post(&mem_ctrl.mutex);
-			return NULL;
-		}
-		if (BLOCK_USED(*tp) || b_size < size)
-		{
-			ctp = ctp + b_size;
-			tp = (unsigned int *)ctp;
-		}
-		else
-		{
-			BLOCK_SET_USED(tp, size);
-			ctp = ctp + size;
-			tp = (unsigned int *)ctp;
-			if (b_size - size > 0)
-				BLOCK_SET_FREE(tp, b_size - size);
-			mem_ctrl.freep_p = tp;
-
-			acoral_mutex_post(&mem_ctrl.mutex);
-			return (void *)(ctp - size + 4);
-		}
-	}
-	ctp = mem_ctrl.down_p;
-	tp = (unsigned int *)ctp;
-	while (tp < mem_ctrl.freep_p)
-	{
-		b_size = BLOCK_SIZE(*tp);
-		if (b_size == 0)
-		{
-			acoral_print("Err address is 0x%x,size should not be 0", (unsigned int)tp);
-			acoral_mutex_post(&mem_ctrl.mutex);
-			return NULL;
-		}
-		if (BLOCK_USED(*tp) || b_size < size)
-		{
-			ctp = ctp + b_size;
-			tp = (unsigned int *)ctp;
-		}
-		else
-		{
-			BLOCK_SET_USED(tp, size);
-			ctp = ctp + size;
-			tp = (unsigned int *)ctp;
-			if (b_size - size > 0)
-				BLOCK_SET_FREE(tp, b_size - size);
-			mem_ctrl.freep_p = tp;
-
-			acoral_mutex_post(&mem_ctrl.mutex);
-			return (void *)(ctp - size + 4);
-		}
-	}
-	acoral_mutex_post(&mem_ctrl.mutex);
-	return NULL;
-}
-
-void *v_malloc(int size)
-{
-	if (mem_ctrl.mem_state == 0)
-		return NULL;
-	size = (size + 3) & ~3;
-	return real_malloc(size);
-}
-
-void v_free(void *p)
-{
-	unsigned int *tp, *prev_tp;
-	char *ctp;
-	unsigned int b_size, size = 0;
-	if (mem_ctrl.mem_state == 0)
-		return;
-	p = (char *)p - 4;
-	tp = (unsigned int *)p;
-	while (acoral_mutex_pend(&mem_ctrl.mutex, 0) != 0) // 周期性任务
-		acoral_suspend_self();
-	if (p == NULL || (char *)p < mem_ctrl.down_p || (char *)p >= mem_ctrl.top_p || !BLOCK_CHECK(*tp))
-	{
-		acoral_print("Invalide Free address:0x%x\n", (unsigned int)tp);
-		return;
-	}
-	if (BLOCK_FREE(*tp))
-	{
-		acoral_print("Address:0x%x have been freed\n", (unsigned int)tp);
-		return;
-	}
-	prev_tp = tp;
-	ctp = (char *)tp;
-	b_size = BLOCK_SIZE(*tp);
-
-	ctp = ctp + b_size;
-	tp = (unsigned int *)ctp;
-	if (BLOCK_FREE(*tp))
-	{
-		size = BLOCK_SIZE(*tp);
-		if (size == 0)
-		{
-			acoral_print("Err address is 0x%x,size should not be 0", (unsigned int)tp);
-			acoral_mutex_post(&mem_ctrl.mutex);
-			return;
-		}
-		b_size += size;
-		BLOCK_CLEAR(tp);
-	}
-	BLOCK_SET_FREE(prev_tp, b_size);
-	mem_ctrl.freep_p = prev_tp;
-	if (p == mem_ctrl.down_p)
-	{
-
-		acoral_mutex_post(&mem_ctrl.mutex);
-		return;
-	}
-	ctp = mem_ctrl.down_p;
-	tp = (unsigned int *)ctp;
-	while (ctp < (char *)p)
-	{
-		size = BLOCK_SIZE(*tp);
-		if (size == 0)
-		{
-			acoral_print("err address is 0x%x,size should not be 0", (unsigned int)tp);
-			acoral_mutex_post(&mem_ctrl.mutex);
-			return;
-		}
-		ctp = ctp + size;
-		prev_tp = tp;
-		tp = (unsigned int *)ctp;
-	}
-	if (BLOCK_FREE(*prev_tp))
-	{
-		tp = (unsigned int *)p;
-		BLOCK_CLEAR(tp);
-		BLOCK_SET_FREE(prev_tp, b_size + size);
-		mem_ctrl.freep_p = prev_tp;
-	}
-
-	acoral_mutex_post(&mem_ctrl.mutex);
-}
-
-void v_mem_init()
-{
-	unsigned int size;
-	size = acoral_malloc_adjust_size(CFG_MEM2_SIZE);
-	mem_ctrl.down_p = (char *)acoral_malloc(size);
-	if (mem_ctrl.down_p == NULL)
-	{
-		mem_ctrl.mem_state = 0;
-		return;
-	}
-	else
-	{
-		mem_ctrl.mem_state = 1;
-	}
-	acoral_mutex_init(&mem_ctrl.mutex, 0);
-	mem_ctrl.top_p = mem_ctrl.down_p + size;
-	mem_ctrl.freep_p = (unsigned int *)mem_ctrl.down_p;
-	BLOCK_SET_FREE(mem_ctrl.freep_p, size);
-}
-
-void v_mem_scan(void)
-{
-	char *ctp;
-	unsigned int *tp;
-	unsigned int size;
-	if (mem_ctrl.mem_state == 0)
-	{
-		acoral_print("Mem Init Err ,so no mem space to malloc\r\n");
-		return;
-	}
-	ctp = mem_ctrl.down_p;
-	do
-	{
-		tp = (unsigned int *)ctp;
-		size = BLOCK_SIZE(*tp);
-		if (size == 0)
-		{
-			acoral_print("Err address is 0x%x,size should not be 0\r\n", (unsigned int)tp);
-			break;
-		}
-		if (BLOCK_USED(*tp))
-		{
-			acoral_print("The address is 0x%x,the block is used and it's size is %d\r\n", (unsigned int)tp, size);
-		}
-		else
-		{
-
-			acoral_print("The address is 0x%x,the block is unused and it's size is %d\r\n", (unsigned int)tp, size);
-		}
-		ctp = ctp + size;
-	} while (ctp < mem_ctrl.top_p);
 }
 

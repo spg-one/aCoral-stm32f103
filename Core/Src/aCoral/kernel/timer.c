@@ -13,14 +13,6 @@
  *  </table>
  */
 
-/*---------------*/
-/*  增加timeout队列 g_timeout_queue*/
-/*  pegasus   0719*/
-/*---------------*/
-/*  增加acoral_timeout_queue_add 函数*/
-/*  pegasus   0719*/
-/*---------------*/
-
 #include "hal.h"
 #include "policy.h"
 #include "comm_thrd.h"

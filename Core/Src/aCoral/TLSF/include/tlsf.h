@@ -46,6 +46,10 @@ extern "C" {
 
 /* tlsf_t: a TLSF structure. Can contain 1 to N pools. */
 /* pool_t: a block of memory that TLSF can manage. */
+/*
+    tlsf_t：一个TLSF结构，可以包含一个或多个内存池
+    pool_t：TLSF可以管理的内存块
+*/
 typedef void* tlsf_t;
 typedef void* pool_t;
 
@@ -60,10 +64,13 @@ pool_t tlsf_add_pool(tlsf_t tlsf, void* mem, size_t bytes);
 void tlsf_remove_pool(tlsf_t tlsf, pool_t pool);
 
 /* malloc/memalign/realloc/free replacements. */
-void* tlsf_malloc(tlsf_t tlsf, size_t bytes);
+// void* tlsf_malloc(tlsf_t tlsf, size_t bytes);
+// void tlsf_free(tlsf_t tlsf, void* ptr);
+void* tlsf_malloc(size_t bytes);
 void* tlsf_memalign(tlsf_t tlsf, size_t align, size_t bytes);
 void* tlsf_realloc(tlsf_t tlsf, void* ptr, size_t size);
-void tlsf_free(tlsf_t tlsf, void* ptr);
+void tlsf_free(void* ptr);
+unsigned int tlsf_malloc_size(unsigned int size);  /* 为了与伙伴系统匹配，加的 */
 
 /* Returns internal block size, not original request size */
 size_t tlsf_block_size(void* ptr);

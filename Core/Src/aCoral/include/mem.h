@@ -19,13 +19,19 @@
 #include "hal.h"
 #include "core.h"
 #include "list.h"
+#include "tlsf.h"
+
+// #define BUDDY
+#define TLSF
+
+
 
 /**
  * 伙伴系统部分
 */
-
+#ifdef BUDDY
 /**
- * @brief 伙伴系统初始化
+ * @brief 伙伴系统初始化，初始化内存控制块
  *
  * @param start_adr
  * @param end_adr
@@ -60,31 +66,6 @@ void buddy_scan(void);
 #define acoral_malloc_adjust_size(size) buddy_malloc_size(size)
 #define acoral_mem_init(start,end) buddy_init(start,end)
 #define acoral_mem_scan() buddy_scan()
-
-#ifdef CFG_MEM2 
-/**
- * @brief 任意大小内存分配
- * 
- */
-   void * v_malloc(int size);
-
-/**
- * @brief 任意大小内存释放
- * 
- */
-   void v_free(void * p);
-
-/**
- * @brief 任意大小内存分配系统初始化。从伙伴系统中拿出一部分内存，用作任意大小分配的内存
- * 
- */
-   void v_mem_init(void);
-   void v_mem_scan(void);
-   #define acoral_mem_init2() v_mem_init()
-   #define acoral_malloc2(size) v_malloc(size)
-   #define acoral_free2(p) v_free(p)
-   #define acoral_mem_scan2() v_mem_scan()
-#endif
 
 #define LEVEL 14                          ///<最大层数
 #define BLOCK_INDEX(index) ((index)>>1)   ///<bitmap的index换算，因为除去最大内存块的剩余层中64块用一个32位图表示，所以要除以2
@@ -139,6 +120,23 @@ typedef struct{
 	unsigned int free_num;          ///<空闲基本内存块数
 	unsigned int block_size;        ///<基本内存块大小
 }acoral_block_ctr_t;
+
+/**
+ * @brief 用户指定的内存大小不一定合适，可以先用这个函数进行一下调整
+ *
+ * @param size 用户想使用内存的大小
+ * @return unsigned int 实际将要分配的内存大小
+ */
+unsigned int buddy_malloc_size(unsigned int size);
+#endif
+
+
+#ifdef TLSF
+   #define acoral_malloc(bytes) tlsf_malloc(bytes)
+   #define acoral_free(ptr) tlsf_free(ptr)
+   #define acoral_malloc_adjust_size(bytes) tlsf_malloc_size(bytes)
+   #define acoral_mem_init(mem, bytes) tlsf_create_with_pool(mem, bytes)
+#endif
 
 /**
  * 资源系统部分
@@ -226,18 +224,12 @@ typedef struct {
 
 /**
  * @brief 内存管理系统初始化
- * @note 初始化两级内存管理系统，第一级为伙伴系统，第二级为任意大小内存分配系统（名字里带"2")和资源池系统
+ * @note 初始化两级内存管理系统，第一级为伙伴系统，第二级为任意大小内存分配系统（名字里带"2"）和资源池系统
  */
 void acoral_mem_sys_init();
 
 
-/**
- * @brief 用户指定的内存大小不一定合适，可以先用这个函数进行一下调整
- *
- * @param size 用户想使用内存的大小
- * @return unsigned int 实际将要分配的内存大小
- */
-unsigned int buddy_malloc_size(unsigned int size);
+
 
 /**
  * @brief 根据资源ID获取某一资源对应的资源池

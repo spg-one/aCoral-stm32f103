@@ -21,8 +21,6 @@
 /*
  * kernel configuration
  */
-#define CFG_MEM2 1 ///<任意大小内存分配系统是否启用
-#define CFG_MEM2_SIZE (1024000) ///<任意大小内存分配系统的大小，是从伙伴系统管理的堆内存中拿出一部分
 #define CFG_THRD_PERIOD 1
 #define CFG_HARD_RT_PRIO_NUM (0) ///<硬实时任务的专属优先级个数
 #define CFG_MAX_THREAD (40) ///<///最多40个线程

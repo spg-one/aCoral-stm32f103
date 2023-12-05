@@ -119,12 +119,13 @@ void acoral_start()
 
 void acoral_core_cpu_start()
 {
-	acoral_comm_policy_data_t data1;
+	acoral_comm_policy_data_t* data1;
+	data1 = acoral_malloc(sizeof(acoral_comm_policy_data_t));
 	/*创建空闲线程*/
 	acoral_start_sched = false;
-	data1.prio = ACORAL_IDLE_PRIO;
-	data1.prio_type = ACORAL_HARD_PRIO;
-	idle_id = acoral_create_thread(idle, IDLE_STACK_SIZE, NULL, "idle", NULL, ACORAL_SCHED_POLICY_COMM, &data1);
+	data1->prio = ACORAL_IDLE_PRIO;
+	data1->prio_type = ACORAL_HARD_PRIO;
+	idle_id = acoral_create_thread(idle, IDLE_STACK_SIZE, NULL, "idle", NULL, ACORAL_SCHED_POLICY_COMM, data1);
 	// acoral_print("--------idle_id:%d--------/r/n",idle_id);
 	if (idle_id == -1)
 	{
@@ -133,11 +134,12 @@ void acoral_core_cpu_start()
 		}
 	}
 	/*创建初始化线程,这个调用层次比较多，需要多谢堆栈*/
-	acoral_comm_policy_data_t data2;
-	data2.prio = ACORAL_INIT_PRIO;
-	data2.prio_type = ACORAL_HARD_PRIO;
+	acoral_comm_policy_data_t* data2;
+	data2 = acoral_malloc(sizeof(acoral_comm_policy_data_t));
+	data2->prio = ACORAL_INIT_PRIO;
+	data2->prio_type = ACORAL_HARD_PRIO;
 	/*动态堆栈*/
-	init_id = acoral_create_thread(init, 1516, "in init", "init", NULL, ACORAL_SCHED_POLICY_COMM, &data2);
+	init_id = acoral_create_thread(init, 1516, "in init", "init", NULL, ACORAL_SCHED_POLICY_COMM, data2);
 	// acoral_print("--------init_id:%d--------/r/n",init_id);
 	if (init_id == -1)
 	{

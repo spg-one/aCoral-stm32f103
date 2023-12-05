@@ -290,7 +290,7 @@ tlsf_static_assert(ALIGN_SIZE == SMALL_BLOCK_SIZE / SL_INDEX_COUNT);
 */
 
 /*
-** Block header structure.
+** Block header structure.内存块头部.
 **
 ** There are several implementation subtleties involved:
 ** - The prev_phys_block field is only valid if the previous block is free.
@@ -301,13 +301,13 @@ tlsf_static_assert(ALIGN_SIZE == SMALL_BLOCK_SIZE / SL_INDEX_COUNT);
 */
 typedef struct block_header_t
 {
-	/* Points to the previous physical block. */
+	/* Points to the previous physical block. 指向前一个物理块 */
 	struct block_header_t* prev_phys_block;
 
-	/* The size of this block, excluding the block header. */
+	/* The size of this block, excluding the block header. 表示当前块的大小，不包括块头部分。*/
 	size_t size;
 
-	/* Next and previous free blocks. */
+	/* Next and previous free blocks. 只有在该块是空闲的时候，才会有前后指针*/
 	struct block_header_t* next_free;
 	struct block_header_t* prev_free;
 } block_header_t;
@@ -342,14 +342,15 @@ static const size_t block_size_max = tlsf_cast(size_t, 1) << FL_INDEX_MAX;
 
 
 /* The TLSF control structure. */
+/* TLSF 控制架构 */
 typedef struct control_t
 {
 	/* Empty lists point at this block to indicate they are free. */
 	block_header_t block_null;
 
 	/* Bitmaps for free lists. */
-	unsigned int fl_bitmap;
-	unsigned int sl_bitmap[FL_INDEX_COUNT];
+	unsigned int fl_bitmap;  //一级位图
+	unsigned int sl_bitmap[FL_INDEX_COUNT]; //二级位图
 
 	/* Head of free lists. */
 	block_header_t* blocks[FL_INDEX_COUNT][SL_INDEX_COUNT];
@@ -793,7 +794,7 @@ static void* block_prepare_used(control_t* control, block_header_t* block, size_
 	return p;
 }
 
-/* Clear structure and point all empty lists at the null block. */
+/* Clear structure and point all empty lists at the null block. 位图清零并将所有空列表指向空块。 */
 static void control_construct(control_t* control)
 {
 	int i, j;
@@ -944,7 +945,8 @@ int tlsf_check_pool(pool_t pool)
 */
 size_t tlsf_size(void)
 {
-	return sizeof(control_t);
+	// acoral_print("sizeof(control_t):%d\r\n",sizeof(control_t));
+	return sizeof(control_t); //3188
 }
 
 size_t tlsf_align_size(void)
@@ -982,24 +984,24 @@ pool_t tlsf_add_pool(tlsf_t tlsf, void* mem, size_t bytes)
 	block_header_t* block;
 	block_header_t* next;
 
-	const size_t pool_overhead = tlsf_pool_overhead();
-	const size_t pool_bytes = align_down(bytes - pool_overhead, ALIGN_SIZE);
+	const size_t pool_overhead = tlsf_pool_overhead();  /*获取内存池的额外开销*/
+	const size_t pool_bytes = align_down(bytes - pool_overhead, ALIGN_SIZE); /* 内存对齐 */
 
 	if (((ptrdiff_t)mem % ALIGN_SIZE) != 0)
 	{
-		printf("tlsf_add_pool: Memory must be aligned by %u bytes.\n",
+		acoral_print("tlsf_add_pool: Memory must be aligned by %u bytes.\n",
 			(unsigned int)ALIGN_SIZE);
 		return 0;
 	}
 
-	if (pool_bytes < block_size_min || pool_bytes > block_size_max)
+	if (pool_bytes < block_size_min || pool_bytes > block_size_max)/* 内存池大小范围检查 */
 	{
 #if defined (TLSF_64BIT)
-		printf("tlsf_add_pool: Memory size must be between 0x%x and 0x%x00 bytes.\n", 
+		acoral_print("tlsf_add_pool: Memory size must be between 0x%x and 0x%x00 bytes.\n", 
 			(unsigned int)(pool_overhead + block_size_min),
 			(unsigned int)((pool_overhead + block_size_max) / 256));
 #else
-		printf("tlsf_add_pool: Memory size must be between %u and %u bytes.\n", 
+		acoral_print("tlsf_add_pool: Memory size must be between %u and %u bytes.\n", 
 			(unsigned int)(pool_overhead + block_size_min),
 			(unsigned int)(pool_overhead + block_size_max));
 #endif
@@ -1007,7 +1009,7 @@ pool_t tlsf_add_pool(tlsf_t tlsf, void* mem, size_t bytes)
 	}
 
 	/*
-	** Create the main free block. Offset the start of the block slightly
+	** Create the main free block. Offset the start of the block slightly  创建主要的空闲块
 	** so that the prev_phys_block field falls outside of the pool -
 	** it will never be used.
 	*/
@@ -1081,14 +1083,14 @@ tlsf_t tlsf_create(void* mem)
 		return 0;
 	}
 #endif
-
+	/* 分配的大小需要4字节对齐 */
 	if (((tlsfptr_t)mem % ALIGN_SIZE) != 0)
 	{
 		printf("tlsf_create: Memory must be aligned to %u bytes.\n",
 			(unsigned int)ALIGN_SIZE);
 		return 0;
 	}
-
+	/* 构建TLSF控制结构体，并将这个结构体放在mem中 */
 	control_construct(tlsf_cast(control_t*, mem));
 
 	return tlsf_cast(tlsf_t, mem);
@@ -1097,6 +1099,7 @@ tlsf_t tlsf_create(void* mem)
 tlsf_t tlsf_create_with_pool(void* mem, size_t bytes)
 {
 	tlsf_t tlsf = tlsf_create(mem);
+	/*参数2：空闲内存起始地址，参数3：计算内存池大小  */
 	tlsf_add_pool(tlsf, (char*)mem + tlsf_size(), bytes - tlsf_size());
 	return tlsf;
 }
@@ -1112,8 +1115,9 @@ pool_t tlsf_get_pool(tlsf_t tlsf)
 	return tlsf_cast(pool_t, (char*)tlsf + tlsf_size());
 }
 
-void* tlsf_malloc(tlsf_t tlsf, size_t size)
+void* tlsf_malloc(size_t size)
 {
+	extern tlsf_t tlsf;
 	control_t* control = tlsf_cast(control_t*, tlsf);
 	const size_t adjust = adjust_request_size(size, ALIGN_SIZE);
 	block_header_t* block = block_locate_free(control, adjust);
@@ -1177,8 +1181,9 @@ void* tlsf_memalign(tlsf_t tlsf, size_t align, size_t size)
 	return block_prepare_used(control, block, adjust);
 }
 
-void tlsf_free(tlsf_t tlsf, void* ptr)
+void tlsf_free(void* ptr)
 {
+	extern tlsf_t tlsf;
 	/* Don't attempt to free a NULL pointer. */
 	if (ptr)
 	{
@@ -1213,12 +1218,14 @@ void* tlsf_realloc(tlsf_t tlsf, void* ptr, size_t size)
 	/* Zero-size requests are treated as free. */
 	if (ptr && size == 0)
 	{
-		tlsf_free(tlsf, ptr);
+		// tlsf_free(tlsf, ptr);
+		tlsf_free(ptr);
 	}
 	/* Requests with NULL pointers are treated as malloc. */
 	else if (!ptr)
 	{
-		p = tlsf_malloc(tlsf, size);
+		// p = tlsf_malloc(tlsf, size);
+		p = tlsf_malloc(size);
 	}
 	else
 	{
@@ -1237,12 +1244,12 @@ void* tlsf_realloc(tlsf_t tlsf, void* ptr, size_t size)
 		*/
 		if (adjust > cursize && (!block_is_free(next) || adjust > combined))
 		{
-			p = tlsf_malloc(tlsf, size);
+			p = tlsf_malloc(size);
 			if (p)
 			{
 				const size_t minsize = tlsf_min(cursize, size);
 				memcpy(p, ptr, minsize);
-				tlsf_free(tlsf, ptr);
+				tlsf_free(ptr);
 			}
 		}
 		else
@@ -1261,4 +1268,10 @@ void* tlsf_realloc(tlsf_t tlsf, void* ptr, size_t size)
 	}
 
 	return p;
+}
+
+
+unsigned int tlsf_malloc_size(unsigned int size)
+{
+	return size;
 }

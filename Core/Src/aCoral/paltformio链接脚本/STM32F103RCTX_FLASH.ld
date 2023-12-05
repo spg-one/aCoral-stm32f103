@@ -54,7 +54,6 @@ _Min_Stack_Size = 0x00; /* required amount of stack */
 
 MEMORY
 {
-  RAM    (xrw)    : ORIGIN = 0x20000000,   LENGTH = 48K
   /* 
   FLASH    (rx)    : ORIGIN = 0x8000000,   LENGTH = 256K 
   增加IAP功能后，预留20K给BootLoader程序，
@@ -62,6 +61,8 @@ MEMORY
   新增程序时
   FLASH    (rx)    : ORIGIN = 0x801E000,   LENGTH = 136K
   */
+  
+  RAM    (xrw)    : ORIGIN = 0x20000000,   LENGTH = 48K
   FLASH    (rx)    : ORIGIN = 0x8005000,   LENGTH = 236K
 }
 

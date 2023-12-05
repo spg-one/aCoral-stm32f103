@@ -1,0 +1,42 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+#include "tlsf.h"
+
+#define POOL_SIZE 40 * 1024  // 40KB
+
+int main() {
+    // 分配足够的内存用于TLSF分配器和内存池
+    void* memory_pool = malloc(POOL_SIZE);
+
+    if (!memory_pool) {
+        fprintf(stderr, "Failed to allocate memory pool\n");
+        return 1;
+    }
+
+    // 创建TLSF分配器
+    tlsf_t tlsf = tlsf_create_with_pool(memory_pool, POOL_SIZE);
+
+    // 使用TLSF进行内存分配和释放
+    void* ptr1 = tlsf_malloc(tlsf, 16);  // Allocate 16 bytes
+    printf("Allocated memory at address: %p\n", ptr1);
+
+    void* ptr2 = tlsf_malloc(tlsf, 32);  // Allocate 32 bytes
+    printf("Allocated memory at address: %p\n", ptr2);
+
+    // Reallocate memory
+    void* ptr1_resized = tlsf_realloc(tlsf, ptr1, 64);  // Resize ptr1 to 64 bytes
+    printf("Resized memory at address: %p\n", ptr1_resized);
+
+    // Free allocated memory
+    tlsf_free(tlsf, ptr1_resized);
+    tlsf_free(tlsf, ptr2);
+
+    // Destroy the TLSF allocator (optional in this case, as we exit the program)
+    tlsf_destroy(tlsf);
+
+    // Free the memory pool
+    free(memory_pool);
+
+    return 0;
+}

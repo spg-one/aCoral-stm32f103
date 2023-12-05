@@ -6,7 +6,6 @@
 * acoral_malloc 伙伴系统分配内存
 * acoral_free 伙伴系统回收内存
 * acoral_malloc_adjust_size 用户指定的内存大小不一定合适，可以先用这个函数进行一下调整
-* acoral_malloc2 任意大小内存分配
 * acoral_free2 任意大小内存释放
 * acoral_get_res 获取某一类型的资源（tcb、event等）
 * acoral_release_res 释放某一资源
