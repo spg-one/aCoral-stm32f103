@@ -72,17 +72,17 @@ acoralMutexRetVal acoral_mutex_del(acoral_evt_t *evt, unsigned int opt)
 	}
 
 	/* 是否有任务等待*/
-	acoral_enter_critical();
+	long level = acoral_enter_critical();
 	if (acoral_evt_queue_empty(evt))
 	{
 		/*无等待任务删除*/
-		acoral_exit_critical();
+		acoral_exit_critical(level);
 		return MUTEX_SUCCED;
 	}
 	else
 	{
 		/*有等待任务*/
-		acoral_exit_critical();
+		acoral_exit_critical(level);
 		return MUTEX_ERR_TASK_EXIST;
 	}
 }
@@ -96,10 +96,10 @@ acoralMutexRetVal acoral_mutex_trypend(acoral_evt_t *evt)
 
 	cur = acoral_cur_thread;
 
-	acoral_enter_critical();
+	long level = acoral_enter_critical();
 	if (NULL == evt)
 	{
-		acoral_exit_critical();
+		acoral_exit_critical(level);
 		return MUTEX_ERR_NULL;
 	}
 
@@ -109,11 +109,11 @@ acoralMutexRetVal acoral_mutex_trypend(acoral_evt_t *evt)
 		evt->count &= MUTEX_U_MASK;
 		evt->count |= cur->prio;
 		evt->data = (void *)cur;
-		acoral_exit_critical();
+		acoral_exit_critical(level);
 		return MUTEX_SUCCED;
 	}
 
-	acoral_exit_critical();
+	acoral_exit_critical(level);
 	return MUTEX_ERR_TIMEOUT;
 }
 
@@ -128,10 +128,10 @@ acoralMutexRetVal acoral_mutex_pend(acoral_evt_t *evt, unsigned int timeout)
 
 	cur = acoral_cur_thread;
 
-	acoral_enter_critical();
+	long level = acoral_enter_critical();
 	if (NULL == evt)
 	{
-		acoral_exit_critical();
+		acoral_exit_critical(level);
 		return MUTEX_ERR_NULL;
 	}
 
@@ -141,7 +141,7 @@ acoralMutexRetVal acoral_mutex_pend(acoral_evt_t *evt, unsigned int timeout)
 		evt->count &= MUTEX_U_MASK;
 		evt->count |= cur->prio;
 		evt->data = (void *)cur;
-		acoral_exit_critical();
+		acoral_exit_critical(level);
 		return MUTEX_SUCCED;
 	}
 
@@ -169,14 +169,14 @@ acoralMutexRetVal acoral_mutex_pend(acoral_evt_t *evt, unsigned int timeout)
 		cur->delay = TIME_TO_TICKS(timeout);
 		timeout_queue_add(cur);
 	}
-	acoral_exit_critical();
+	acoral_exit_critical(level);
 	acoral_sched();
-	acoral_enter_critical();
+	level = acoral_enter_critical();
 	if (evt->data != cur && timeout > 0 && cur->delay <= 0)
 	{
 		acoral_print("Time Out Return\n");
 		acoral_evt_queue_del(cur);
-		acoral_exit_critical();
+		acoral_exit_critical(level);
 		return MUTEX_ERR_TIMEOUT;
 	}
 
@@ -188,7 +188,7 @@ acoralMutexRetVal acoral_mutex_pend(acoral_evt_t *evt, unsigned int timeout)
 	{
 		acoral_print("Err Ready Return\n");
 		acoral_evt_queue_del(cur);
-		acoral_exit_critical();
+		acoral_exit_critical(level);
 		return MUTEX_ERR_RDY;
 	}
 
@@ -204,10 +204,10 @@ acoralMutexRetVal acoral_mutex_pend2(acoral_evt_t *evt, unsigned int timeout)
 
 	cur = acoral_cur_thread;
 
-	acoral_enter_critical();
+	long level = acoral_enter_critical();
 	if (NULL == evt)
 	{
-		acoral_exit_critical();
+		acoral_exit_critical(level);
 		return MUTEX_ERR_NULL;
 	}
 
@@ -220,7 +220,7 @@ acoralMutexRetVal acoral_mutex_pend2(acoral_evt_t *evt, unsigned int timeout)
 
 		/*提升至天花板优先级*/
 		cur->prio = (evt->count & MUTEX_CEILING_MASK) >> 16;
-		acoral_exit_critical();
+		acoral_exit_critical(level);
 		return MUTEX_SUCCED;
 	}
 
@@ -233,19 +233,19 @@ acoralMutexRetVal acoral_mutex_pend2(acoral_evt_t *evt, unsigned int timeout)
 		cur->delay = TIME_TO_TICKS(timeout);
 		timeout_queue_add(cur);
 	}
-	acoral_exit_critical();
+	acoral_exit_critical(level);
 
 	/*触发调度*/
 	acoral_sched();
 
-	acoral_enter_critical();
+	level = acoral_enter_critical();
 
 	/*超时时间内未获得互斥量*/
 	if (evt->data != cur && timeout > 0 && cur->delay <= 0)
 	{
 		acoral_print("Time Out Return\n");
 		acoral_evt_queue_del(cur);
-		acoral_exit_critical();
+		acoral_exit_critical(level);
 		return MUTEX_ERR_TIMEOUT;
 	}
 
@@ -256,7 +256,7 @@ acoralMutexRetVal acoral_mutex_pend2(acoral_evt_t *evt, unsigned int timeout)
 	{
 		acoral_print("Err Ready Return\n");
 		acoral_evt_queue_del(cur);
-		acoral_exit_critical();
+		acoral_exit_critical(level);
 		return MUTEX_ERR_RDY;
 	}
 
@@ -270,12 +270,12 @@ acoralMutexRetVal acoral_mutex_post(acoral_evt_t *evt)
 	acoral_thread_t *thread;
 	acoral_thread_t *cur;
 
-	acoral_enter_critical();
+	long level = acoral_enter_critical();
 
 	if (NULL == evt)
 	{
 		acoral_print("mutex NULL\n");
-		acoral_exit_critical();
+		acoral_exit_critical(level);
 		return MUTEX_ERR_NULL; /*error*/
 	}
 
@@ -285,7 +285,7 @@ acoralMutexRetVal acoral_mutex_post(acoral_evt_t *evt)
 	if (highPrio != 0 && cur->prio != highPrio && cur->prio != ownerPrio)
 	{
 		acoral_print("mutex prio err\n");
-		acoral_exit_critical();
+		acoral_exit_critical(level);
 		return MUTEX_ERR_UNDEF;
 	}
 	cur->evt = NULL;
@@ -300,7 +300,7 @@ acoralMutexRetVal acoral_mutex_post(acoral_evt_t *evt)
 	{
 		evt->count |= MUTEX_AVAI;
 		evt->data = NULL;
-		acoral_exit_critical();
+		acoral_exit_critical(level);
 		return MUTEX_SUCCED;
 	}
 	timeout_queue_del(thread);
@@ -309,7 +309,7 @@ acoralMutexRetVal acoral_mutex_post(acoral_evt_t *evt)
 	evt->count |= thread->prio;
 	evt->data = thread;
 	acoral_rdy_thread(thread);
-	acoral_exit_critical();
+	acoral_exit_critical(level);
 	acoral_sched();
 	return MUTEX_SUCCED;
 }

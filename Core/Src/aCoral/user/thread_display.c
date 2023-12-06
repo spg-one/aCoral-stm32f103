@@ -11,7 +11,7 @@ void display_thread(int argc,char **argv){
 	acoral_print("\t\tSystem Thread Information\r\n");
 	acoral_print("------------------------------------------------------\r\n");
 	acoral_print("Name\t\tType\t\tState\t\tPrio\r\n");
-	HAL_ENTER_CRITICAL();
+	long level = acoral_enter_critical();
 
 	for(tmp=head->next;tmp!=head;tmp=tmp->next){
 		thread=list_entry(tmp,acoral_thread_t,global_list);
@@ -44,7 +44,7 @@ void display_thread(int argc,char **argv){
 	}
 	acoral_print("------------------------------------------------------\r\n");
 
-	HAL_EXIT_CRITICAL();
+	acoral_exit_critical(level);
 }
 
 acoral_shell_cmd_t dt_cmd={

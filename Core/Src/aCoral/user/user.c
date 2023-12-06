@@ -47,7 +47,7 @@ void master_reload_thread(void *args)
 		// 从周期延时队列中删去
 		thread = cur_threads.master_rx_thread;
 		private_data = thread->private_data;
-		acoral_enter_critical();
+		long level = acoral_enter_critical();
 		acoral_periodqueue_remove(thread);
 		// 添加到就绪队列
 		if (thread->state & ACORAL_THREAD_STATE_SUSPEND)
@@ -63,7 +63,7 @@ void master_reload_thread(void *args)
 
 		/* 暂时由0变成3，不清零 */
 		// sync_flag = 3;
-		acoral_exit_critical();
+		acoral_exit_critical(level);
 	}
 	
 }
@@ -108,7 +108,7 @@ void slave_reload_thread(void *args)
 		// 从周期延时队列中删去
 		thread = cur_threads.slave_tx_thread;
 		private_data = thread->private_data;
-		acoral_enter_critical();
+		long level = acoral_enter_critical();
 		acoral_periodqueue_remove(thread);
 		// 添加到就绪队列
 		if (thread->state & ACORAL_THREAD_STATE_SUSPEND)
@@ -124,7 +124,7 @@ void slave_reload_thread(void *args)
 		
 		/* 暂时由0变成3，不清零 */
 		// sync_flag = 3;
-		acoral_exit_critical();
+		acoral_exit_critical(level);
 	}
 	
 }

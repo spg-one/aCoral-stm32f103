@@ -49,6 +49,7 @@ struct InterruptResponseOverhead {
     unsigned int endTimestamp;          // 中断处理结束时间戳
 };
 
+/* 系统硬件定时器当前值存放在SysTick->VAL，是24位的递减计数器，最大值16777216 */
 SysTick->VAL;
 
 #endif

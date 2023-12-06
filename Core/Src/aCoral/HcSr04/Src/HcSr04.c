@@ -224,7 +224,7 @@ void get_distance_thread()
     // {
     //     Buffer.distance = data.Distance;
     //     Buffer.distance_period = (((period_private_data_t *)acoral_cur_thread->private_data)->time)/1000;
-    //     acoral_exit_critical();
+    //     acoral_exit_critical(level);
     //     // Buffer.distance_collect_time.w_year = calendar.w_year;
     //     // Buffer.distance_collect_time.w_month = calendar.w_month;
     //     // Buffer.distance_collect_time.w_date = calendar.w_date;
@@ -232,7 +232,7 @@ void get_distance_thread()
     //     // Buffer.distance_collect_time.min = calendar.min;
     //     // Buffer.distance_collect_time.sec = calendar.sec;
     //     Buffer.distance_collect_time = timestap;
-    //     acoral_exit_critical();
+    //     acoral_exit_critical(level);
     //     data_ready|=1;
     // } 
     // else 

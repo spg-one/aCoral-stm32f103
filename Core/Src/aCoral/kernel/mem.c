@@ -328,7 +328,7 @@ static void *r_malloc(unsigned char level)
 {
 	unsigned int index;
 	int num, cur;
-	acoral_enter_critical();
+	long level = acoral_enter_critical();
 	acoral_mem_ctrl->free_num -= 1 << level; // 提前减去即将分配的基本内存块数
 	cur = acoral_mem_ctrl->free_cur[level];
 	if (cur < 0)
@@ -336,7 +336,7 @@ static void *r_malloc(unsigned char level)
 		num = recus_malloc(level + 1);
 		if (num < 0)
 		{
-			acoral_exit_critical();
+			acoral_exit_critical(level);
 			return NULL;
 		}
 		index = num >> level + 1;
@@ -349,7 +349,7 @@ static void *r_malloc(unsigned char level)
 #ifdef CFG_TEST_MEM
 		buddy_scan();
 #endif
-		acoral_exit_critical();
+		acoral_exit_critical(level);
 		return (void *)(acoral_mem_ctrl->start_adr + (num << BLOCK_SHIFT));
 	}
 	index = acoral_ffs(acoral_mem_ctrl->bitmap[level][cur]);
@@ -364,7 +364,7 @@ static void *r_malloc(unsigned char level)
 		num = index << level;
 		if (num + (1 << level) > acoral_mem_ctrl->block_num)
 		{
-			acoral_exit_critical();
+			acoral_exit_critical(level);
 			return NULL;
 		}
 	}
@@ -379,7 +379,7 @@ static void *r_malloc(unsigned char level)
 #ifdef CFG_TEST_MEM
 	buddy_scan();
 #endif
-	acoral_exit_critical();
+	acoral_exit_critical(level);
 	return (void *)(acoral_mem_ctrl->start_adr + (num << BLOCK_SHIFT));
 }
 
@@ -450,7 +450,7 @@ void buddy_free(void *ptr)
 		acoral_print("Invalid Free Address:0x%x\n", (unsigned int)ptr);
 		return;
 	}
-	acoral_enter_critical();
+	long level = acoral_enter_critical();
 	if (num & 0x1) // 奇数基本内存块
 	{
 		level = 0; // 奇数基本内存块一定是从0层分配
@@ -462,21 +462,21 @@ void buddy_free(void *ptr)
 		if (buddy_level > 0)
 		{
 			acoral_print("Invalid Free Address:0x%x\n", (unsigned int)ptr);
-			acoral_exit_critical();
+			acoral_exit_critical(level);
 			return;
 		}
 		/*伙伴分配出去，如果对应的位为1,肯定是回收过一次了*/
 		if (buddy_level == 0 && acoral_get_bit(index, acoral_mem_ctrl->bitmap[level]))
 		{
 			acoral_print("Address:0x%x have been freed\n", (unsigned int)ptr);
-			acoral_exit_critical();
+			acoral_exit_critical(level);
 			return;
 		}
 		/*伙伴没有分配出去了，如果对应的位为0,肯定是回收过一次了*/
 		if (buddy_level < 0 && !acoral_get_bit(index, acoral_mem_ctrl->bitmap[level]))
 		{
 			acoral_print("Address:0x%x have been freed\n", (unsigned)ptr);
-			acoral_exit_critical();
+			acoral_exit_critical(level);
 			return;
 		}
 	}
@@ -487,7 +487,7 @@ void buddy_free(void *ptr)
 		if (level < 0)
 		{
 			acoral_print("Address:0x%x have been freed\n", (unsigned int)ptr);
-			acoral_exit_critical();
+			acoral_exit_critical(level);
 			return;
 		}
 		acoral_mem_ctrl->free_num += 1 << level;		// 空闲基本块数增加
@@ -497,7 +497,7 @@ void buddy_free(void *ptr)
 	{
 		index = num >> level;								   // 最大内存块层，一块一位
 		acoral_set_bit(index, acoral_mem_ctrl->bitmap[level]); // 标志空闲
-		acoral_exit_critical();
+		acoral_exit_critical(level);
 		return;
 	}
 	index = (num >> 1) + level; // 其余层，两块一位
@@ -522,7 +522,7 @@ void buddy_free(void *ptr)
 		if (level < max_level - 1)
 			index = index >> 1;
 	}
-	acoral_exit_critical();
+	acoral_exit_critical(level);
 #ifdef CFG_TEST_MEM
 	buddy_scan();
 #endif
@@ -586,13 +586,13 @@ acoral_res_t *acoral_get_res(acoral_pool_ctrl_t *pool_ctrl)
 	acoral_list_t *first;
 	acoral_res_t *res;
 	acoral_pool_t *pool;
-	acoral_enter_critical();
+	long level = acoral_enter_critical();
 	first = pool_ctrl->free_pools->next; //从空闲资源池链表上取下一个pool
 	if (acoral_list_empty(first)) //结点等于表头，无空闲资源池，需要获取一个资源池并挂载到空闲链表上
 	{
 		if (acoral_create_pool(pool_ctrl))
 		{
-			acoral_exit_critical();
+			acoral_exit_critical(level);
 			return NULL;
 		}
 		else
@@ -609,7 +609,7 @@ acoral_res_t *acoral_get_res(acoral_pool_ctrl_t *pool_ctrl)
 	{
 		acoral_list_del(&pool->free_list);
 	}
-	acoral_exit_critical();
+	acoral_exit_critical(level);
 	return res;
 }
 
@@ -663,13 +663,13 @@ acoral_pool_t *acoral_get_pool_by_id(int res_id)
 acoral_pool_t *acoral_get_free_pool()
 {
 	acoral_pool_t *tmp;
-	acoral_enter_critical();
+	long level = acoral_enter_critical();
 	tmp = acoral_free_res_pool;
 	if (NULL != tmp)
 	{
 		acoral_free_res_pool = *(void **)tmp->base_adr;
 	}
-	acoral_exit_critical();
+	acoral_exit_critical(level);
 	return tmp;
 }
 

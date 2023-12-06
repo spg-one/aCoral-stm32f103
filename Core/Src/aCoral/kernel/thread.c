@@ -75,10 +75,10 @@ void acoral_suspend_thread(acoral_thread_t *thread){
 	if(!(ACORAL_THREAD_STATE_READY&thread->state))
 		return;
 
-	acoral_enter_critical();
+	long level = acoral_enter_critical();
 	/**/
 	acoral_rdyqueue_del(thread);
-	acoral_exit_critical();
+	acoral_exit_critical(level);
 	/**/
 
 	
@@ -104,10 +104,10 @@ void acoral_resume_thread(acoral_thread_t *thread){
 	if(!(thread->state&ACORAL_THREAD_STATE_SUSPEND))
 		return;
 
-	acoral_enter_critical();
+	long level = acoral_enter_critical();
 	/**/
 	acoral_rdyqueue_add(thread);
-	acoral_exit_critical();
+	acoral_exit_critical(level);
 	/**/
 	acoral_sched();
 }
@@ -133,7 +133,7 @@ void acoral_delay_self(unsigned int time){
 
 void acoral_kill_thread(acoral_thread_t *thread){
 	acoral_evt_t *evt;
-	acoral_enter_critical();
+	long level = acoral_enter_critical();
         /*	*/
         /*	*/
 	if(thread->state&ACORAL_THREAD_STATE_SUSPEND){
@@ -151,7 +151,7 @@ void acoral_kill_thread(acoral_thread_t *thread){
 	}
 	acoral_unrdy_thread(thread);
 	acoral_release_thread1(thread);
-    acoral_exit_critical();
+    acoral_exit_critical(level);
 	acoral_sched();
 }
 
@@ -166,14 +166,14 @@ void acoral_thread_exit(){
 }
 
 void acoral_thread_change_prio(acoral_thread_t* thread, unsigned int prio){
-	acoral_enter_critical();
+	long level = acoral_enter_critical();
 	if(thread->state&ACORAL_THREAD_STATE_READY){
 		acoral_rdyqueue_del(thread);
 		thread->prio = prio;
 		acoral_rdyqueue_add(thread);
 	}else
 		thread->prio = prio;
-	acoral_exit_critical();
+	acoral_exit_critical(level);
 }
 
 void acoral_change_prio_self(unsigned int prio){
@@ -200,10 +200,10 @@ void acoral_unrdy_thread(acoral_thread_t *thread){
 }
 
 void acoral_thread_move2_tail(acoral_thread_t *thread){
-	acoral_enter_critical();
+	long level = acoral_enter_critical();
 	acoral_unrdy_thread(thread);
 	acoral_rdy_thread(thread);
-	acoral_exit_critical();
+	acoral_exit_critical(level);
 	acoral_sched();
 }
 
@@ -237,9 +237,9 @@ unsigned int acoral_thread_init(acoral_thread_t *thread,void (*route)(void *args
 	acoral_init_list(&thread->timeout);
 	acoral_init_list(&thread->global_list);
 
-	acoral_enter_critical();
+	long level = acoral_enter_critical();
 	acoral_list_add2_tail(&thread->global_list,&acoral_threads_queue);
-	acoral_exit_critical();
+	acoral_exit_critical(level);
 	/*
 		系统分析(线程总览)	
 	*/

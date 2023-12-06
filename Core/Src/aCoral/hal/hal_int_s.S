@@ -23,10 +23,11 @@
    .extern     IRQ_stack
 
 HAL_INTR_ENABLE:
-    CPSIE i
+    MSR PRIMASK,R0
     mov pc ,lr
 
 HAL_INTR_DISABLE:
+    MRS R0,PRIMASK
     CPSID i
     mov pc ,lr
 

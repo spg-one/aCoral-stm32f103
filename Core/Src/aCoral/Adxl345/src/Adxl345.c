@@ -146,9 +146,9 @@ void getXYZAxisAccelerationsThread() {
     Buffer.acceleration_y = acceleration_data.YAxisAcceleration;
     Buffer.acceleration_z = acceleration_data.ZAxisAcceleration;
     Buffer.acceleration_period = (((period_private_data_t *)acoral_cur_thread->private_data)->time)/1000;
-    acoral_enter_critical();
+    long level = acoral_enter_critical();
     Buffer.acceleration_collect_time = timestap;
-    acoral_exit_critical();
+    acoral_exit_critical(level);
     if(let_thread_replace_irq ) {
         intr_flag = 1;
         let_thread_replace_irq = 0;

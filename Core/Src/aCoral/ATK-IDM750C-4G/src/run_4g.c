@@ -199,7 +199,7 @@ void init_4g(void)
 */
 void tx_4g(void)
 {
-    // acoral_enter_critical();
+    // long level = acoral_enter_critical();
     if(master_data)//中心站从终端接收到的数据包校验和一致，就传输
     {   
         // acoral_print("slave:%d send data\r\n",slave_Data.slave_device_id);
@@ -249,7 +249,7 @@ void tx_4g(void)
         data_ready = 0;
         intr_flag = 0;
     }
-    // acoral_exit_critical();
+    // acoral_exit_critical(level);
     
     
 }
@@ -274,7 +274,7 @@ void rx_4g(void)
     //05 00 40 07 1F 1F 1F 命令类型 中心节点id 终端节点id 更改周期位数 更改的周期x3
     //0500FF00000000 同步
     buf_4g = atk_idm750c_uart_rx_get_frame();
-    // acoral_enter_critical();
+    // long level = acoral_enter_critical();
     if (buf_4g != NULL)
     {
         // acoral_print("4G receving....rx_done:%d-%d-%d\r\n",buf_4g[0],buf_4g[1],buf_4g[2]);
@@ -320,7 +320,7 @@ void rx_4g(void)
         
     }
     atk_idm750c_uart_rx_restart();
-    // acoral_exit_critical();
+    // acoral_exit_critical(level);
 }
 
 #endif

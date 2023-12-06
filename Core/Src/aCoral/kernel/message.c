@@ -117,17 +117,17 @@ unsigned int acoral_msg_send(acoral_msgctr_t *msgctr, acoral_msg_t *msg)
 	/*	if (acoral_intr_nesting > 0)
 			return MST_ERR_INTR;
 	*/
-	acoral_enter_critical();
+	long level = acoral_enter_critical();
 
 	if (NULL == msgctr)
 	{
-		acoral_exit_critical();
+		acoral_exit_critical(level);
 		return MST_ERR_NULL;
 	}
 
 	if (NULL == msg)
 	{
-		acoral_exit_critical();
+		acoral_exit_critical(level);
 		return MSG_ERR_NULL;
 	}
 
@@ -136,7 +136,7 @@ unsigned int acoral_msg_send(acoral_msgctr_t *msgctr, acoral_msg_t *msg)
 	/*----------------*/
 	if (ACORAL_MESSAGE_MAX_COUNT <= msgctr->count)
 	{
-		acoral_exit_critical();
+		acoral_exit_critical(level);
 		return MSG_ERR_COUNT;
 	}
 
@@ -156,7 +156,7 @@ unsigned int acoral_msg_send(acoral_msgctr_t *msgctr, acoral_msg_t *msg)
 		wake_up_thread(&msgctr->waiting);
 		msgctr->wait_thread_num--;
 	}
-	acoral_exit_critical();
+	acoral_exit_critical(level);
 	acoral_sched();
 	return MSGCTR_SUCCED;
 }
@@ -184,7 +184,7 @@ void *acoral_msg_recv(acoral_msgctr_t *msgctr,
 
 	cur = acoral_cur_thread;
 
-	acoral_enter_critical();
+	long level = acoral_enter_critical();
 	if (timeout > 0)
 	{
 		cur->delay = TIME_TO_TICKS(timeout);
@@ -211,7 +211,7 @@ void *acoral_msg_recv(acoral_msgctr_t *msgctr,
 				acoral_list_del(q);
 				acoral_release_res((acoral_res_t *)pmsg);
 				msgctr->count--;
-				acoral_exit_critical();
+				acoral_exit_critical(level);
 				return dat;
 			}
 		}
@@ -222,12 +222,12 @@ void *acoral_msg_recv(acoral_msgctr_t *msgctr,
 		msgctr->wait_thread_num++;
 		acoral_msgctr_queue_add(msgctr, cur);
 		acoral_unrdy_thread(cur);
-		acoral_exit_critical();
+		acoral_exit_critical(level);
 		acoral_sched();
 		/*-----------------*/
 		/*  看有没有超时*/
 		/*-----------------*/
-		acoral_enter_critical();
+		long level = acoral_enter_critical();
 
 		if (timeout > 0 && (int)cur->delay <= 0)
 			break;
@@ -240,7 +240,7 @@ void *acoral_msg_recv(acoral_msgctr_t *msgctr,
 	if (msgctr->wait_thread_num > 0)
 		msgctr->wait_thread_num--;
 	acoral_list_del(&cur->waiting);
-	acoral_exit_critical();
+	acoral_exit_critical(level);
 	*err = MST_ERR_TIMEOUT;
 	return NULL;
 }

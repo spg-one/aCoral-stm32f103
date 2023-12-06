@@ -78,7 +78,7 @@ void hal_intr_exit_bridge_comm();
 #define HAL_INTR_NESTING_DEC()    hal_intr_nesting_dec_comm()
 #define HAL_INTR_NESTING_INC()    hal_intr_nesting_inc_comm()
 #define HAL_ENTER_CRITICAL()  HAL_INTR_DISABLE()
-#define HAL_EXIT_CRITICAL()  HAL_INTR_ENABLE()
+#define HAL_EXIT_CRITICAL(level)  HAL_INTR_ENABLE(level)
 #define HAL_INTR_ATTACH(vecotr,isr) //TODO 该写什么？
 //#define HAL_SCHED_BRIDGE() hal_sched_bridge_comm()
 #define HAL_SCHED_BRIDGE() HAL_SCHED_BRIDGE()

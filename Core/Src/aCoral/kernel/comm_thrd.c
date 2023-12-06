@@ -46,9 +46,9 @@ int comm_policy_thread_init(acoral_thread_t *thread, void (*route)(void *args), 
 	if (acoral_thread_init(thread, route, acoral_thread_exit, args) != 0)
 	{
 		acoral_print("No comm thread stack:%s\r\n", thread->name);
-		acoral_enter_critical();
+		long level = acoral_enter_critical();
 		acoral_release_res((acoral_res_t *)thread);
-		acoral_exit_critical();
+		acoral_exit_critical(level);
 		return -1;
 	}
 	/*将线程就绪，并重新调度*/

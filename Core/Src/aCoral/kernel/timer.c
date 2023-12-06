@@ -109,7 +109,7 @@ void acoral_delayqueue_add(acoral_list_t *queue, acoral_thread_t *new){
 	int  delay2;
 	int  delay= new->delay;
 	head=queue;
-	acoral_enter_critical();
+	long level = acoral_enter_critical();
 	/*这里采用关ticks中断，不用关中断，是为了减少最大关中断时间，下面是个链表，时间不确定。*/
 	/*这里可以看出，延时函数会有些误差，因为ticks中断可能被延迟*/
 
@@ -129,7 +129,7 @@ void acoral_delayqueue_add(acoral_list_t *queue, acoral_thread_t *new){
 	}
 	acoral_unrdy_thread(new);
 
-	acoral_exit_critical();
+	acoral_exit_critical(level);
 
 	acoral_sched();
 	
@@ -166,7 +166,7 @@ void timeout_queue_add(acoral_thread_t *new)
 	int  delay2;
 	int  delay= new->delay; //SPG用tcb的delay，delay线程也用delay成员，冲突？
 	head=&timeout_queue;
-	acoral_enter_critical();
+	long level = acoral_enter_critical();
 
 	for (tmp=head->next;delay2=delay,tmp!=head; tmp=tmp->next){
 		thread = list_entry (tmp, acoral_thread_t, timeout);
@@ -182,7 +182,7 @@ void timeout_queue_add(acoral_thread_t *new)
 		thread->delay-=delay2;
 	}
 
-	acoral_exit_critical();
+	acoral_exit_critical(level);
 	return;
 }
 

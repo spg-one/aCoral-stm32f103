@@ -39,9 +39,9 @@ int acoral_policy_thread_init(unsigned int policy,acoral_thread_t *thread,void (
 	acoral_sched_policy_t   *policy_ctrl;
 	policy_ctrl=acoral_get_policy_ctrl(policy);	
 	if(policy_ctrl==NULL||policy_ctrl->policy_thread_init==NULL){
-		acoral_enter_critical();
+		long level = acoral_enter_critical();
 		acoral_release_res((acoral_res_t *)thread);
-		acoral_exit_critical();
+		acoral_exit_critical(level);
 		acoral_print("No thread policy support:%d\n",thread->policy);
 		return -1;
 	}

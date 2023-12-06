@@ -28,11 +28,18 @@ typedef struct {
 	void (*unmask)(int);	///<使能中断操作
 }acoral_intr_ctr_t;
 
+/* 将中断使能/除能加上中断嵌套 */
+// long acoral_intr_disable(void);
+// void acoral_intr_enable(long level);
+
+// long acoral_enter_critical(void);
+// void acoral_exit_critical(long level);
+
 /**
  * @brief aCoral全局中断打开
  * 
  */
-#define acoral_intr_enable() HAL_INTR_ENABLE()
+#define acoral_intr_enable(level) HAL_INTR_ENABLE(level)
 
 /**
  * @brief aCoral全局中断关闭
@@ -42,15 +49,15 @@ typedef struct {
 
 /**
  * @brief aCoral进入临界区（本质就是关中断）
- * 
+ * v2.0加入中断嵌套功能
  */
 #define acoral_enter_critical() HAL_ENTER_CRITICAL()
 
 /**
  * @brief aCoral退出临界区（本质就是开中断）
- * 
+ * v2.0加入中断嵌套功能
  */
-#define acoral_exit_critical() HAL_EXIT_CRITICAL()
+#define acoral_exit_critical(level) HAL_EXIT_CRITICAL(level)
 
 #define acoral_intr_nesting HAL_GET_INTR_NESTING()
 #define acoral_intr_nesting_inc() HAL_INTR_NESTING_INC()
@@ -94,5 +101,7 @@ int acoral_intr_unmask(int vector);
  * @return int 返回0成功，其它失败
  */
 int acoral_intr_mask(int vector);
+
+
 
 #endif

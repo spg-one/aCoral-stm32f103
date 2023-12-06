@@ -57,16 +57,16 @@ void hal_intr_nesting_inc_comm()
 
 void hal_sched_bridge_comm()
 {
-	HAL_ENTER_CRITICAL(); //SPG这里关了中断，线程切换后，新的线程默认是开启中断的状态了
+	long level = HAL_ENTER_CRITICAL(); //SPG这里关了中断，线程切换后，新的线程默认是开启中断的状态了
 	
 	acoral_real_sched();
-	HAL_EXIT_CRITICAL();
+	HAL_EXIT_CRITICAL(level);
 }
 
 void hal_intr_exit_bridge_comm()
 {
 
-	HAL_ENTER_CRITICAL();
+	long level = HAL_ENTER_CRITICAL();
 	acoral_real_intr_sched();
-	HAL_EXIT_CRITICAL();
+	HAL_EXIT_CRITICAL(level);
 }

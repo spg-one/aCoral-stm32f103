@@ -68,19 +68,19 @@ acoralSemRetValEnum acoral_sem_del(acoral_evt_t *evt)
 	if (evt->type != ACORAL_EVENT_SEM)
 		return SEM_ERR_TYPE; /* error*/
 
-	acoral_enter_critical();
+	long level = acoral_enter_critical();
 	thread = acoral_evt_high_thread(evt);
 	if (thread == NULL)
 	{
 		/*队列上无等待任务*/
-		acoral_exit_critical();
+		acoral_exit_critical(level);
 		evt = NULL;
 		return SEM_ERR_UNDEF;
 	}
 	else
 	{
 		/*有等待任务*/
-		acoral_exit_critical();
+		acoral_exit_critical(level);
 		return SEM_ERR_TASK_EXIST; /*error*/
 	}
 }
@@ -103,14 +103,14 @@ acoralSemRetValEnum acoral_sem_trypend(acoral_evt_t *evt)
 	}
 
 	/* 计算信号量处理*/
-	acoral_enter_critical();
+	long level = acoral_enter_critical();
 	if ((char)evt->count <= SEM_RES_AVAI)
 	{ /* available*/
 		evt->count++;
-		acoral_exit_critical();
+		acoral_exit_critical(level);
 		return SEM_SUCCED;
 	}
-	acoral_exit_critical();
+	acoral_exit_critical(level);
 	return SEM_ERR_TIMEOUT;
 }
 
@@ -134,11 +134,11 @@ acoralSemRetValEnum acoral_sem_pend(acoral_evt_t *evt, unsigned int timeout)
 	}
 
 	/* 计算信号量处理*/
-	acoral_enter_critical();
+	long level = acoral_enter_critical();
 	if ((char)evt->count <= SEM_RES_AVAI)
 	{ /* available*/
 		evt->count++;
-		acoral_exit_critical();
+		acoral_exit_critical(level);
 		return SEM_SUCCED;
 	}
 
@@ -150,25 +150,25 @@ acoralSemRetValEnum acoral_sem_pend(acoral_evt_t *evt, unsigned int timeout)
 		timeout_queue_add(cur);
 	}
 	acoral_evt_queue_add(evt, cur);
-	acoral_exit_critical();
+	acoral_exit_critical(level);
 
 	acoral_sched();
 
-	acoral_enter_critical();
+	level = acoral_enter_critical();
 	if (timeout > 0 && cur->delay <= 0)
 	{
 		//--------------
 		// modify by pegasus 0804: count-- [+]
 		evt->count--;
 		acoral_evt_queue_del(cur);
-		acoral_exit_critical();
+		acoral_exit_critical(level);
 		return SEM_ERR_TIMEOUT;
 	}
 
 	//-------------------
 	// modify by pegasus 0804: timeout_queue_del [+]
 	timeout_queue_del(cur);
-	acoral_exit_critical();
+	acoral_exit_critical(level);
 	return SEM_SUCCED;
 }
 
@@ -186,13 +186,13 @@ acoralSemRetValEnum acoral_sem_post(acoral_evt_t *evt)
 		return SEM_ERR_TYPE;
 	}
 
-	acoral_enter_critical();
+	long level = acoral_enter_critical();
 
 	/* 计算信号量的释放*/
 	if ((char)evt->count <= SEM_RES_NOAVAI)
 	{ /* no waiting thread*/
 		evt->count--;
-		acoral_exit_critical();
+		acoral_exit_critical(level);
 		return SEM_SUCCED;
 	}
 	/* 有等待线程*/
@@ -202,14 +202,14 @@ acoralSemRetValEnum acoral_sem_post(acoral_evt_t *evt)
 	{
 		/*应该有等待线程却没有找到*/
 		acoral_print("Err Sem post\n");
-		acoral_exit_critical();
+		acoral_exit_critical(level);
 		return SEM_ERR_UNDEF;
 	}
 	timeout_queue_del(thread);
 	/*释放等待任务*/
 	acoral_evt_queue_del(thread);
 	acoral_rdy_thread(thread);
-	acoral_exit_critical();
+	acoral_exit_critical(level);
 	acoral_sched();
 	return SEM_SUCCED;
 }
@@ -220,8 +220,8 @@ int acoral_sem_getnum(acoral_evt_t *evt)
 	if (NULL == evt)
 		return SEM_ERR_NULL;
 
-	acoral_enter_critical();
+	long level = acoral_enter_critical();
 	t = 1 - (int)evt->count;
-	acoral_exit_critical();
+	acoral_exit_critical(level);
 	return t;
 }

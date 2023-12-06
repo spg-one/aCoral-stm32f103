@@ -48,7 +48,7 @@ void period_change()
     /*更改超声波线程周期*/
     if((cur_period.period_significant&0x01u))
     {
-        acoral_enter_critical();
+        long level = acoral_enter_critical();
         acoral_list_del(&(cur_threads.distance_thread->waiting));//从周期延时队列中删去
         ((period_private_data_t *)(cur_threads.distance_thread)->private_data)->time = (cur_period.distance)*1000; //更改当前线程的私有数据周期
         private_data=(cur_threads.distance_thread)->private_data;
@@ -61,13 +61,13 @@ void period_change()
         //将新线程挂到周期延时队列
         period_thread_delay((cur_threads.distance_thread),private_data->time); //更新period_delay_queue队列上的线程的time
         cur_period.period_significant &= (~0x01u);
-        acoral_exit_critical();
+        acoral_exit_critical(level);
     }
 
     /*更改温湿度线程周期*/
     if((cur_period.period_significant&(0x01u<<1)))
     {
-        acoral_enter_critical();
+        long level = acoral_enter_critical();
         acoral_list_del(&(cur_threads.temp_humi_thread->waiting)); 
         ((period_private_data_t *)(cur_threads.temp_humi_thread)->private_data)->time = (cur_period.temp_humi)*1000;
         private_data=(cur_threads.temp_humi_thread)->private_data;
@@ -79,13 +79,13 @@ void period_change()
         period_thread_delay((cur_threads.temp_humi_thread),private_data->time);
         // period_thread_delay(acoral_cur_thread,((period_private_data_t *)acoral_cur_thread->private_data)->time);
         cur_period.period_significant &= (~(0x01u<<1));
-        acoral_exit_critical();
+        acoral_exit_critical(level);
     }
 
     /*更改加速度线程周期*/
     if((cur_period.period_significant&(0x01u<<2)))
     {
-        acoral_enter_critical();
+        long level = acoral_enter_critical();
         acoral_list_del(&(cur_threads.acceleration_thread->waiting));
         ((period_private_data_t *)(cur_threads.acceleration_thread)->private_data)->time = (cur_period.acceleration)*1000;
         private_data=(cur_threads.acceleration_thread)->private_data;
@@ -97,7 +97,7 @@ void period_change()
         period_thread_delay((cur_threads.acceleration_thread),private_data->time);
         // period_thread_delay(acoral_cur_thread,((period_private_data_t *)acoral_cur_thread->private_data)->time);
         cur_period.period_significant &= (~(0x01u<<2));
-        acoral_exit_critical();
+        acoral_exit_critical(level);
     }
 
 }
@@ -155,7 +155,7 @@ uint8_t master_tx()
         }
 
         rx_cmd.data_type = (uint8_t)0x02u;
-        acoral_enter_critical();
+        long level = acoral_enter_critical();
         // 正在同步中，就需要判断终端是否接收到syn_tick值，或者终端的syn_tick与中心站之差是否在阈值范围内，如果不是则需要重新传递syn_tick
         if (sync_flag == 1 && ((sync_tick - slave_Data.sync_tick > tick_diff_threshold) || (slave_Data.sync_tick == 0))) // 需调试？
         {
@@ -163,7 +163,7 @@ uint8_t master_tx()
             rx_cmd.sync_tick = sync_tick;
         }
         Radio->SetTxPacket((uint8_t *)(&rx_cmd), sizeof(rx_cmd)); // buf_4g[0]终端设备id，buf_4g[1]中心站节点id，buf_4g[2]数据项设置位(bit 每项数据一个bit位控制),buf_4g[3~5]三个传感器采集周期
-        acoral_exit_critical();
+        acoral_exit_critical(level);
         while ((Radio->Process()) != RF_TX_DONE);
         data_4g = 0;
         memset(&rx_cmd, 0, sizeof(rx_cmd));
@@ -177,7 +177,7 @@ uint8_t master_tx()
 
         //若接收到的校验值与计算出来的校验值一致
         rx_cmd.data_type = (uint8_t)0x02u;
-        acoral_enter_critical();
+        long level = acoral_enter_critical();
         if (sync_flag == 1 && ((sync_tick - slave_Data.sync_tick > tick_diff_threshold) || (slave_Data.sync_tick == 0)))
         {
             rx_cmd.sync_tick = sync_tick;
@@ -189,7 +189,7 @@ uint8_t master_tx()
             acoral_print("-----------------Tick similar----------------\r\n");
         }
         Radio->SetTxPacket((uint8_t *)(&rx_cmd), sizeof(rx_cmd)); // buf_4g[0]终端设备id，buf_4g[1]中心站节点id，buf_4g[2]数据项设置位(bit 每项数据一个bit位控制),buf_4g[3~5]三个传感器采集周期
-        acoral_exit_critical();
+        acoral_exit_critical(level);
         while ((Radio->Process()) != RF_TX_DONE);
         memset(&rx_cmd, 0, sizeof(rx_cmd));
         return 1;
@@ -213,7 +213,7 @@ void master_rx(void *args)
         HAL_Delay(100);
     }
     acoral_print("master receving....rx_done:%d\r\n",rx_done);
-    // acoral_enter_critical();
+    // long level = acoral_enter_critical();
     if(sync_flag == 1)
     {
         
@@ -239,7 +239,7 @@ void master_rx(void *args)
         rx_done = 0;
 
     } 
-    // acoral_exit_critical();
+    // acoral_exit_critical(level);
     
 
 
@@ -264,14 +264,14 @@ void send_data()
     Buffer.master_id = master_id;             // 中心站id
     Buffer.slave_device_id = slave_device_id; // 终端设备id
     //若被打断，赋值可能会被改变
-    acoral_enter_critical();
+    long level = acoral_enter_critical();
     Buffer.data_significant = data_ready; // 传感器数据有效位
     if (sync_flag == 1)
     {
         Buffer.sync_tick = sync_tick;
     }
     Radio->SetTxPacket((uint8_t *)(&Buffer), sizeof(Buffer));
-    acoral_exit_critical();
+    acoral_exit_critical(level);
     
     while((Radio->Process() != RF_TX_DONE)); 
     //发送成功
@@ -347,7 +347,7 @@ uint8_t slave_rx_resend()
         timeout--;
         HAL_Delay(100);
     }
-    //acoral_enter_critical(); 已经是最高优先级5任务，无需进入临界区
+    //long level = acoral_enter_critical(); 已经是最高优先级5任务，无需进入临界区
     // acoral_print("slave receving....rx_done:%d\r\n\r\n",rx_done);
     if(rx_done)
     {
@@ -405,14 +405,14 @@ uint8_t slave_rx_resend()
     else
     {
         //没有接收到数据重发
-        acoral_enter_critical();
+        long level = acoral_enter_critical();
         Buffer.data_significant = data_ready;//传感器数据有效位
         if (sync_flag == 1)
         {
             Buffer.sync_tick = sync_tick;
         }
         Radio->SetTxPacket((uint8_t *)(&Buffer), sizeof(Buffer));
-        acoral_exit_critical();
+        acoral_exit_critical(level);
         while ((Radio->Process() != RF_TX_DONE));
         if (tx_done)
         {
@@ -437,7 +437,7 @@ uint8_t slave_rx_resend()
             tx_done = 0;
         }
     }
-    //acoral_exit_critical();
+    //acoral_exit_critical(level);
     return 0;
 }
 

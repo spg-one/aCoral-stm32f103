@@ -60,11 +60,11 @@ void daem(void *args)
 		for (tmp = head->next; tmp != head;)
 		{
 			tmp1 = tmp->next;
-			acoral_enter_critical();
+			long level = acoral_enter_critical();
 			thread = list_entry(tmp, acoral_thread_t, waiting);
 			/*如果线程资源已经不在使用，即release状态则释放*/
 			acoral_list_del(tmp);
-			acoral_exit_critical();
+			acoral_exit_critical(level);
 			tmp = tmp1;
 			if (thread->state == ACORAL_THREAD_STATE_RELEASE)
 			{
@@ -86,10 +86,10 @@ void daem(void *args)
 			}
 			else
 			{
-				acoral_enter_critical();
+				long level = acoral_enter_critical();
 				tmp1 = head->prev;
 				acoral_list_add2_tail(&thread->waiting, head); /**/
-				acoral_exit_critical();
+				acoral_exit_critical(level);
 			}
 		}
 		acoral_suspend_self();

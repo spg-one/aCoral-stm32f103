@@ -40,9 +40,9 @@ int period_policy_thread_init(acoral_thread_t *thread,void (*route)(void *args),
 		private_data=(period_private_data_t *)acoral_malloc(sizeof(period_private_data_t));
 		if(private_data==NULL){
 			acoral_print("No level2 mem space for private_data:%s\n",thread->name);
-			acoral_enter_critical();
+			long level = acoral_enter_critical();
 			acoral_release_res((acoral_res_t *)thread);
-			acoral_exit_critical();
+			acoral_exit_critical(level);
 			return -1;
 		}
 		private_data->time=policy_data->time;
@@ -52,16 +52,16 @@ int period_policy_thread_init(acoral_thread_t *thread,void (*route)(void *args),
 	}
 	if(acoral_thread_init(thread,route,period_thread_exit,args)!=0){
 		acoral_print("No period thread stack:%s\r\n",thread->name);
-		acoral_enter_critical();
+		long level = acoral_enter_critical();
 		acoral_release_res((acoral_res_t *)thread);
-		acoral_exit_critical();
+		acoral_exit_critical(level);
 		return -1;
 	}
         /*将线程就绪，并重新调度*/
 	acoral_resume_thread(thread);
-	acoral_enter_critical();
+	long level = acoral_enter_critical();
 	period_thread_delay(thread,((period_private_data_t *)thread->private_data)->time);
-	acoral_exit_critical();
+	acoral_exit_critical(level);
 	return thread;
 }
 
