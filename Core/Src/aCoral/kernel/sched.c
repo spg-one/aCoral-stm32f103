@@ -20,6 +20,8 @@
 #include "list.h"
 #include "bitops.h"
 #include <stdbool.h>
+#include "analyze_data.h"
+#include "stm32f1xx_hal.h"
 
 unsigned char acoral_need_sched; ///< aCoral是否需要调度标志，仅当aCoral就绪队列acoral_ready_queues有线程加入或被取下时，该标志被置为true；仅当aCoral在调度线程时，该标志位被置为false
 unsigned char sched_lock = 1;	 ///< aCoral初始化完成之前，调度都是被上锁的，即不允许调度。
@@ -91,7 +93,7 @@ void acoral_set_running_thread(acoral_thread_t *thread)
 }
 
 
-void acoral_thread_runqueue_init() //TODO多核队列？
+void acoral_thread_runqueue_init() 
 {
 	acoral_rdy_queue_t *rdy_queue;
 	/*初始化每个核上的优先级队列*/
@@ -135,8 +137,10 @@ void acoral_sched()
 	/*如果还没有开始调度，则返回*/
 	if (!acoral_start_sched)
 		return;
+
 	/*这个函数进行简单处理后会直接或间接调用acoral_real_sched,或者acoral_real_intr_sched*/
 	HAL_SCHED_BRIDGE();
+	
 	return;
 }
 void acoral_real_sched()
@@ -157,8 +161,25 @@ void acoral_real_sched()
 			HAL_SWITCH_TO(&next->stack);
 			return;
 		}
+
+		/*
+			系统分析(线程调度)
+		*/
+		#ifdef ANALYZE
+			acoral_print("*****************analyze begin******************\r\n");
+			acoral_print("%s -> %s\r\n",prev->name,next->name);
+			acoral_print("prev thread state:%d\r\n",prev->state);
+			acoral_print("next thread state:%d\r\n",next->state);
+			acoral_print("sched start Systick:%d\r\n", SysTick->VAL);
+		#endif
+
 		/*线程切换*/
 		HAL_CONTEXT_SWITCH(&prev->stack, &next->stack);
+
+		#ifdef ANALYZE
+			acoral_print("sched end Systick:%d\r\n",SysTick->VAL);
+			acoral_print("*****************analyze end********************\r\n\r\n");
+		#endif
 	}
 }
 
@@ -177,11 +198,45 @@ void acoral_real_intr_sched()
 		if (prev->state == ACORAL_THREAD_STATE_EXIT)
 		{
 			prev->state = ACORAL_THREAD_STATE_RELEASE;
+			
+			/*
+				系统分析(线程调度)
+			*/
+			#ifdef ANALYZE2
+				acoral_print("*****************analyze begin******************\r\n");
+				acoral_print("%s -> %s\r\n",prev->name,next->name);
+				acoral_print("prev thread state:EXIT -> RELEASE\r\n");
+				acoral_print("next thread state:READY -> RUNNING\r\n");
+				acoral_print("sched start Systick:%d\r\n",SysTick->VAL);
+			#endif
+			
 			HAL_INTR_SWITCH_TO(&next->stack);
+
+			#ifdef ANALYZE2
+				acoral_print("sched end Systick:%d\r\n",SysTick->VAL);
+				acoral_print("*****************analyze end********************\r\n\r\n");
+			#endif
 			return;
 		}
+
+		/*
+			系统分析(线程调度)
+		*/
+		#ifdef ANALYZE2
+				acoral_print("*****************analyze begin******************\r\n");
+				acoral_print("%s -> %s\r\n",prev->name,next->name);
+				acoral_print("prev thread state:%d\r\n",prev->state);
+				acoral_print("next thread state:%d\r\n",next->state);
+				acoral_print("sched start Systick:%d\r\n", SysTick->VAL);
+		#endif
+		
 		/*线程切换*/
 		HAL_INTR_CTX_SWITCH(&prev->stack, &next->stack);
+
+		#ifdef ANALYZE2
+				acoral_print("sched end Systick:%d\r\n",SysTick->VAL);
+				acoral_print("*****************analyze end********************\r\n\r\n");
+		#endif
 	}
 }
 

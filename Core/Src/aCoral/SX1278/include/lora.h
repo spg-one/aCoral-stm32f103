@@ -18,7 +18,7 @@
 #include "sx1276LoRa.h"
 #include "sx1276LoRaMisc.h"
 
-/*中心站终端标识符*/
+/* 中心站、终端宏定义 */
 // #define MASTER
 #define SLAVE 
 

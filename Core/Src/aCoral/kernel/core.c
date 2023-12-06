@@ -35,6 +35,7 @@
 #include "lib.h"
 #include <stdio.h>
 #include <stdbool.h>
+#include "analyze_data.h"
 
 acoral_list_t acoral_res_release_queue; ///< 将被daem线程回收的线程队列
 volatile unsigned int acoral_start_sched = false;
@@ -67,8 +68,21 @@ void daem(void *args)
 			tmp = tmp1;
 			if (thread->state == ACORAL_THREAD_STATE_RELEASE)
 			{
-				// acoral_print("+++++++release thread %s+++++++++\r\n",thread->name);
+			/*
+				系统分析(线程释放)
+			*/
+			#ifdef ANALYZE2
+					acoral_print("*****************analyze begin******************\r\n");
+					acoral_print("release thread:%s\r\n",thread->name);
+					acoral_print("release start Systick:%d\r\n",SysTick->VAL);
+			#endif
+
 				acoral_release_thread((acoral_res_t *)thread);
+
+			#ifdef ANALYZE2
+				acoral_print("sched end Systick:%d\r\n",SysTick->VAL);
+				acoral_print("*****************analyze end********************\r\n\r\n");
+			#endif
 			}
 			else
 			{

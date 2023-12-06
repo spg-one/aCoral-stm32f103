@@ -21,6 +21,7 @@
 #include "list.h"
 #include "tlsf.h"
 
+/* 内存分配宏定义 */
 // #define BUDDY
 #define TLSF
 

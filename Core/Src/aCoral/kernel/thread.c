@@ -22,6 +22,7 @@
 #include "int.h"
 #include "policy.h"
 #include <stdio.h>
+#include "analyze_data.h"
 
 extern acoral_list_t acoral_res_release_queue;
 extern void acoral_evt_queue_del(acoral_thread_t *thread);
@@ -79,7 +80,10 @@ void acoral_suspend_thread(acoral_thread_t *thread){
 	acoral_rdyqueue_del(thread);
 	acoral_exit_critical();
 	/**/
+
+	
 	acoral_sched();
+	
 }
 
 void acoral_suspend_self(){
@@ -236,6 +240,24 @@ unsigned int acoral_thread_init(acoral_thread_t *thread,void (*route)(void *args
 	acoral_enter_critical();
 	acoral_list_add2_tail(&thread->global_list,&acoral_threads_queue);
 	acoral_exit_critical();
+	/*
+		系统分析(线程总览)	
+	*/
+	#ifdef ANALYZE2
+		
+		acoral_print("*****************analyze begin******************\r\n");
+		acoral_print("new create thread name:%s\r\n",thread->name);
+		acoral_print("thread id:%d\r\n",thread->res);
+		acoral_print("thread prio:%d\r\n",thread->prio);
+		acoral_print("thread policy:%d\r\n",thread->policy);
+		acoral_print("thread stack:%x\r\n",thread->stack);
+		acoral_print("thread stack_buttom:%x\r\n",thread->stack_buttom);
+		acoral_print("thread stack_size:%d\r\n",thread->stack_size);
+		if(thread->policy == ACORAL_SCHED_POLICY_PERIOD)
+			acoral_print("thread period:%d ticks\r\n",thread->delay);
+		acoral_print("*****************analyze end********************\r\n\r\n");
+	#endif
+
 	return 0;
 }
 

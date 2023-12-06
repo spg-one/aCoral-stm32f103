@@ -24,6 +24,7 @@
 #include "user.h"
 #include "lora.h"
 #include <stdbool.h>
+#include "analyze_data.h"
 
 
 acoral_list_t time_delay_queue; ///<aCoral线程延时队列，调用线程delay相关函数的线程都会被加到这个队列上，等待一段具体时间后重新被唤醒
@@ -129,7 +130,9 @@ void acoral_delayqueue_add(acoral_list_t *queue, acoral_thread_t *new){
 	acoral_unrdy_thread(new);
 
 	acoral_exit_critical();
+
 	acoral_sched();
+	
 	return;
 }
 

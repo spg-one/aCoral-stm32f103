@@ -22,10 +22,10 @@
 #include "int.h"
 #include <stdio.h>
 
-acoral_list_t period_delay_queue; ///<周期线程专用延时队列，只要是周期线程，就会被挂载到这个队列上，延时时间就是周期，每次周期过后重新挂载
+acoral_list_t period_delay_queue; //周期线程专用延时队列，只要是周期线程，就会被挂载到这个队列上，延时时间就是周期，每次周期过后重新挂载
 int period_policy_thread_init(acoral_thread_t *thread,void (*route)(void *args),void *args,void *data){
-	unsigned int prio;//
-	acoral_period_policy_data_t *policy_data;//
+	unsigned int prio;
+	acoral_period_policy_data_t *policy_data;
 	period_private_data_t *private_data;
 	if(thread->policy==ACORAL_SCHED_POLICY_PERIOD){
 		policy_data=(acoral_period_policy_data_t *)data;
@@ -35,13 +35,6 @@ int period_policy_thread_init(acoral_thread_t *thread,void (*route)(void *args),
 			if(prio>=ACORAL_NONHARD_RT_PRIO_MIN)
 				prio=ACORAL_NONHARD_RT_PRIO_MIN-1;
 		}
-		//SPG加上硬实时判断
-		// else{
-		// 	prio += ACORAL_HARD_RT_PRIO_MAX;
-		// 	if(prio > ACORAL_HARD_RT_PRIO_MIN){
-		// 		prio = ACORAL_HARD_RT_PRIO_MIN;
-		// }
-		// }
 		thread->prio=prio;
 		//不用acoral_malloc2
 		private_data=(period_private_data_t *)acoral_malloc(sizeof(period_private_data_t));

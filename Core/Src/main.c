@@ -86,7 +86,7 @@ int main(void)
   #ifdef IAP
     sys_nvic_set_vector_table(FLASH_BASE, FLASH_APP1_DIFF);
   #endif
-  
+
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -124,7 +124,6 @@ int main(void)
   HcSr04_Init();
   lora_init();
   Adxl345_Init();
-  // LightSensor_Init();
   acoral_start();
   /* USER CODE END 2 */
 

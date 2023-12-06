@@ -24,6 +24,7 @@
 #include <stdio.h>
 #include "bitops.h"
 #include "tlsf.h"
+#include "analyze_data.h"
 
 extern int heap_start; ///< 堆内存起始地址，定义于链接脚本
 extern int heap_end;	///< 堆内存结束地址，定义于链接脚本
@@ -35,17 +36,25 @@ tlsf_t tlsf;
 void acoral_mem_sys_init()
 {	
 	/*
-		系统分析（堆内存总大小，栈大小）
-		acoral_print("head_start:%x,heap_end:%x\r\n",&heap_start,&heap_end);
+		系统分析(总堆栈)
+		
 			head_start:0x20001548,heap_end:0x2000b548
 			heap_end - heap_start = 0xA000(十进制40KB)
-		acoral_print("Psp_stack:%x\r\n",&Psp_stack);
+			int size = (unsigned int)&heap_end - (unsigned int)&heap_start;   acoral_print("size:%d",size);   ===>  等同于  acoral_print("%d",(unsigned int)&_Min_Heap_Size);
+				size=40960
 			Psp_size = 0; Psp_stack = 0x2000b548（紧跟着堆）
-		acoral_print("Msp_stack:%x\r\n",&Msp_stack);
 			Msp_stack = 0x800; Msp_stack = 2000bd48;
-		int size = (unsigned int)&heap_end - (unsigned int)&heap_start;   acoral_print("size:%d",size);   ===>  等同于  acoral_print("%d",(unsigned int)&_Min_Heap_Size);
-			size=40960
+			
 	*/
+	#ifdef ANALYZE2
+		acoral_print("*****************analyze begin******************\r\n");
+		acoral_print("head_start:%x,heap_end:%x\r\n",&heap_start,&heap_end);	/* 堆开始位置，堆结束位置 */
+		acoral_print("_Min_Heap_Size:%d\r\n",(unsigned int)&_Min_Heap_Size);	/*堆大小*/
+		acoral_print("Psp_stack:%x\r\n",&Psp_stack);							/* Psp_stack起始位置 */
+		acoral_print("Msp_stack:%x\r\n",&Msp_stack);							/*Msp_stack起始位置*/	
+		acoral_print("*****************analyze end********************\r\n\r\n");
+	#endif
+	
 	#ifdef BUDDY
 		/* 伙伴系统初始化 */
 		acoral_mem_init((unsigned int)&heap_start, (unsigned int)&heap_end); 
